@@ -33,10 +33,11 @@ def stress_level(data):
     norm_coeff = 100/66
     return score * norm_coeff
 
-
 def stress_percantage(username):
     user_data = find_answers(username)
     return stress_level(user_data)
 
-
-print(stress_percantage(username))
+def append_gsheets(data):
+    spreadsheet  = client.open("Dataset")
+    sheet = spreadsheet.sheet1
+    sheet.append_row(data.split())
