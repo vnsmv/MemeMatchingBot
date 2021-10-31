@@ -3,7 +3,7 @@ requests
 AudioSegment
 uuid
 numpy == 1.19
-numba ==0.48
+numba
 pydub
 pathlib
 librosa
