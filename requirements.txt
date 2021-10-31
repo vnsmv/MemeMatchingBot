@@ -1,0 +1,17 @@
+telebot
+requests
+random
+speech_recognition
+os
+AudioSegment
+time
+uuid
+pydub
+pathlib
+librosa
+numpy
+time
+librosa
+matplotlib
+gspread
+oauth2client
