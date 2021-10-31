@@ -1,6 +1,5 @@
 telebot
 requests
-random
 speech_recognition
 os
 AudioSegment
