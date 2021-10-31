@@ -2,6 +2,7 @@ telebot
 requests
 AudioSegment
 uuid
+numpy == 1.19
 pydub
 pathlib
 librosa
