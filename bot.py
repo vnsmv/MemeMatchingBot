@@ -12,10 +12,10 @@ from pathlib import Path
 import librosa
 import librosa.display
 import numpy as np
-
+import time
 ##########################################################
 # ____________________IMPORT FUNCTIONS____________________
-#from speech_processing import speech_metrics
+from speech_processing import speech_metrics
 from calculate_stress import stress_percantage, append_gsheets
 ########################################################
 # ____________________BOT ATTRIBUTES____________________
@@ -29,14 +29,17 @@ bot = telebot.TeleBot(token)
 @bot.message_handler(commands = ['start'])
 def start(message):
     username = message.chat.username
-    bot.send_message(message.chat.id, 'Привет ' + "\U0001F60A")
-    bot.send_message(message.chat.id, str(stress_percantage(username)))
+    bot.send_message(message.chat.id, 'Привет, расскажи мне как прошел твой день)')
+    time.sleep(2)
+    bot.send_message(message.chat.id, 'Запиши голосовое, хочу послушать тебя. Только рассказывай подробно)' + "\U0001F60A")
+    #bot.send_message(message.chat.id, str(stress_percantage(username)))
 
 ##########################################################
 # ____________________VOICE PROCESSING____________________
 
 @bot.message_handler(content_types = ['voice'])
-def start(message):
+def message(message):
+    # processing voice message
     username = message.chat.username
     file_info = bot.get_file(message.voice.file_id)
     downloaded_file = bot.download_file(file_info.file_path)
@@ -49,21 +52,38 @@ def start(message):
     file = AudioSegment.from_ogg(Path(file_name_full))
     file.export(file_name_full_wav, format = 'wav')
     os.remove(file_name_full)
-    y, sr = librosa.load(file_name_full_wav, mono=True, duration=30)
-    rms = librosa.feature.rms(y=y)
-    chroma_stft = librosa.feature.chroma_stft(y=y, sr=sr)
-    spec_cent = librosa.feature.spectral_centroid(y=y, sr=sr)
-    spec_bw = librosa.feature.spectral_bandwidth(y=y, sr=sr)
-    rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr)
-    zcr = librosa.feature.zero_crossing_rate(y)
-    mfcc = librosa.feature.mfcc(y = y, sr = sr)
-    to_append = f'{username} {np.mean(chroma_stft)} {np.mean(rms)} {np.mean(spec_cent)} {np.mean(spec_bw)} {np.mean(rolloff)} {np.mean(zcr)}'
 
-    stress_level = stress_percantage(username)
-    to_append += f '{stress_level}'
+    #calculate speech metrics
+    speech_data = speech_metrics(username, file_name_full_wav)
+    stress_level = round(stress_percantage(username))
+    # append data to gsheets
+    speech_data += f' {stress_level}'
+    append_gsheets(speech_data)
+    bot.send_message(message.chat.id, 'Голос такой приятный ' + "\U0001F60C" + '\n' + 'Я посчитала твой уровень стресса...' +
+     '\n' +str(stress_level)+ '/100')
+    time.sleep(2)
+    if stress_level < 20:
+        bot.send_message(message.chat.id, 'На чиле, на расслабоне ' + "\U0001F60E" + "\U0001F919")
+    elif stress_level > 20 and stress_level < 40:
+        bot.send_message(message.chat.id, 'Тебе нужно отвлечься от повседневной рутины\n' + 'A little party never killed nobody' + "\U0001F483")
+    elif stress_level > 40 and stress_level < 80:
+        bot.send_message(message.chat.id,  'Тебе нужен отдых! \n'+
+        'Почитай статьи о выгорании\n https://probolezny.ru/emocionalnoe-vygoranie/ \n' +
+        'https://www.gq.ru/entertainment/burn-out \n'+
+        'Займись йогой https://www.youtube.com/c/yogawithadriene \n' +
+        'Смени обстановку https://vandrouki.ru/ \n ')
+    elif stress_level > 80:
+        bot.send_message(message.chat.id, 'Это очень высокий уровень , тебе требуется немедленная консультация с психологом.\n' +'\n'+ 'Горячая линия 88007008805')
+    time.sleep(2)
+    bot.send_message(message.chat.id, 'Полученные от тебя метариалы позволят создать приложение, где на основе AI оценивалось бы психологическое состояние человека.' +
+    '\nМы верим, что вместе сможем сделать действительно классный продукт и уменьшить проблему выгорания:) \n' + 'Если у тебя есть вопросы или ты хочешь стать частью нашей команды - пиши:\n'
+     + '@followthesun, @spatzie, @anvlasova, @Penchekrak')
 
-    for e in mfcc:
-        to_append += f' {np.mean(e)}'
-    append_gsheets(to_append)
+
+##########################################################
+# ____________________TEXT PROCESSING____________________
+@bot.message_handler(content_types = ['text'])
+def message(message):
+    bot.send_message(message.chat.id, 'Давай голосовым ' + "\U0001F60F")
 
 bot.polling(none_stop=True, interval=0)
