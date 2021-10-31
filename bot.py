@@ -8,8 +8,6 @@ import time
 import uuid
 import pydub
 from pathlib import Path
-import librosa
-import librosa.display
 ##########################################################
 # ____________________IMPORT FUNCTIONS____________________
 from speech_processing import speech_metrics
