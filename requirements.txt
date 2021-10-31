@@ -1,6 +1,6 @@
 telebot
 requests
-speech_recognition
+winspeech
 os
 AudioSegment
 time
