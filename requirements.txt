@@ -1,7 +1,6 @@
 telebot
 requests
 winspeech
-os
 AudioSegment
 time
 uuid
