@@ -2,7 +2,6 @@ telebot
 requests
 winspeech
 AudioSegment
-time
 uuid
 pydub
 pathlib
