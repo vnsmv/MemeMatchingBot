@@ -7,7 +7,6 @@ pydub
 pathlib
 librosa
 numpy
-time
 librosa
 matplotlib
 gspread
