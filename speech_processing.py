@@ -2,8 +2,6 @@ import librosa
 import matplotlib.pyplot as plt
 import librosa.display
 from scipy.signal import find_peaks
-import numpy as np
-
 
 def process_voice(file_info):
     downloaded_file = bot.download_file(file_info.file_path)
@@ -27,8 +25,9 @@ def speech_metrics(username,file_path):
     rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr)
     zcr = librosa.feature.zero_crossing_rate(y)
     mfcc = librosa.feature.mfcc(y = y, sr = sr)
-    to_append = f'{username} {np.mean(chroma_stft)} {np.mean(rms)} {np.mean(spec_cent)} {np.mean(spec_bw)} {np.mean(rolloff)} {np.mean(zcr)}'
+    print(rms, np.mean(rms), rms.mean())
+    to_append = f'{username} {chroma_stft.mean()} {rms.mean()} {spec_cent.mean()} {spec_bw.mean()} {rolloff.mean()} {zcr.mean()}'
     for e in mfcc:
-        to_append += f' {np.mean(e)}'
+        to_append += f' {e.mean()}'
 
     return to_append

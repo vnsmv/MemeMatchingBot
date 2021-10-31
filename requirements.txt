@@ -5,9 +5,6 @@ uuid
 pydub
 pathlib
 librosa
-numpy==1.19.5
-numba==0.47.0
-librosa
 matplotlib
 gspread
 oauth2client

@@ -10,8 +10,6 @@ import pydub
 from pathlib import Path
 import librosa
 import librosa.display
-import numpy as np
-import time
 ##########################################################
 # ____________________IMPORT FUNCTIONS____________________
 from speech_processing import speech_metrics
