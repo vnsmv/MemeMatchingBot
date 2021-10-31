@@ -5,7 +5,8 @@ uuid
 pydub
 pathlib
 librosa
-numpy == 1.20
+numpy==1.19.5
+numba==0.54
 librosa
 matplotlib
 gspread
