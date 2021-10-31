@@ -1,6 +1,5 @@
 telebot
 requests
-winspeech
 AudioSegment
 uuid
 pydub

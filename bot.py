@@ -1,7 +1,6 @@
 import telebot
 import requests
 import random
-import speech_recognition as sr
 import os
 from pydub import AudioSegment
 #import pyttsx3
