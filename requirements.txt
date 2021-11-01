@@ -2,7 +2,6 @@ telebot
 requests
 AudioSegment
 uuid
-numba==0.54.1
 numpy==1.19.5
 pydub
 pathlib
