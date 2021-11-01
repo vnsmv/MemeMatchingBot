@@ -1,9 +1,9 @@
 telebot
 requests
+llvmlite==0.31.0
 AudioSegment
 uuid
 numpy==1.19.5
-llvmlite==0.31.0
 pydub
 pathlib
 librosa
