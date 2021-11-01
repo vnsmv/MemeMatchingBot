@@ -3,7 +3,7 @@ requests
 AudioSegment
 uuid
 numpy==1.19.5
-llvmlite==0.34.0
+llvmlite==0.31.0
 pydub
 pathlib
 librosa
