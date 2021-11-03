@@ -1,1 +1,2 @@
 libsndfile1-dev
+https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git
