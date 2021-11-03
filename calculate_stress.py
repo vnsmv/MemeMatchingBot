@@ -29,6 +29,7 @@ def stress_level(data):
             score = score + 2
 
     norm_coeff = 100/66
+    print()
     return score * norm_coeff
 
 def stress_percantage(username):
