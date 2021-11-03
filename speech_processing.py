@@ -25,7 +25,6 @@ def speech_metrics(username,file_path):
     rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr)
     zcr = librosa.feature.zero_crossing_rate(y)
     mfcc = librosa.feature.mfcc(y = y, sr = sr)
-    print(rms, np.mean(rms), rms.mean())
     to_append = f'{username} {chroma_stft.mean()} {rms.mean()} {spec_cent.mean()} {spec_bw.mean()} {rolloff.mean()} {zcr.mean()}'
     for e in mfcc:
         to_append += f' {e.mean()}'
