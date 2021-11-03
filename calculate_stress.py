@@ -10,6 +10,8 @@ sheet = spreadsheet.sheet1
 list_of_dicts = sheet.get_all_records()
 
 def find_answers(username):
+    if username[0] == '@':
+        username = username[1:]
     for record in list_of_dicts:
         username_tbl = record['telegram']
         if username_tbl[0] == '@':
