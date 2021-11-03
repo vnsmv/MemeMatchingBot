@@ -51,8 +51,8 @@ def message(message):
 
     #calculate speech metrics
     if username[0] == '@':
-        username == username[1:]
-        
+        username = username[1:]
+
     speech_data = speech_metrics(username, file_name_full_wav)
     stress_level = round(stress_percantage(username))
     # append data to gsheets
@@ -62,11 +62,11 @@ def message(message):
     bot.send_message(message.chat.id, 'Голос такой приятный ' + "\U0001F60C" + '\n' + 'Я посчитала твой уровень стресса...' +
      '\n' +str(stress_level)+ '/100')
     time.sleep(2)
-    if stress_level < 20:
+    if stress_level < 25:
         bot.send_message(message.chat.id, 'На чиле, на расслабоне ' + "\U0001F60E" + "\U0001F919")
-    elif stress_level > 20 and stress_level < 40:
-        bot.send_message(message.chat.id, 'Тебе нужно отвлечься от повседневной рутины\n' + 'A little party never killed nobody' + "\U0001F483")
-    elif stress_level > 40 and stress_level < 80:
+    elif stress_level > 25 and stress_level < 45:
+        bot.send_message(message.chat.id, 'Тебе нужно немного отвлечься от повседневной рутины\n' + 'A little party never killed nobody' + "\U0001F483")
+    elif stress_level > 45 and stress_level < 80:
         bot.send_message(message.chat.id,  'Тебе нужен отдых! \n'+
         'Почитай статьи о выгорании\n https://probolezny.ru/emocionalnoe-vygoranie/ \n' +
         'https://www.gq.ru/entertainment/burn-out \n'+

@@ -11,11 +11,19 @@ list_of_dicts = sheet.get_all_records()
 
 def find_answers(username):
     for record in list_of_dicts:
-        if record['telegram'] == username:
+        username_tbl = record['telegram']
+        if username_tbl[0] == '@':
+            username_tbl = username_tbl[1:]
+        if username_tbl == username:
+            print(record)
             return record
     return []
 
 def stress_level(data):
+    answers_list = list(data.keys())
+    for answer in answers_list:
+        if data[answer] == '':
+            del data[answer]
     answers_list = list(data.keys())
     score = 0
     for answer in answers_list:
@@ -29,11 +37,11 @@ def stress_level(data):
             score = score + 2
 
     norm_coeff = 100/66
-    print()
     return score * norm_coeff
 
 def stress_percantage(username):
     user_data = find_answers(username)
+    print(stress_level(user_data))
     return stress_level(user_data)
 
 def append_gsheets(data):
