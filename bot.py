@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import telebot
 import requests
 import random
@@ -54,6 +55,7 @@ def message(message):
     # append data to gsheets
     speech_data += f' {stress_level}'
     append_gsheets(speech_data)
+    os.remove(file_name_full_wav)
     bot.send_message(message.chat.id, 'Голос такой приятный ' + "\U0001F60C" + '\n' + 'Я посчитала твой уровень стресса...' +
      '\n' +str(stress_level)+ '/100')
     time.sleep(2)
