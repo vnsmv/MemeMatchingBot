@@ -10,6 +10,8 @@ sheet = spreadsheet.sheet1
 list_of_dicts = sheet.get_all_records()
 
 def find_answers(username):
+    if username[0] == '@':
+        username = username[1:]
     for record in list_of_dicts:
         username_tbl = record['telegram']
         print(username_tbl)
@@ -49,4 +51,4 @@ def append_gsheets(data):
     sheet = spreadsheet.sheet1
     sheet.append_row(data.split())
 
-print(find_answers('followthesun'))
+print(stress_percantage('@balakina_ekaterina'))

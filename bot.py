@@ -50,8 +50,11 @@ def message(message):
     os.remove(file_name_full)
 
     #calculate speech metrics
-    if username[0] == '@':
-        username = username[1:]
+    try:
+        if username[0] == '@':
+            username = username[1:]
+    except TypeError:
+        pass
 
     speech_data = speech_metrics(username, file_name_full_wav)
     stress_level = round(stress_percantage(username))
