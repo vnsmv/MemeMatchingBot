@@ -5,6 +5,8 @@ AudioSegment
 uuid
 numpy==1.19.5
 pydub
+ffmpeg
+libsndfile1
 pathlib
 librosa
 matplotlib
