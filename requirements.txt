@@ -1,4 +1,4 @@
-telebot
+ PyTelegramBotAPI==2.2.3
 requests
 llvmlite
 AudioSegment
