@@ -51,5 +51,3 @@ def append_gsheets(data):
     spreadsheet  = client.open("Dataset")
     sheet = spreadsheet.sheet1
     sheet.append_row(data.split())
-
-print(stress_percantage('@olvlz'))
