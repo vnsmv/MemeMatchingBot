@@ -9,8 +9,6 @@ spreadsheet  = client.open("Tilda_Form_4745453_20211029233945")
 sheet = spreadsheet.sheet1
 list_of_dicts = sheet.get_all_records()
 
-username = 'followthesun'
-
 def find_answers(username):
     for record in list_of_dicts:
         if record['telegram'] == username:
