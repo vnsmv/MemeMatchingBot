@@ -6,7 +6,7 @@ uuid
 numpy==1.19.5
 pydub
 ffmpeg
-libsndfile1
+libsndfile1-dev
 pathlib
 librosa
 matplotlib
