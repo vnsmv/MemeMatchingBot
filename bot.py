@@ -58,6 +58,8 @@ def message(message):
 
     speech_data = speech_metrics(username, file_name_full_wav)
     stress_level = round(stress_percantage(username))
+    if stress_level == 101:
+        bot.send_message(message.chat.id, 'Возможно вы неправильно ввели свой username. Напишите @followthesun ' )
     # append data to gsheets
     speech_data += f' {stress_level}'
     append_gsheets(speech_data)

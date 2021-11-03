@@ -21,7 +21,10 @@ def find_answers(username):
     return []
 
 def stress_level(data):
-    answers_list = list(data.keys())
+    try:
+        answers_list = list(data.keys())
+    except AttributeError:
+        return 101
     for answer in answers_list:
         if data[answer] == '':
             del data[answer]
