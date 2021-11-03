@@ -1,6 +1,6 @@
 telebot
 requests
-llvmlite==0.31.0
+llvmlite
 AudioSegment
 uuid
 numpy==1.19.5
