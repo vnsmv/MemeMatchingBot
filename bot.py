@@ -60,29 +60,30 @@ def message(message):
     stress_level = round(stress_percantage(username))
     if stress_level == 101:
         bot.send_message(message.chat.id, 'Возможно вы неправильно ввели свой username. Напишите @followthesun ' )
-    # append data to gsheets
-    speech_data += f' {stress_level}'
-    append_gsheets(speech_data)
-    os.remove(file_name_full_wav)
-    bot.send_message(message.chat.id, 'Голос такой приятный ' + "\U0001F60C" + '\n' + 'Я посчитала твой уровень стресса...' +
-     '\n' +str(stress_level)+ '/100')
-    time.sleep(2)
-    if stress_level < 25:
-        bot.send_message(message.chat.id, 'На чиле, на расслабоне ' + "\U0001F60E" + "\U0001F919")
-    elif stress_level > 25 and stress_level < 45:
-        bot.send_message(message.chat.id, 'Тебе нужно немного отвлечься от повседневной рутины\n' + 'A little party never killed nobody' + "\U0001F483")
-    elif stress_level > 45 and stress_level < 80:
-        bot.send_message(message.chat.id,  'Тебе нужен отдых! \n'+
-        'Почитай статьи о выгорании\n https://probolezny.ru/emocionalnoe-vygoranie/ \n' +
-        'https://www.gq.ru/entertainment/burn-out \n'+
-        'Займись йогой https://www.youtube.com/c/yogawithadriene \n' +
-        'Смени обстановку https://vandrouki.ru/ \n ')
-    elif stress_level > 80:
-        bot.send_message(message.chat.id, 'Это очень высокий уровень , тебе требуется немедленная консультация с психологом.\n' +'\n'+ 'Горячая линия 88007008805')
-    time.sleep(2)
-    bot.send_message(message.chat.id, 'Полученные от тебя метариалы позволят создать приложение, где на основе AI оценивалось бы психологическое состояние человека.' +
-    '\nМы верим, что вместе сможем сделать действительно классный продукт и уменьшить проблему выгорания\n' + 'Если у тебя есть вопросы или ты хочешь стать частью нашей команды - пиши:\n'
-     + '@followthesun, @spatzie, @anvlasova, @Penchekrak')
+    else:
+        # append data to gsheets
+        speech_data += f' {stress_level}'
+        append_gsheets(speech_data)
+        os.remove(file_name_full_wav)
+        bot.send_message(message.chat.id, 'Голос такой приятный ' + "\U0001F60C" + '\n' + 'Я посчитала твой уровень стресса...' +
+         '\n' +str(stress_level)+ '/100')
+        time.sleep(2)
+        if stress_level < 25:
+            bot.send_message(message.chat.id, 'На чиле, на расслабоне ' + "\U0001F60E" + "\U0001F919")
+        elif stress_level > 25 and stress_level < 45:
+            bot.send_message(message.chat.id, 'Тебе нужно немного отвлечься от повседневной рутины\n' + 'A little party never killed nobody' + "\U0001F483")
+        elif stress_level > 45 and stress_level < 80:
+            bot.send_message(message.chat.id,  'Тебе нужен отдых! \n'+
+            'Почитай статьи о выгорании\n https://probolezny.ru/emocionalnoe-vygoranie/ \n' +
+            'https://www.gq.ru/entertainment/burn-out \n'+
+            'Займись йогой https://www.youtube.com/c/yogawithadriene \n' +
+            'Смени обстановку https://vandrouki.ru/ \n ')
+        elif stress_level > 80:
+            bot.send_message(message.chat.id, 'Это очень высокий уровень , тебе требуется немедленная консультация с психологом.\n' +'\n'+ 'Горячая линия 88007008805')
+        time.sleep(2)
+        bot.send_message(message.chat.id, 'Полученные от тебя метариалы позволят создать приложение, где на основе AI оценивалось бы психологическое состояние человека.' +
+        '\nМы верим, что вместе сможем сделать действительно классный продукт и уменьшить проблему выгорания\n' + 'Если у тебя есть вопросы или ты хочешь стать частью нашей команды - пиши:\n'
+         + '@followthesun, @spatzie, @anvlasova, @Penchekrak')
 
 
 ##########################################################
