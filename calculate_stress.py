@@ -1,5 +1,6 @@
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+import random
 
 
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
@@ -51,3 +52,12 @@ def append_gsheets(data):
     spreadsheet  = client.open("Dataset")
     sheet = spreadsheet.sheet1
     sheet.append_row(data.split())
+
+def random_talks():
+    list_telegrams = []
+    for user_data in list_of_dicts:
+        list_telegrams.append(user_data['telegram'])
+    talk_person = random.choice(list_telegrams)
+    return talk_person
+
+print(random_talks())
