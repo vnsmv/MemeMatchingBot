@@ -134,6 +134,7 @@ def callback(call):
         markup_inline_ = types.InlineKeyboardMarkup()
         markup_inline_.add(yes, no)
         bot.send_message(call.message.chat.id, 'Хочешь поговорить?', reply_markup = markup_inline_)
+
     if call.data == 'yes':
         person_talk  = RandomPeopleHelpers()
         if call.data == 'yes':
@@ -143,5 +144,9 @@ def callback(call):
             try_another = types.InlineKeyboardButton(text = 'Поискать  еще', callback_data = 'yes')
             markup_inline_.add(try_another)
             bot.send_message(call.message.chat.id, 'Нашла тебе собеседника \n' + person_talk, reply_markup = markup_inline_)
+
+    if call.data == 'no':
+        bot.send_message(call.message.chat.id, 'Напиши, какую ты хочешь видеть функциональность ' + '\n' + '@followthesun')
+
 
 bot.polling(none_stop=True, interval=0)
