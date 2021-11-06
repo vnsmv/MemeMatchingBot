@@ -64,7 +64,13 @@ def MoodTable(username, mood):
 def CheckInDb(username):
     connection = sqlite3.connect('Stress_diary.db')
     cursor = connection.cursor()
-    cursor.execute("SELECT ID FROM users WHERE username = ?", (username,))
+    try:
+        cursor.execute("SELECT ID FROM users WHERE username = ?", (username,))
+        user_id = cursor.fetchone()[0]
+    except TypeError:
+        cursor.execute("INSERT INTO users VALUES (?, NULL)", (username,))
+        cursor.execute("SELECT ID FROM users WHERE username = ?", (username,))
+
     user_id = cursor.fetchone()[0]
     user_id = 'ID_'+str(user_id)
     cursor.execute(f"create table if not exists {user_id} (datetime, mood)")
@@ -78,6 +84,4 @@ def PutValues(username):
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM  ORDER BY CreateDate DESC LIMIT 5")
 
-
-#FillLines('ID_1')
-# c.execute("alter table linksauthor add column '%s' 'float'" % author)
+CheckInDb('son mum girlfriend')
