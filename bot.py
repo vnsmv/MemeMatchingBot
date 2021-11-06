@@ -146,7 +146,7 @@ def callback(call):
             bot.send_message(call.message.chat.id, 'Нашла тебе собеседника \n' + person_talk, reply_markup = markup_inline_)
 
     if call.data == 'no':
-        bot.send_message(call.message.chat.id, 'Напиши, какую ты хочешь видеть функциональность ' + '\n' + '@followthesun')
+        bot.send_message(call.message.chat.id, 'Напиши, какую ты хочешь видеть функциональность от бота' + '\n' + '@followthesun')
 
 
 bot.polling(none_stop=True, interval=0)

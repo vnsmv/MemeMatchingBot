@@ -50,15 +50,15 @@ def MoodTable(username, mood):
     dtime = datetime.now().strftime("%d/%m/%Y")
     connection = sqlite3.connect('Stress_diary.db')
     cursor = connection.cursor()
-    cursor.execute(f"INSERT INTO {tablename} VALUES (?,?)", (dtime, mood))
+    cursor.execute(f"INSERT INTO {tablename} VALUES (?,?, NULL)", (dtime, mood))
     connection.commit()
-    cursor.execute(f"SELECT * FROM {tablename} DESC LIMIT 5")
+    cursor.execute(f"SELECT * FROM {tablename} ORDER BY ID DESC  LIMIT 7")
     results = cursor.fetchall()
     moods = []
+    print(results)
     for result in results:
         moods.append(result[1])
     connection.close()
-    moods = set(moods)
     return moods
 
 def CheckInDb(username):
@@ -70,10 +70,10 @@ def CheckInDb(username):
     except TypeError:
         cursor.execute("INSERT INTO users VALUES (?, NULL)", (username,))
         cursor.execute("SELECT ID FROM users WHERE username = ?", (username,))
+        user_id = cursor.fetchone()[0]
 
-    user_id = cursor.fetchone()[0]
     user_id = 'ID_'+str(user_id)
-    cursor.execute(f"create table if not exists {user_id} (datetime, mood)")
+    cursor.execute(f"create table if not exists {user_id} (datetime, mood, ID int AUTO_INCREMENT)")
     connection.commit()
     connection.close()
     return user_id
@@ -84,4 +84,5 @@ def PutValues(username):
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM  ORDER BY CreateDate DESC LIMIT 5")
 
-CheckInDb('son mum girlfriend')
+CheckInDb('son of mums girlfriend')
+MoodTable('username', 'dc')
