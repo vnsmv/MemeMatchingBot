@@ -30,7 +30,7 @@ def start(message):
     markup_inline_ = types.InlineKeyboardMarkup()
 
     # buttons
-    bot.send_message(message.chat.id, 'Привет, на связи TalkToMe version 1.0.0. \n' +
+    bot.send_message(message.chat.id, 'Привет, на связи TalkToMe version 1.0.1. \n' +
     'Пока я работаю над предсказанием уровня стресса по голосу и видео, но вот что я умею сейчас: \n'+
     '• Веду дневник твоего состояния на каждый день\n' +
     '• Можешь поделиться своими проблемами и поговорить с кем-нибудь \n'
