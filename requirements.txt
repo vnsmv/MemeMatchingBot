@@ -1,14 +1,3 @@
 PyTelegramBotAPI
-requests
-llvmlite
-AudioSegment
-uuid
-numpy==1.19.5
-pydub
-ffmpeg
-pathlib
-librosa
-matplotlib
-gspread
-oauth2client
-datetime
+pandas
+numpy
