@@ -26,10 +26,12 @@ def _add_user(username, users_db) -> int:
     return user_id
 
 
-def get_add_user_id(username: str) -> int:
+def get_add_user_id(username: str) -> (int, bool):
     users_db = _read_create_users_db()
     try:
         user_id = _get_user_id(username=username, users_db=users_db)
+        is_new_user = False
     except KeyError:
         user_id = _add_user(username=username, users_db=users_db)
-    return user_id
+        is_new_user = True
+    return user_id, is_new_user
