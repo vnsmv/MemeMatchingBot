@@ -1,3 +1,4 @@
 PyTelegramBotAPI
 pandas
 numpy
+telethon
