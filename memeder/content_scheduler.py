@@ -1,10 +1,14 @@
 from typing import Union
+import time
 
 from telebot import types
 
+from memeder.database_csv.meme_reactions_db import add_meme_reaction_id
+from memeder.database_csv.sent_memes_db import add_sent_meme_id, get_sent_meme_value
+from memeder.dating_recsys.engine import is_ready_to_date, recommend_date
 from memeder.meme_recsys.engine import recommend_meme
 from memeder.paths import get_lib_root_path
-from memeder.users_db import check_add_user_id, get_user_value
+from memeder.database_csv.users_db import check_add_user_id, get_user_value
 
 
 def start(message, bot, force_start: bool = True,
@@ -23,8 +27,8 @@ def start(message, bot, force_start: bool = True,
 
     chat_id: int = chat.id
 
-    is_new_user = check_add_user_id(user_id=user_id, user_is_bot=user_is_bot, user_first_name=user_first_name,
-                                    chat_id=chat_id, date=date,
+    is_new_user = check_add_user_id(chat_id=chat_id, user_id=user_id, user_is_bot=user_is_bot,
+                                    user_first_name=user_first_name, date=date,
                                     user_last_name=user_last_name, user_username=user_username,
                                     database_src=database_src)
 
@@ -33,28 +37,32 @@ def start(message, bot, force_start: bool = True,
     # bot.send_message(message.chat.id, 'Как тебя зовут?')
 
     if is_new_user or force_start:
-        call_meme_generator(user_id, bot=bot, chat_id=chat_id)
+        meme_id = _call_meme_generator(chat_id, database_src=database_src)
+        _send_meme(chat_id, meme_id=meme_id, bot=bot, database_src=database_src)
 
 
 def process(call, bot,
             database_src: str = 'database_csv'):
-    user_id = call.message.from_user.id
     chat_id = call.message.chat.id
 
+    reaction = call.data  # TODO: ***Be aware that a bad client can send arbitrary data in this field.***
+
     # 1. Updating meme reactions database:
+    date = int(time.time())  # TODO: i had not found date of callback query:(
+    message_id = call.message.message_id
+    meme_id = get_sent_meme_value(chat_id, message_id, column='MemeID', database_src=database_src)
+    add_meme_reaction_id(chat_id, meme_id, reaction=reaction, date=date, database_src=database_src)
+
+    # 2. Check is the person ready to date:
+    if is_ready_to_date(chat_id, database_src=database_src):
+        recommended_users = recommend_date(chat_id, database_src=database_src)
+        _send_date(chat_id, recommended_users, bot=bot)
+
+    meme_id = _call_meme_generator(chat_id, database_src=database_src)
+    _send_meme(chat_id, meme_id=meme_id, bot=bot, database_src=database_src)
 
 
-
-    condition_to_call_meme_generator = True  # TODO: otherwise call person proposal
-
-    if condition_to_call_meme_generator:
-        call_meme_generator(user_id, bot, chat_id=chat_id, database_src=database_src)
-    else:
-        # TODO: person proposal
-        pass
-
-
-def get_meme_reply_inline():
+def _get_meme_reply_inline():
     markup_inline = types.InlineKeyboardMarkup()
 
     stress = types.InlineKeyboardButton(text='\U0001F624', callback_data='emoji-stress')
@@ -68,16 +76,26 @@ def get_meme_reply_inline():
     return markup_inline
 
 
-def call_meme_generator(user_id, bot, chat_id: int = None,
-                        database_src: str = 'database_csv'):
-    if chat_id is None:
-        chat_id = get_user_value(user_id, 'ChatID', database_src=database_src)
-
-    meme_id = recommend_meme(user_id=user_id, database_src=database_src)
-    _send_meme(meme_id=meme_id, chat_id=chat_id, bot=bot)
+def _call_meme_generator(chat_id, database_src: str = 'database_csv'):
+    meme_id = recommend_meme(chat_id=chat_id, database_src=database_src)
+    return meme_id
 
 
-def _send_meme(meme_id, chat_id, bot):
+def _send_meme(chat_id, meme_id, bot, database_src: str = 'database_csv'):
     with open(get_lib_root_path() / f'Memes/{meme_id}', 'rb') as meme_img:
         bot.send_photo(chat_id, photo=meme_img)
-        bot.send_message(chat_id, 'Reaction on meme:', reply_markup=get_meme_reply_inline())
+        message = bot.send_message(chat_id, 'Reaction on meme:', reply_markup=_get_meme_reply_inline())
+
+        message_id = message.message_id
+        date = message.date
+        add_sent_meme_id(chat_id, message_id, meme_id=meme_id, date=date, database_src=database_src)
+
+
+def _send_date(chat_id, recommended_users, bot):
+    recommended_users_str = ', '.join(['_id' + str(u) for u in recommended_users])
+    bot.send_message(chat_id,
+                     f'We recommend you to date with users that have following chat IDs: '
+                     f'{recommended_users_str}. Now go find them. '
+                     f'(This feature is not implemented yet. '
+                     f'Please, continue to watch the same memes again and again. '
+                     f'We definitely update them... maybe.)')

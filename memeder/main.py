@@ -2,7 +2,6 @@ import telebot
 
 
 from memeder.content_scheduler import start, process
-from memeder.meme_recsys.engine import meme_generator
 
 
 # filename = context.bot.get_file(update.message.photo[-1].file_id)
@@ -28,8 +27,6 @@ from memeder.meme_recsys.engine import meme_generator
 def main():
     token = '2119626828:AAFAKpu-nCf520e-peCEyM8e9sjJuZRlIdI'
     bot = telebot.TeleBot(token)
-
-    memgen = meme_generator()
 
     database_src = 'database_csv'
 
