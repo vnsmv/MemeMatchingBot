@@ -1,3 +1,6 @@
+"""
+TODO: Under construction... Please, do not use.
+"""
 from typing import Union
 
 import pandas as pd
@@ -5,46 +8,47 @@ import pandas as pd
 from memeder.paths import get_database_path
 
 
-USERS_DB_NAME = 'users.csv'
-USERS_DB_INDEX = 'UserID'
-USERS_DB_COLUMNS = (
-    USERS_DB_INDEX, 'UserIsBot', 'UserFirstName',
-    'ChatID', 'Date',
-    'UserLastName', 'UserUsername',
+# TODO: fill meme reactions database structure
+
+
+MEME_REACTIONS_DB_NAME = 'meme_reactions.csv'
+MEME_REACTIONS_DB_INDEX = ('UserID', 'MemeID', )
+MEME_REACTIONS_DB_COLUMNS = (
+    *MEME_REACTIONS_DB_INDEX,
 )
 
 
-def _create_users_db():
-    users_db = pd.DataFrame(columns=USERS_DB_COLUMNS)
-    users_db.set_index(USERS_DB_INDEX, inplace=True)
-    return users_db
+def _create_meme_reactions_db():
+    meme_reactions_db = pd.DataFrame(columns=list(MEME_REACTIONS_DB_COLUMNS))
+    meme_reactions_db.set_index(MEME_REACTIONS_DB_INDEX, inplace=True)
+    return meme_reactions_db
 
 
-def _read_users_db(database_src: str = 'database_csv'):
-    users_db_path = get_database_path(database_src=database_src) / USERS_DB_NAME
-    users_db = pd.read_csv(users_db_path, index_col=USERS_DB_INDEX)
-    return users_db
+def _read_meme_reactions_db(database_src: str = 'database_csv'):
+    meme_reactions_db_path = get_database_path(database_src=database_src) / MEME_REACTIONS_DB_NAME
+    meme_reactions_db = pd.read_csv(meme_reactions_db_path, index_col=MEME_REACTIONS_DB_INDEX)
+    return meme_reactions_db
 
 
-def _update_users_db(users_db, database_src: str = 'database_csv'):
-    users_db_path = get_database_path(database_src=database_src) / USERS_DB_NAME
-    users_db.to_csv(users_db_path, index_label=USERS_DB_INDEX)
+def _update_meme_reactions_db(meme_reactions_db, database_src: str = 'database_csv'):
+    meme_reactions_db_path = get_database_path(database_src=database_src) / MEME_REACTIONS_DB_NAME
+    meme_reactions_db.to_csv(meme_reactions_db_path, index_label=MEME_REACTIONS_DB_INDEX)
 
 
-def _read_create_users_db(database_src: str = 'database_csv'):
-    users_db_path = get_database_path(database_src=database_src) / USERS_DB_NAME
+def _read_create_meme_reactions_db(database_src: str = 'database_csv'):
+    meme_reactions_db_path = get_database_path(database_src=database_src) / MEME_REACTIONS_DB_NAME
 
-    if users_db_path.exists():
-        users_db = _read_users_db(database_src=database_src)
+    if meme_reactions_db_path.exists():
+        meme_reactions_db = _read_meme_reactions_db(database_src=database_src)
     else:
-        users_db = _create_users_db()
-        _update_users_db(users_db, database_src=database_src)
+        meme_reactions_db = _create_meme_reactions_db()
+        _update_meme_reactions_db(meme_reactions_db, database_src=database_src)
 
-    return users_db
+    return meme_reactions_db
 
 
-def _check_user(users_db, user_id):
-    return user_id in users_db.index
+def _check_meme_reactions(meme_reactions_db, user_id, meme_id):
+    return (user_id, meme_id) in meme_reactions_db.index
 
 
 def _add_user(users_db,

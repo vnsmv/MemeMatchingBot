@@ -29,23 +29,19 @@ def main():
     token = '2119626828:AAFAKpu-nCf520e-peCEyM8e9sjJuZRlIdI'
     bot = telebot.TeleBot(token)
 
-    # lm = listofmemes()
-    # meme_generator = GeneratorMeme(lm, 10)
     memgen = meme_generator()
+
+    database_src = 'database_csv'
 
     # TODO: how can we check (and refresh) the current state?
     #  ... a "bug" in @ffmemesbot with double meme caused by double /start command without reacting on prev. meme
     @bot.message_handler(commands=['start'])
     def _start(message):
-        start(message, bot=bot, meme_generator=memgen)
-
-    @bot.message_handler(commands=['restart'])
-    def _restart(message):
-        start(message, bot=bot, meme_generator=memgen, force=True)
+        start(message, bot, force_start=True, database_src=database_src)
 
     @bot.callback_query_handler(func=lambda call: True)
     def _handle_meme_reply(call):
-        process(call, bot=bot, meme_generator=memgen)
+        process(call, bot, database_src=database_src)
         bot.answer_callback_query(call.id)
         # bot.send_message(call.message.chat.id, f'Data: {str(call.data)}')
 

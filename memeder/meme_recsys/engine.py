@@ -1,6 +1,8 @@
 import os
 import random
 
+import numpy as np
+
 from memeder.paths import get_lib_root_path
 
 
@@ -18,5 +20,11 @@ def meme_generator(list_memes=get_list_of_memes()):
         i += 1
 
 
-def recommend_meme(meme_generator, user_id):
-    return next(meme_generator)
+def get_random_meme():
+    return np.random.permutation(os.listdir(get_lib_root_path() / 'Memes'))[0]
+
+
+def recommend_meme(user_id, database_src: str = 'database_csv'):
+    # TODO: run recommendation engine here
+    meme_id = get_random_meme()
+    return meme_id
