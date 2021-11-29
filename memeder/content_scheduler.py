@@ -63,15 +63,25 @@ def process(call, bot,
 
 
 def _get_meme_reply_inline():
+
     markup_inline = types.InlineKeyboardMarkup()
 
-    stress = types.InlineKeyboardButton(text='\U0001F624', callback_data='emoji-stress')
-    rocket = types.InlineKeyboardButton(text='\U0001F680', callback_data='emoji-rocket')
-    neutral = types.InlineKeyboardButton(text='\U0001F610', callback_data='emoji-neutral')
-    chill = types.InlineKeyboardButton(text='\U0001F60C', callback_data='emoji-chill')
-    cry = types.InlineKeyboardButton(text='\U0001F622', callback_data='emoji-cry')
+    lol = types.InlineKeyboardButton(text='\U0001F923', callback_data='lol')
+    smile = types.InlineKeyboardButton(text='\U0001F642', callback_data='smile')
+    neutral = types.InlineKeyboardButton(text='\U0001F610', callback_data='neutral')
+    shook = types.InlineKeyboardButton(text='\U0001F631', callback_data='neutral')
+    crap = types.InlineKeyboardButton(text='\U0001F4A9', callback_data='neutral')
+    clown = types.InlineKeyboardButton(text='\U0001F921	', callback_data='neutral')
+    cry = types.InlineKeyboardButton(text='\U0001F625	', callback_data='neutral')
+    mind_blast = types.InlineKeyboardButton(text='\U0001F92F', callback_data='neutral')
+    cum = types.InlineKeyboardButton(text='\U0001F4A5' +'\U0001F4AB' + '\U0001F4A6', callback_data='neutral')
 
-    markup_inline.row(stress, rocket, neutral, chill, cry)
+    flash = types.InlineKeyboardButton(text='\U0001F633	', callback_data='neutral')
+    confused = types.InlineKeyboardButton(text='\U0001F615	', callback_data='neutral')
+    smirking = types.InlineKeyboardButton(text='\U0001F60F	', callback_data='neutral')
+    clown = types.InlineKeyboardButton(text='\U0001F921	', callback_data='neutral')
+
+    markup_inline.row(lol, smile, neutral, shook, crap, cry, clown, mind_blast, cum, flash,confused,smirking)
 
     return markup_inline
 
@@ -84,7 +94,7 @@ def _call_meme_generator(chat_id, database_src: str = 'database_csv'):
 def _send_meme(chat_id, meme_id, bot, database_src: str = 'database_csv'):
     with open(get_lib_root_path() / f'Memes/{meme_id}', 'rb') as meme_img:
         bot.send_photo(chat_id, photo=meme_img)
-        message = bot.send_message(chat_id, 'Reaction on meme:', reply_markup=_get_meme_reply_inline())
+        message = bot.send_message(chat_id, 'How do you like it?', reply_markup=_get_meme_reply_inline())
 
         message_id = message.message_id
         date = message.date
