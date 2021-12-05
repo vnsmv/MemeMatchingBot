@@ -12,4 +12,3 @@ def meme_stole():
     meme_id = msg.photo.id
     messages[0].click()
     return meme_id
-
