@@ -1,1 +1,1 @@
-bot: python3 heroku.py
+web: python3 memeder.main.py
