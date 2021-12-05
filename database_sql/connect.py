@@ -7,5 +7,3 @@ connection = psycopg2.connect(
     password='f7789ebaf7eea860725062241d3677b0030a61e772e6421fa71e1876b82fa22b')
 
 cursor = connection.cursor()
-cursor.execute("SELECT * FROM USERS")
-print("Result ", cursor.fetchall())
