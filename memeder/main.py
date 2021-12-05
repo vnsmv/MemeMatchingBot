@@ -1,5 +1,6 @@
 import telebot
-
+import main
+import sys
 
 from memeder.content_scheduler import start, process
 
@@ -24,7 +25,7 @@ from memeder.content_scheduler import start, process
 #     markup_inline.add(start_butt)
 
 
-def main():
+def main(num_tel, code):
     token = '2119626828:AAFAKpu-nCf520e-peCEyM8e9sjJuZRlIdI'
     bot = telebot.TeleBot(token)
 
@@ -46,4 +47,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main(89684894389, None)
