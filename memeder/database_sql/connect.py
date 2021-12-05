@@ -8,5 +8,3 @@ connection = psycopg2.connect(
                 password=password)
 
 cursor = connection.cursor()
-print("PostgreSQL server information")
-print(connection.get_dsn_parameters(), "\n")
