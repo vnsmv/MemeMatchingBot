@@ -8,7 +8,29 @@ from memeder.database_csv.sent_memes_db import add_sent_meme_id, get_sent_meme_v
 from memeder.dating_recsys.engine import is_ready_to_date, recommend_date
 from memeder.meme_recsys.engine import recommend_meme
 from memeder.paths import get_lib_root_path
-from memeder.database_csv.users_db import check_add_user_id, get_user_value
+from memeder.database_csv.users_db import check_add_user_id
+
+
+def new_start(message, bot, force_start: bool = True,
+              connection, cursor):
+    # https://core.telegram.org/bots/api#message +
+    # https://github.com/eternnoir/pyTelegramBotAPI#types =
+    user = message.from_user  # https://core.telegram.org/bots/api#user
+    date = message.date  # int
+    chat = message.chat  # https://core.telegram.org/bots/api#chat
+
+    user_id: int = user.id
+    user_is_bot: bool = user.is_bot  # TODO: we can set filtering behavior for bots
+    user_first_name: str = user.first_name
+    user_last_name: Union[str, None] = user.last_name
+    user_username: Union[str, None] = user.username
+
+    chat_id: int = chat.id
+
+    is_new_user = check_add_user_id(chat_id=chat_id, user_id=user_id, user_is_bot=user_is_bot,
+                                    user_first_name=user_first_name, date=date,
+                                    user_last_name=user_last_name, user_username=user_username,
+                                    database_src=database_src)
 
 
 def start(message, bot, force_start: bool = True,
