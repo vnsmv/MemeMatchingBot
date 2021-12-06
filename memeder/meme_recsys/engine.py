@@ -6,8 +6,8 @@ import numpy as np
 from memeder.paths import get_lib_root_path
 
 # from telethon import TelegramClient, events, sync
-# stole memes from Fast Food Memes bot
-
+# #stole memes from Fast Food Memes bot
+#
 # api_id = 15806656
 # api_hash = 'f5fc3ffced16b257c1b36aace17014b9'
 #

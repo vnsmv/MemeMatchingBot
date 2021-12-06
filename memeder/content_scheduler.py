@@ -1,6 +1,5 @@
 from typing import Union
-import time
-
+from datetime import datetime
 from telebot import types
 
 from memeder.database_csv.meme_reactions_db import add_meme_reaction_id
@@ -8,8 +7,8 @@ from memeder.database_csv.sent_memes_db import add_sent_meme_id, get_sent_meme_v
 from memeder.dating_recsys.engine import is_ready_to_date, recommend_date
 from memeder.meme_recsys.engine import recommend_meme
 from memeder.paths import get_lib_root_path
-from memeder.database_csv.users_db import check_add_user_id, get_user_value
-
+# from memeder.database_csv.users_db import check_add_user_id, get_user_value
+from memeder.database.db_functions import add_user, user_exist
 
 def start(message, bot, force_start: bool = True,
           database_src: str = 'database_csv'):
@@ -20,25 +19,22 @@ def start(message, bot, force_start: bool = True,
     chat = message.chat                                 # https://core.telegram.org/bots/api#chat
 
     user_id: int = user.id
-    user_is_bot: bool = user.is_bot                      # TODO: we can set filtering behavior for bots
+    # user_is_bot: bool = user.is_bot                      # TODO: we can set filtering behavior for bots
     user_first_name: str = user.first_name
-    user_last_name: Union[str, None] = user.last_name
-    user_username: Union[str, None] = user.username
-
+    # user_last_name: Union[str, None] = user.last_name
+    tg_username: Union[str, None] = user.username
     chat_id: int = chat.id
 
-    is_new_user = check_add_user_id(chat_id=chat_id, user_id=user_id, user_is_bot=user_is_bot,
-                                    user_first_name=user_first_name, date=date,
-                                    user_last_name=user_last_name, user_username=user_username,
-                                    database_src=database_src)
+    d_time = datetime.now()
+    d_time_str = d_time.strftime("%d/%m/%Y %H:%M:%S")
 
     # TODO: use logger
-    # print(username, user_id, flush=True)
-    # bot.send_message(message.chat.id, 'Как тебя зовут?')
+    if not user_exist(tg_username):
+        add_user(user_first_name, user_id, tg_username, chat_id, d_time_str, '')
 
-    if is_new_user or force_start:
-        meme_id = _call_meme_generator(chat_id, database_src=database_src)
-        _send_meme(chat_id, meme_id=meme_id, bot=bot, database_src=database_src)
+    # if is_new_user or force_start:
+    #     meme_id = _call_meme_generator(chat_id, database_src=database_src)
+    #     _send_meme(chat_id, meme_id=meme_id, bot=bot, database_src=database_src)
 
 
 def process(call, bot,

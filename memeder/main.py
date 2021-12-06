@@ -1,5 +1,4 @@
 import telebot
-import main
 import sys
 
 from memeder.content_scheduler import start, process
