@@ -1,5 +1,7 @@
 import psycopg2
+
 from memeder.database.config import host, database, user, password
+
 
 def connect_to_db():
     connection = psycopg2.connect(
@@ -10,6 +12,3 @@ def connect_to_db():
 
     cursor = connection.cursor()
     return cursor, connection
-
-
-

@@ -2,27 +2,25 @@ import os
 import random
 import numpy as np
 
-from memeder.paths import get_lib_root_path
+from memeder.database.db_functions import get_seen_meme_ids, get_all_meme_ids
 
 
-def meme_generator():
-    messages = client.get_messages('ffmemesbot')
-    msg = messages[0]
-    meme_id = msg.photo.id
-    messages[0].click()
-    return meme_id
+def recommend_meme(chat_id):
+    all_meme_ids = get_all_meme_ids()
+    if not all_meme_ids:
+        return None
 
-def get_list_of_memes():
-    files = os.listdir(get_lib_root_path() / 'Memes')
-    random.shuffle(files)
-    return tuple(files)
+    seen_meme_ids = get_seen_meme_ids(chat_id=chat_id)
 
-def get_random_meme():
-    return np.random.permutation(os.listdir(get_lib_root_path() / 'Memes'))[0]
+    meme_ids, file_ids = np.array(all_meme_ids).T
+    if not seen_meme_ids:
+        meme_id = np.random.choice(meme_ids)[0]
+    else:
+        unseen_meme_ids = list(set(meme_ids.tolist()) - set(np.array(seen_meme_ids).squeeze(-1).tolist()))
+        if not unseen_meme_ids:
+            meme_id = np.random.choice(meme_ids)[0]
+        else:
+            meme_id = np.random.choice(unseen_meme_ids)
 
-
-# def recommend_meme(chat_id, database_src: str = 'database_csv'):
-#     # TODO: run recommendation engine here
-#     meme_id = get_random_meme()
-#     return meme_id
+    return meme_id, file_ids[meme_ids == meme_id][0]
 

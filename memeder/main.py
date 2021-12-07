@@ -1,8 +1,8 @@
 import telebot
-import sys
 
-from memeder.content_scheduler import start, process
-from bot_credentials import token
+from memeder.content_scheduler import start, process, receive_meme
+from memeder.bot_credentials import token
+
 
 def main():
 
@@ -19,7 +19,10 @@ def main():
     def _handle_meme_reply(call):
         process(call, bot)
         bot.answer_callback_query(call.id)
-        # bot.send_message(call.message.chat.id, f'Data: {str(call.data)}')
+
+    @bot.message_handler(content_types=['photo'])
+    def _handle_photo(message):
+        receive_meme(message=message)
 
     bot.polling(none_stop=True, interval=0)
 
