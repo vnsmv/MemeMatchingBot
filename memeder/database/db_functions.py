@@ -95,10 +95,10 @@ def recommended_meme_id(chat_id):
     cursor.execute(sql_query, (recommended_id,))
 
     if cursor.fetchone() == None:
+        print('sdfsdf')
 
         sql_query = """ UPDATE users SET last_meme = %s WHERE chat_id = %s"""
-        cursor.execute(sql_query, (0, chat_id))
-        connection.commit()
+        cursor.execute(sql_query, (1, chat_id))
         sql_query = """ SELECT tg_id FROM memes WHERE  id = %s"""
         cursor.execute(sql_query, (1,))
         recommended_tg_id = cursor.fetchone()[0]
@@ -107,13 +107,8 @@ def recommended_meme_id(chat_id):
         cursor.execute(sql_query, (recommended_id,))
         recommended_tg_id = cursor.fetchone()[0]
 
-    sql_query = """ UPDATE users SET last_meme = %s WHERE chat_id = %s"""
-
-    try:
+        sql_query = """ UPDATE users SET last_meme = %s WHERE chat_id = %s"""
         cursor.execute(sql_query, (recommended_id, chat_id))
-    except Exception as e:
-        print(e)
-        cursor.execute("ROLLBACK")
 
     connection.commit()
     connection.close()
