@@ -10,7 +10,7 @@ from memeder.interface_tg.config import REACTIONS2BUTTONS
 def user_exist(chat_id):
     cursor, connection = connect_to_db()
 
-    sql_query = """SELECT EXISTS (SELECT 1 FROM users WHERE chat_id = %s) """
+    sql_query = """SELECT EXISTS (SELECT 1 FROM users WHERE chat_id = %s)"""
     try:
         cursor.execute(sql_query, (chat_id,))
     except Exception as e:
@@ -18,11 +18,7 @@ def user_exist(chat_id):
         cursor.execute("ROLLBACK")
 
     connection.commit()
-    data =  cursor.fetchone()
-    if not data:
-        is_exist = False
-    else:
-         is_exist = cursor.fetchone()[0]
+    is_exist = cursor.fetchone()[0]
     connection.close()
     return is_exist
 
