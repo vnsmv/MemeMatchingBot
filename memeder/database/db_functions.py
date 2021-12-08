@@ -16,9 +16,11 @@ def user_exist(chat_id):
         cursor.execute("ROLLBACK")
 
     connection.commit()
-    is_exist = cursor.fetchone()[0]
+    if cursor.fetchone() == None:
+        is_exist = False
+    else:
+         is_exist = cursor.fetchone()[0]
     connection.close()
-
     return is_exist
 
 
