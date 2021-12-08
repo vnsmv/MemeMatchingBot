@@ -1,1 +1,1 @@
-web: python3 memeder/main.py
+worker: python3 memeder/main.py
