@@ -1,14 +1,16 @@
 import logging
 from datetime import datetime
 
+import numpy as np
+
 from memeder.database.connect import connect_to_db
 from memeder.interface_tg.config import REACTIONS2BUTTONS
 
 
 def user_exist(chat_id):
     cursor, connection = connect_to_db()
-    sql_query = """SELECT EXISTS (SELECT 1 FROM users WHERE chat_id = %s) """
 
+    sql_query = """SELECT EXISTS (SELECT 1 FROM users WHERE chat_id = %s) """
     try:
         cursor.execute(sql_query, (chat_id,))
     except Exception as e:
@@ -25,46 +27,42 @@ def user_exist(chat_id):
 def add_user(tg_first_name, tg_id, tg_username, tg_chat_id, user_bio):
     # TODO: do we need to invoke a connection every time?
     cursor, connection = connect_to_db()
-    sql_query = """INSERT INTO users (name, user_bio, telegram_id, telegram_username, chat_id, date_add, last_meme)  VALUES  ( %s, %s, %s, %s, %s, %s, %s)"""
 
+    sql_query = """INSERT INTO users (name, user_bio, telegram_id, telegram_username, chat_id, date_add)  VALUES  (%s, %s, %s, %s, %s, %s)"""
     try:
         date_add = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-        cursor.execute(sql_query, (tg_first_name, user_bio, tg_id, tg_username, tg_chat_id, date_add, 0))
+        cursor.execute(sql_query, (tg_first_name, user_bio, tg_id, tg_username, tg_chat_id, date_add))
     except Exception as e:
         logging.exception(e)
         cursor.execute("ROLLBACK")
 
     connection.commit()
     connection.close()
-    return True
-
-
-def get_last_meme_id(chat_id):
-    cursor, connection = connect_to_db()
-    sql_query = """ SELECT last_meme FROM users WHERE  chat_id = %s"""
-    try:
-        cursor.execute(sql_query, (chat_id,))
-    except Exception as e:
-        logging.exception(e)
-        cursor.execute("ROLLBACK")
-    last_meme_id = cursor.fetchone()[0]
-    connection.commit()
-    connection.close()
-    return last_meme_id
 
 
 def add_meme(file_id: str, chat_id: int, file_type: str):
     cursor, connection = connect_to_db()
-    sql_query = """INSERT INTO memes (file_id, author_id, create_date, file_type)  VALUES  ( %s, %s, %s, %s)"""
 
+    sql_query = """SELECT file_id FROM memes"""
     try:
-        date = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-        cursor.execute(sql_query, (file_id, chat_id, date, file_type))
+        cursor.execute(sql_query)
     except Exception as e:
         logging.exception(e)
         cursor.execute("ROLLBACK")
 
     connection.commit()
+
+    if file_id not in np.array(cursor.fetchall()).squeeze(-1):
+        sql_query = """INSERT INTO memes (file_id, author_id, create_date, file_type)  VALUES  ( %s, %s, %s, %s)"""
+        try:
+            date = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+            cursor.execute(sql_query, (file_id, chat_id, date, file_type))
+        except Exception as e:
+            logging.exception(e)
+            cursor.execute("ROLLBACK")
+
+        connection.commit()
+
     connection.close()
 
 

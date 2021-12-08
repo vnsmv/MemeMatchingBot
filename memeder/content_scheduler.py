@@ -36,19 +36,25 @@ def process(call, bot):
     chat_id = call.message.chat.id
     reaction = call.data
 
+    # 0. Checking existence of the user in the database (e.g., the latter was updated):
+    if not user_exist(chat_id):
+        bot.send_message(chat_id, 'Перезапустите бота (/start), чтобы ваши реакции могли быть записаны;)')
+
     # 1. Updating meme reactions database:
-    message_id = call.message.message_id
+    else:
+        message_id = call.message.message_id
 
-    if reaction in [v[1] for k, v in REACTIONS2BUTTONS.items() if k.startswith('b')]:
-        add_user_meme_reaction(chat_id, message_id=message_id, reaction=reaction)
+        if reaction in [v[1] for k, v in REACTIONS2BUTTONS.items() if k.startswith('b')]:
+            add_user_meme_reaction(chat_id, message_id=message_id, reaction=reaction)
 
-    # 2. Check is the person ready to date:
-    # if is_ready_to_date(chat_id, database_src=database_src):
-    #     recommended_users = recommend_date(chat_id, database_src=database_src)
-    #     _send_date(chat_id, recommended_users, bot=bot)
-    #
-    meme_id, file_id = _call_meme_generator(chat_id)
-    _send_meme(chat_id, meme_id=meme_id, file_id=file_id, bot=bot)
+        # 2. TODO: Check is the person ready to date:
+        # if is_ready_to_date(chat_id, database_src=database_src):
+        #     recommended_users = recommend_date(chat_id, database_src=database_src)
+        #     _send_date(chat_id, recommended_users, bot=bot)
+        #
+
+        meme_id, file_id = _call_meme_generator(chat_id)
+        _send_meme(chat_id, meme_id=meme_id, file_id=file_id, bot=bot)
 
 
 def receive_meme(message):
