@@ -1,24 +1,126 @@
 import numpy as np
 
-from memeder.database.db_functions import get_seen_meme_ids, get_all_meme_ids
+from memeder.database.db_functions import get_seen_meme_ids, get_all_meme_ids, get_top_meme_ids
+from memeder.database.connect import connect_to_db
 
 
-def recommend_meme(chat_id):
+def get_random_meme() -> (int, str):
     all_meme_ids = get_all_meme_ids()
-    if not all_meme_ids:
-        return None
-
-    seen_meme_ids = get_seen_meme_ids(chat_id=chat_id)
-
     meme_ids, file_ids = np.array(all_meme_ids).T
-    if not seen_meme_ids:
-        meme_id = np.random.choice(meme_ids)
-    else:
-        unseen_meme_ids = list(set(meme_ids.tolist()) - set(np.array(seen_meme_ids).squeeze(-1).tolist()))
-        if not unseen_meme_ids:
-            meme_id = np.random.choice(meme_ids)
+    rnd_idx = np.random.randint(len(meme_ids))
+    meme_id, file_id = meme_ids[rnd_idx], file_ids[rnd_idx]
+    return int(meme_id), str(file_id)
+
+
+def meme_id2file_id(meme_id: int, cursor):
+    q = "SELECT file_id FROM memes WHERE id = %s;"
+    cursor.execute(q, (meme_id, ))
+    file_id = cursor.fetchone()[0]
+    return file_id
+
+
+def chat_id2telegram_username_and_name(chat_id: int, cursor):
+    q = "SELECT telegram_username, name FROM users WHERE chat_id = %s;"
+    cursor.execute(q, (chat_id, ))
+    telegram_username, name = cursor.fetchone()
+    return telegram_username, name
+
+
+def recommend_meme(chat_id, cold_start_n_meme: int = 20):
+
+    cursor, connection = connect_to_db()
+
+    # ### 1. Is cold start? ###
+    q = "SELECT is_fresh FROM users WHERE chat_id = %s;"
+    cursor.execute(q, (chat_id, ))
+    is_fresh = cursor.fetchone()
+
+    if (is_fresh is None) or is_fresh[0]:
+        seen_meme_ids = get_seen_meme_ids(chat_id=chat_id)
+        if seen_meme_ids:
+            seen_meme_ids = np.array(seen_meme_ids).ravel().tolist()
+
+        top_meme_ids = get_top_meme_ids()
+        if top_meme_ids:
+            top_meme_ids = np.array(top_meme_ids).ravel().tolist()
+
+        ids_to_recommend = list(set(top_meme_ids) - set(seen_meme_ids))
+
+        if ids_to_recommend:
+            meme_id = int(np.random.choice(ids_to_recommend))
+            file_id = meme_id2file_id(meme_id=meme_id, cursor=cursor)
         else:
-            meme_id = np.random.choice(unseen_meme_ids)
+            meme_id, file_id = get_random_meme()
 
-    return meme_id, file_ids[meme_ids == meme_id][0]
+        q = "SELECT memes_id FROM users_memes WHERE chat_id = %s;"
+        cursor.execute(q, (chat_id, ))
+        n_reactions = len(cursor.fetchall())
 
+        if n_reactions >= cold_start_n_meme:
+            q = "UPDATE users SET is_fresh = %s WHERE chat_id = %s"
+            cursor.execute(q, (False, chat_id))
+
+    else:
+        q = "SELECT meme_id FROM meme_proposals WHERE chat_id = %s AND status = %s;"
+        cursor.execute(q, (chat_id, 0))
+        meme_id = cursor.fetchone()
+
+        if meme_id is None:
+            meme_id, file_id = get_random_meme()
+        else:
+            meme_id = meme_id[0]
+            file_id = meme_id2file_id(meme_id=meme_id, cursor=cursor)
+            q = "UPDATE meme_proposals SET status = %s WHERE chat_id = %s AND meme_id = %s"
+            try:
+                cursor.execute(q, (1, chat_id, meme_id))
+            except Exception:
+                # actually the table is being updated now:)
+                pass
+
+    connection.commit()
+    connection.close()
+
+    return meme_id, file_id
+
+
+def recommend_user(chat_id, cold_start_n_meme: int = 20):
+    cursor, connection = connect_to_db()
+
+    # ### 1. Is cold start? ###
+    q = "SELECT is_fresh FROM users WHERE chat_id = %s;"
+    cursor.execute(q, (chat_id,))
+    is_fresh = cursor.fetchone()
+
+    if (is_fresh is None) or is_fresh[0]:
+        q = "SELECT memes_id FROM users_memes WHERE chat_id = %s;"
+        cursor.execute(q, (chat_id,))
+        n_reactions = len(cursor.fetchall())
+
+        n_reactions_to_do = cold_start_n_meme - n_reactions + 1
+        chat_id_rec = None
+
+    else:
+        q = "SELECT rec_chat_id FROM user_proposals WHERE chat_id = %s AND status = %s;"
+        cursor.execute(q, (chat_id, 0))
+        chat_id_rec = cursor.fetchone()
+
+        if chat_id_rec is None:
+            chat_id_rec, n_reactions_to_do = None, -1
+        else:
+            chat_id_rec, n_reactions_to_do = chat_id_rec[0], 0
+            q = "UPDATE user_proposals SET status = %s WHERE chat_id = %s AND rec_chat_id = %s"
+            try:
+                cursor.execute(q, (1, chat_id, chat_id_rec))
+            except Exception:
+                # actually the table is being updated now:)
+                pass
+
+    if chat_id_rec is None:
+        telegram_username, name = None, None
+    else:
+        telegram_username, name = chat_id2telegram_username_and_name(chat_id=chat_id_rec, cursor=cursor)
+
+    connection.commit()
+    connection.close()
+
+    return chat_id_rec, telegram_username, name, n_reactions_to_do

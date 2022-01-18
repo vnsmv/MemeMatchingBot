@@ -1,7 +1,7 @@
 
 
-REACTIONS2BUTTONS = {
-    'b2_like':       ('\U0001F4A5' + '\U0001F4AF' + '\U0001F4A3' + '\U0001F4AF' + '\U0001F4A5', '1000'),
+MEME_REACTION2BUTTON = {
+    'b2_like':       ('\U0001F4A3' + '\U0001F4A5' + '\U0001F4AF',                               '1000'),
     'b2_dislike':    (3 * '\U0001F4A9',                                                         '1001'),
 
     'b1_rofl':       ('\U0001F923',                                                              '100'),
@@ -13,5 +13,17 @@ REACTIONS2BUTTONS = {
     'b1_neutral':    ('\U0001F610',                                                              '106'),
     'b1_yawning':    ('\U0001F971',                                                              '107'),
 
+    'bu_users':      ('Give me the best match',                                                  'user'),
+
     'DB_EMPTY':      (None,                                                                      '1002')
+}
+
+USER_REACTION2BUTTON = {
+    # TODO: configure buttons, the emoji are random now.
+    'b1_chat':          ('Chat',                                                                   '1000'),
+    'b1_skip':          ('Skip',                                                                   '1001'),
+
+    'bm_memes':         ('Back to memes',                                                          '1002'),
+
+    'DB_PENDING':       (None,                                                                     '1003'),
 }

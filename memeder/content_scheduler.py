@@ -1,10 +1,11 @@
 from typing import Union
 
 from memeder.database.db_functions import add_user, user_exist, add_user_meme_reaction, \
-    add_meme, add_user_meme_init
-from memeder.interface_tg.config import REACTIONS2BUTTONS
-from memeder.interface_tg.meme_reply_keyboard import get_meme_reply_inline
-from memeder.meme_recsys.engine import recommend_meme
+    add_meme, add_user_meme_init, add_user_user_init, add_user_user_reaction
+from memeder.interface_tg.config import MEME_REACTION2BUTTON, USER_REACTION2BUTTON
+from memeder.interface_tg.meme_reply_keyboard import get_meme_reply_inline, get_user_reply_inline, \
+    get_user2meme_reply_inline
+from memeder.meme_recsys.engine import recommend_meme, recommend_user
 
 
 # https://core.telegram.org/bots/api#message +
@@ -13,7 +14,7 @@ from memeder.meme_recsys.engine import recommend_meme
 # https://core.telegram.org/bots/api#chat
 
 
-def start(message, bot, force_start: bool = True):
+def start(message, bot, force_start: bool = True, test: bool = False):
 
     user = message.from_user
     chat = message.chat
@@ -24,61 +25,105 @@ def start(message, bot, force_start: bool = True):
     # user_is_bot: bool = user.is_bot  # TODO: we can set filtering behavior for bots
     # user_last_name: Union[str, None] = user.last_name
 
-    if not user_exist(chat_id):
-        add_user(user_first_name, user_id, tg_username, chat_id, '')
+    if not user_exist(chat_id, test=test):
+        add_user(user_first_name, user_id, tg_username, chat_id, '', test=test)
 
-    meme_id, file_id = _call_meme_generator(chat_id)
-    _send_meme(chat_id, meme_id=meme_id, file_id=file_id, bot=bot)
+    meme_id, file_id = _call_meme_generator(chat_id, test=test)
+    _send_meme(chat_id, meme_id=meme_id, file_id=file_id, bot=bot, test=test)
 
 
-def process(call, bot):
+def process(call, bot, test: bool = False):
 
     chat_id = call.message.chat.id
     reaction = call.data
 
     # 0. Checking existence of the user in the database (e.g., the latter was updated):
-    if not user_exist(chat_id):
-        bot.send_message(chat_id, 'Перезапустите бота (/start), чтобы ваши реакции могли быть записаны;)')
+    if not user_exist(chat_id, test=test):
+        bot.send_message(chat_id, 'Please, restart the bot (/start), so that we could process your feedback;)')
 
-    # 1. Updating meme reactions database:
     else:
         message_id = call.message.message_id
 
-        if reaction in [v[1] for k, v in REACTIONS2BUTTONS.items() if k.startswith('b')]:
-            add_user_meme_reaction(chat_id, message_id=message_id, reaction=reaction)
+        # 1. Updating meme reactions database:
+        if reaction in [v[1] for k, v in MEME_REACTION2BUTTON.items() if k.startswith('b')]:
 
-        # 2. TODO: Check is the person ready to date:
-        # if is_ready_to_date(chat_id, database_src=database_src):
-        #     recommended_users = recommend_date(chat_id, database_src=database_src)
-        #     _send_date(chat_id, recommended_users, bot=bot)
-        #
+            if reaction == 'bu_users':
+                chat_id_rec, telegram_username, message_body = _call_user_generator(chat_id=chat_id)
+                if chat_id_rec is None:
+                    print('1', flush=True)
+                    _send_user2meme(chat_id=chat_id, message_body=message_body, bot=bot)
+                else:
+                    print('2', flush=True)
+                    _send_user(chat_id=chat_id, chat_id_rec=chat_id_rec, telegram_username=telegram_username,
+                               message_body=message_body, bot=bot)
+            else:
+                print('3', flush=True)
+                add_user_meme_reaction(chat_id, message_id=message_id, reaction=reaction, test=test)
 
-        meme_id, file_id = _call_meme_generator(chat_id)
-        _send_meme(chat_id, meme_id=meme_id, file_id=file_id, bot=bot)
+                # 3. recommend new meme
+                meme_id, file_id = _call_meme_generator(chat_id, test=test)
+                _send_meme(chat_id, meme_id=meme_id, file_id=file_id, bot=bot, test=test)
+
+        # 4. Updating users reactions database:
+        if reaction in [v[1] for k, v in USER_REACTION2BUTTON.items() if k.startswith('b')]:
+            # TODO: add user reaction (check None)
+            add_user_user_reaction(chat_id, message_id=message_id, reaction=reaction)
+            if reaction == 'bm_memes':
+                print('4', flush=True)
+                # 5. recommend new meme
+                meme_id, file_id = _call_meme_generator(chat_id, test=test)
+                _send_meme(chat_id, meme_id=meme_id, file_id=file_id, bot=bot, test=test)
+            else:
+                chat_id_rec, telegram_username, message_body = _call_user_generator(chat_id=chat_id)
+                if chat_id_rec is None:
+                    print('5', flush=True)
+                    _send_user2meme(chat_id=chat_id, message_body=message_body, bot=bot)
+                else:
+                    print('6', flush=True)
+                    _send_user(chat_id=chat_id, chat_id_rec=chat_id_rec, telegram_username=telegram_username,
+                               message_body=message_body, bot=bot)
+
+    # TODO: do we need to force dating recommendations?
 
 
-def receive_meme(message):
+def receive_meme(message, test: bool = False):
     if message.chat.id in (354637850, 2106431824, ):  # Boris, ffmemesbot (API proxy), ...
-        add_meme(file_id=message.photo[-1].file_id, chat_id=message.chat.id, file_type='photo')
+        add_meme(file_id=message.photo[-1].file_id, chat_id=message.chat.id, file_type='photo', test=test)
 
 
-def _call_meme_generator(chat_id):
+def _call_meme_generator(chat_id, test: bool = False):
     meme_id, file_id = recommend_meme(chat_id)
     return meme_id, file_id
 
 
-def _send_meme(chat_id, meme_id, file_id, bot):
+def _call_user_generator(chat_id):
+    chat_id_rec, telegram_username, name, n_reactions_to_do = recommend_user(chat_id=chat_id)
 
+    if n_reactions_to_do > 0:
+        message_body = f'To calculate the best match for you, '\
+            f'we need more meme reactions. Enjoy {n_reactions_to_do} more memes:)'
+    elif n_reactions_to_do == -1:
+        message_body = 'Now, we need some time to update recommendations... ' \
+                       'Or you are crazy enough to review all users O.O. ' \
+                       'You may enjoy more memes for now, ' \
+                       'and do not forget to share this bot with your friends;)'
+    else:  # n_reactions_to_do == 0:
+        message_body = f'We have found {name} for you ^_^ ' \
+            f'You can jump right to the chat with {name}, or skip to the next recommendation.'
+    return chat_id_rec, telegram_username, message_body
+
+
+def _send_meme(chat_id, meme_id, file_id, bot, test: bool = False):
     bot.send_photo(chat_id, photo=file_id)
     message = bot.send_message(chat_id, 'How do you like it?', reply_markup=get_meme_reply_inline())
-    add_user_meme_init(chat_id=chat_id, meme_id=meme_id, message_id=message.message_id)
+    add_user_meme_init(chat_id=chat_id, meme_id=meme_id, message_id=message.message_id, test=test)
 
 
-def _send_date(chat_id, recommended_users, bot):
-    recommended_users_str = ', '.join(['_id' + str(u) for u in recommended_users])
-    bot.send_message(chat_id,
-                     f'We recommend you to date with users that have following chat IDs: '
-                     f'{recommended_users_str}. Now go find them. '
-                     f'(This feature is not implemented yet. '
-                     f'Please, continue to watch the same memes again and again. '
-                     f'We definitely update them... maybe.)')
+def _send_user(chat_id, chat_id_rec, telegram_username, message_body, bot):
+    message = bot.send_message(chat_id, message_body,
+                               reply_markup=get_user_reply_inline(telegram_username=telegram_username))
+    add_user_user_init(chat_id_obj=chat_id, chat_id_subj=chat_id_rec, message_id=message.message_id)
+
+
+def _send_user2meme(chat_id, message_body, bot):
+    bot.send_message(chat_id, message_body, reply_markup=get_user2meme_reply_inline())
