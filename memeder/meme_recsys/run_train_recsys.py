@@ -29,12 +29,11 @@ def run_recommendation_train(top_n_memes: int = 200, top_n_matches: int = 30,
     cursor.execute(q2)
     meme_ids = [meme_id[0] for meme_id in cursor.fetchall()]
 
-    q3 = """SELECT chat_id, memes_id, reaction FROM users_memes"""
-    cursor.execute(q3)
+    q3 = "SELECT chat_id, memes_id, reaction FROM users_memes WHERE reaction != %s AND reaction != %s;"
+    cursor.execute(q3, (MEME_REACTION2BUTTON['DB_EMPTY'][1], MEME_REACTION2BUTTON['bu_users'][1]))
     users, items, reactions = np.array(cursor.fetchall()).T
-    users = np.int64(users[reactions != MEME_REACTION2BUTTON['DB_EMPTY'][1]])
-    items = np.int64(items[reactions != MEME_REACTION2BUTTON['DB_EMPTY'][1]])
-    reactions = reactions[reactions != MEME_REACTION2BUTTON['DB_EMPTY'][1]]
+    users = np.int64(users)
+    items = np.int64(items)
 
     chat_id2uid = {chat_id: uid for uid, chat_id in enumerate(chat_ids)}
     meme_id2iid = {meme_id: iid for iid, meme_id in enumerate(meme_ids)}
@@ -90,7 +89,8 @@ def run_recommendation_train(top_n_memes: int = 200, top_n_matches: int = 30,
         users_subj = np.array(list(map(lambda x: chat_id2uid[x], users_subj)) + np.arange(len(chat_ids)).tolist())
         U = coo_matrix((np.ones_like(users_obj), (users_obj, users_subj)), shape=(len(chat_ids),) * 2)
     else:
-        U = coo_matrix(([], ([], [])), shape=(len(chat_ids),) * 2)
+        self_user_obj = np.arange(len(chat_ids))
+        U = coo_matrix((np.ones_like(self_user_obj), (self_user_obj, self_user_obj)), shape=(len(chat_ids),) * 2)
 
     chat_id2recommended_chat_ids = {}
     uids = np.arange(len(chat_ids))

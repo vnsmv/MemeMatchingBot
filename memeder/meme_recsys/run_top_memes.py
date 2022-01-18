@@ -10,8 +10,8 @@ from memeder.meme_recsys.run_train_recsys import REACTION2VALUE
 def top_memes_selection(top_n_memes: int = 100, min_reactions_th: int = 2, min_avg_rating_th: float = 0.1):
     cursor, connection = connect_to_db()
 
-    q = """SELECT memes_id, reaction FROM users_memes WHERE reaction != %s;"""
-    cursor.execute(q, (MEME_REACTION2BUTTON['DB_EMPTY'][1], ))
+    q = """SELECT memes_id, reaction FROM users_memes WHERE reaction != %s AND reaction != %s;"""
+    cursor.execute(q, (MEME_REACTION2BUTTON['DB_EMPTY'][1], MEME_REACTION2BUTTON['bu_users'][1]))
 
     meme_ids, reactions = np.array(cursor.fetchall()).T
     meme_ids = np.int64(meme_ids)

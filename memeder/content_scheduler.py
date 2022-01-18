@@ -47,17 +47,14 @@ def process(call, bot, test: bool = False):
         # 1. Updating meme reactions database:
         if reaction in [v[1] for k, v in MEME_REACTION2BUTTON.items() if k.startswith('b')]:
 
-            if reaction == 'bu_users':
+            if reaction == MEME_REACTION2BUTTON['bu_users'][1]:
                 chat_id_rec, telegram_username, message_body = _call_user_generator(chat_id=chat_id)
                 if chat_id_rec is None:
-                    print('1', flush=True)
                     _send_user2meme(chat_id=chat_id, message_body=message_body, bot=bot)
                 else:
-                    print('2', flush=True)
                     _send_user(chat_id=chat_id, chat_id_rec=chat_id_rec, telegram_username=telegram_username,
                                message_body=message_body, bot=bot)
             else:
-                print('3', flush=True)
                 add_user_meme_reaction(chat_id, message_id=message_id, reaction=reaction, test=test)
 
                 # 3. recommend new meme
@@ -66,20 +63,17 @@ def process(call, bot, test: bool = False):
 
         # 4. Updating users reactions database:
         if reaction in [v[1] for k, v in USER_REACTION2BUTTON.items() if k.startswith('b')]:
-            # TODO: add user reaction (check None)
-            add_user_user_reaction(chat_id, message_id=message_id, reaction=reaction)
-            if reaction == 'bm_memes':
-                print('4', flush=True)
+            add_error = add_user_user_reaction(chat_id, message_id=message_id, reaction=reaction)
+
+            if reaction == USER_REACTION2BUTTON['bm_memes'][1]:
                 # 5. recommend new meme
                 meme_id, file_id = _call_meme_generator(chat_id, test=test)
                 _send_meme(chat_id, meme_id=meme_id, file_id=file_id, bot=bot, test=test)
             else:
                 chat_id_rec, telegram_username, message_body = _call_user_generator(chat_id=chat_id)
                 if chat_id_rec is None:
-                    print('5', flush=True)
                     _send_user2meme(chat_id=chat_id, message_body=message_body, bot=bot)
                 else:
-                    print('6', flush=True)
                     _send_user(chat_id=chat_id, chat_id_rec=chat_id_rec, telegram_username=telegram_username,
                                message_body=message_body, bot=bot)
 
@@ -108,8 +102,9 @@ def _call_user_generator(chat_id):
                        'You may enjoy more memes for now, ' \
                        'and do not forget to share this bot with your friends;)'
     else:  # n_reactions_to_do == 0:
-        message_body = f'We have found {name} for you ^_^ ' \
-            f'You can jump right to the chat with {name}, or skip to the next recommendation.'
+        message_body = f'We have found {name} for you. ^_^ ' \
+            f'You can jump right to the chat with {name}, ' \
+            f'or react and get the next recommendation.'
     return chat_id_rec, telegram_username, message_body
 
 

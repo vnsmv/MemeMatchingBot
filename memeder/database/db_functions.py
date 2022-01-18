@@ -91,10 +91,11 @@ def add_user_meme_reaction(chat_id, message_id, reaction, test: bool = False):
 
     # 2. Update empty reaction:
     if existing_reaction is None:
-        logging.exception(f'Updating empty reaction: {chat_id}, {message_id}, {reaction}, {test}.')
+        logging.exception(f'add_user_meme_reaction: '
+                          f'Updating empty reaction: {chat_id}, {message_id}, {reaction}, {test}.')
     else:
-        if existing_reaction[0] == MEME_REACTION2BUTTON['DB_EMPTY']:
-            sql_query = """UPDATE users_memes SET (reaction, date_reaction) = ( %s, %s)
+        if existing_reaction[0] == MEME_REACTION2BUTTON['DB_EMPTY'][1]:
+            sql_query = """UPDATE users_memes SET (reaction, date_reaction) = (%s, %s)
             WHERE chat_id = %s AND message_id = %s"""
             try:
                 date = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
@@ -129,7 +130,8 @@ def add_user_user_init(chat_id_obj, chat_id_subj, message_id, test=False):
             logging.exception(e)
             cursor.execute("ROLLBACK")
     else:
-        logging.exception(f'Initializing existing reaction: {existing_reaction_ij}, {chat_id_obj}, {chat_id_subj}, '
+        logging.exception(f'add_user_user_init: '
+                          f'Initializing existing reaction: {existing_reaction_ij}, {chat_id_obj}, {chat_id_subj}, '
                           f'{date}, {test}.')
 
     connection.commit()
@@ -151,9 +153,11 @@ def add_user_user_reaction(chat_id_obj, message_id, reaction, test: bool = False
     date = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
     if len(existing_reaction) == 0:
         logging.exception(f'Updating empty reaction: {chat_id_obj}, {message_id}, {reaction}, {test}, {date}.')
+        update_error = True
     elif existing_reaction[-1][0] != USER_REACTION2BUTTON['DB_PENDING'][1]:
         logging.exception(f'Updating final reaction: {chat_id_obj}, {message_id}, {reaction}, {test}, '
                           f'{existing_reaction}, {date}.')
+        update_error = True
     else:
         sql_query = """UPDATE users_users SET (reaction, date_reaction) = ( %s, %s)
                     WHERE user_id = %s AND message_id = %s"""
@@ -162,9 +166,11 @@ def add_user_user_reaction(chat_id_obj, message_id, reaction, test: bool = False
         except Exception as e:
             logging.exception(e)
             cursor.execute("ROLLBACK")
+        update_error = False
 
     connection.commit()
     connection.close()
+    return update_error
 
 
 def get_seen_meme_ids(chat_id, test: bool = False):
@@ -218,7 +224,7 @@ def get_top_meme_ids():
 
 
 # Test functions
-if __name__ == '__main__':
-    # add_user('sdfsdf', 123, 123, 123, 'dfs_askask', 'bio')
-    print(user_exist('followthesun'))
-    pass
+# if __name__ == '__main__':
+#     # add_user('sdfsdf', 123, 123, 123, 'dfs_askask', 'bio')
+#     print(user_exist('followthesun'))
+#     pass
