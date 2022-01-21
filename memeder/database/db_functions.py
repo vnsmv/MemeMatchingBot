@@ -7,8 +7,8 @@ from memeder.database.connect import connect_to_db
 from memeder.interface_tg.config import MEME_REACTION2BUTTON, USER_REACTION2BUTTON
 
 
-def user_exist(chat_id, test: bool = False):
-    cursor, connection = connect_to_db(test=test)
+def user_exist(chat_id):
+    cursor, connection = connect_to_db()
 
     sql_query = """SELECT EXISTS (SELECT 1 FROM users WHERE chat_id = %s)"""
     try:
@@ -23,8 +23,8 @@ def user_exist(chat_id, test: bool = False):
     return is_exist
 
 
-def add_user(tg_first_name, tg_id, tg_username, tg_chat_id, user_bio, test: bool = False):
-    cursor, connection = connect_to_db(test=test)
+def add_user(tg_first_name, tg_id, tg_username, tg_chat_id, user_bio):
+    cursor, connection = connect_to_db()
 
     sql_query = """INSERT INTO users (name, user_bio, telegram_id, telegram_username, chat_id, date_add, is_fresh)
     VALUES (%s, %s, %s, %s, %s, %s, %s)"""
@@ -39,8 +39,8 @@ def add_user(tg_first_name, tg_id, tg_username, tg_chat_id, user_bio, test: bool
     connection.close()
 
 
-def add_meme(file_id: str, chat_id: int, file_type: str, test: bool = False):
-    cursor, connection = connect_to_db(test=test)
+def add_meme(file_id: str, chat_id: int, file_type: str):
+    cursor, connection = connect_to_db()
 
     sql_query = """SELECT file_id FROM memes"""
     try:
@@ -62,8 +62,8 @@ def add_meme(file_id: str, chat_id: int, file_type: str, test: bool = False):
     connection.close()
 
 
-def add_user_meme_init(chat_id, meme_id, message_id, test=False):
-    cursor, connection = connect_to_db(test=test)
+def add_user_meme_init(chat_id, meme_id, message_id):
+    cursor, connection = connect_to_db()
     sql_query = """INSERT INTO users_memes (chat_id, memes_id, reaction, date, message_id) VALUES (%s, %s, %s, %s, %s)"""
 
     try:
@@ -77,8 +77,8 @@ def add_user_meme_init(chat_id, meme_id, message_id, test=False):
     connection.close()
 
 
-def add_user_meme_reaction(chat_id, message_id, reaction, test: bool = False):
-    cursor, connection = connect_to_db(test=test)
+def add_user_meme_reaction(chat_id, message_id, reaction):
+    cursor, connection = connect_to_db()
 
     # 1. Check existing reaction:
     sql_query = """SELECT reaction FROM users_memes WHERE chat_id = %s AND message_id = %s"""
@@ -92,7 +92,7 @@ def add_user_meme_reaction(chat_id, message_id, reaction, test: bool = False):
     # 2. Update empty reaction:
     if existing_reaction is None:
         logging.exception(f'add_user_meme_reaction: '
-                          f'Updating empty reaction: {chat_id}, {message_id}, {reaction}, {test}.')
+                          f'Updating empty reaction: {chat_id}, {message_id}, {reaction}.')
     else:
         if existing_reaction[0] == MEME_REACTION2BUTTON['DB_EMPTY'][1]:
             sql_query = """UPDATE users_memes SET (reaction, date_reaction) = (%s, %s)
@@ -108,8 +108,8 @@ def add_user_meme_reaction(chat_id, message_id, reaction, test: bool = False):
     connection.close()
 
 
-def add_user_user_init(chat_id_obj, chat_id_subj, message_id, test=False):
-    cursor, connection = connect_to_db(test=test)
+def add_user_user_init(chat_id_obj, chat_id_subj, message_id):
+    cursor, connection = connect_to_db()
 
     sql_query = """SELECT reaction FROM users_users WHERE user_id = %s AND rec_user_id = %s"""
     try:
@@ -132,14 +132,14 @@ def add_user_user_init(chat_id_obj, chat_id_subj, message_id, test=False):
     else:
         logging.exception(f'add_user_user_init: '
                           f'Initializing existing reaction: {existing_reaction_ij}, {chat_id_obj}, {chat_id_subj}, '
-                          f'{date}, {test}.')
+                          f'{date}.')
 
     connection.commit()
     connection.close()
 
 
-def add_user_user_reaction(chat_id_obj, message_id, reaction, test: bool = False):
-    cursor, connection = connect_to_db(test=test)
+def add_user_user_reaction(chat_id_obj, message_id, reaction):
+    cursor, connection = connect_to_db()
 
     # 1. Check existing reaction:
     sql_query = """SELECT reaction FROM users_users WHERE user_id = %s AND message_id = %s"""
@@ -152,10 +152,10 @@ def add_user_user_reaction(chat_id_obj, message_id, reaction, test: bool = False
 
     date = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
     if len(existing_reaction) == 0:
-        logging.exception(f'Updating empty reaction: {chat_id_obj}, {message_id}, {reaction}, {test}, {date}.')
+        logging.exception(f'Updating empty reaction: {chat_id_obj}, {message_id}, {reaction}, {date}.')
         update_error = True
     elif existing_reaction[-1][0] != USER_REACTION2BUTTON['DB_PENDING'][1]:
-        logging.exception(f'Updating final reaction: {chat_id_obj}, {message_id}, {reaction}, {test}, '
+        logging.exception(f'Updating final reaction: {chat_id_obj}, {message_id}, {reaction}, '
                           f'{existing_reaction}, {date}.')
         update_error = True
     else:
@@ -173,8 +173,8 @@ def add_user_user_reaction(chat_id_obj, message_id, reaction, test: bool = False
     return update_error
 
 
-def get_seen_meme_ids(chat_id, test: bool = False):
-    cursor, connection = connect_to_db(test=test)
+def get_seen_meme_ids(chat_id):
+    cursor, connection = connect_to_db()
 
     sql_query = """SELECT memes_id FROM users_memes WHERE chat_id = %s"""
     try:
@@ -190,8 +190,8 @@ def get_seen_meme_ids(chat_id, test: bool = False):
     return seen_memes
 
 
-def get_all_meme_ids(test: bool = False):
-    cursor, connection = connect_to_db(test=test)
+def get_all_meme_ids():
+    cursor, connection = connect_to_db()
 
     sql_query = """SELECT id, file_id FROM memes"""
     try:
