@@ -25,7 +25,7 @@ def main():
 
     @bot.message_handler(content_types=['photo'])
     def _handle_photo(message):
-        receive_meme(message=message, test=is_test)
+        receive_meme(message=message)
 
     bot.polling(none_stop=True, interval=0)
 
