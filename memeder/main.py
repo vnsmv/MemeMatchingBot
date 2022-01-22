@@ -1,4 +1,3 @@
-import argparse
 import os
 
 import telebot
@@ -8,11 +7,12 @@ from memeder.content_scheduler import start, process, receive_meme
 
 def main():
     token = os.environ.get('MEMEDATINGTESTBOT_TOKEN')
+    if token is None:
+        token = os.environ.get('MEMEDATINGBOT_TOKEN')
+        if token is None:
+            raise EnvironmentError('No token variable found in the current environment.')
 
     bot = telebot.TeleBot(token)
-
-    # TODO: how can we check (and refresh) the current state?
-    #  ... a "bug" in @ffmemesbot with double meme caused by double /start command without reacting on prev. meme
 
     @bot.message_handler(commands=['start'])
     def _start(message):

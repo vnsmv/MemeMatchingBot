@@ -50,15 +50,14 @@ def add_meme(file_id: str, chat_id: int, file_type: str):
         cursor.execute("ROLLBACK")
 
     file_ids = cursor.fetchall()
-    if file_ids:
-        if file_id not in np.array(file_ids).squeeze(-1):
-            sql_query = """INSERT INTO memes (file_id, author_id, create_date, file_type) VALUES (%s, %s, %s, %s)"""
-            try:
-                date = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
-                cursor.execute(sql_query, (file_id, chat_id, date, file_type))
-            except Exception as e:
-                logging.exception(e)
-                cursor.execute("ROLLBACK")
+    if (not file_ids) or (file_id not in np.array(file_ids).squeeze(-1)):
+        sql_query = """INSERT INTO memes (file_id, author_id, create_date, file_type) VALUES (%s, %s, %s, %s)"""
+        try:
+            date = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
+            cursor.execute(sql_query, (file_id, chat_id, date, file_type))
+        except Exception as e:
+            logging.exception(e)
+            cursor.execute("ROLLBACK")
 
     connection.commit()
     connection.close()
