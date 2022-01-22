@@ -6,7 +6,7 @@
 # ### 1 ###
 create_users_table = """
 CREATE TABLE users(
-   CHAT_ID INT PRIMARY KEY  NOT NULL,
+   CHAT_ID INT PRIMARY KEY NOT NULL,
    NAME TEXT NOT NULL,
    USER_BIO TEXT NOT NULL,
    TELEGRAM_ID INT,
@@ -22,7 +22,7 @@ create_memes_table = """
 CREATE TABLE memes(
    ID SERIAL PRIMARY KEY,
    FILE_ID TEXT UNIQUE NOT NULL,
-   AUTHOR_ID    INT   NOT NULL,
+   AUTHOR_ID INT NOT NULL,
    CREATE_DATE TIMESTAMP,
    FILE_TYPE TEXT,
    CONSTRAINT meme_author
@@ -35,9 +35,9 @@ CREATE TABLE memes(
 # ### 3 ###
 create_users_users_table = """
 CREATE TABLE users_users(
-   ID  SERIAL PRIMARY KEY,
+   ID SERIAL PRIMARY KEY,
    USER_ID INT NOT NULL,
-   REC_USER_ID    INT   NOT NULL,
+   REC_USER_ID INT NOT NULL,
    REACTION TEXT NOT NULL,
    DATE TIMESTAMP,
    DATE_REACTION TIMESTAMP,
@@ -55,7 +55,7 @@ CREATE TABLE users_users(
 # ### 4 ###
 create_users_memes_table = """
 CREATE TABLE users_memes(
-   ID  SERIAL PRIMARY KEY,
+   ID SERIAL PRIMARY KEY,
    CHAT_ID INT NOT NULL,
    MEMES_ID INT NOT NULL,
    REACTION TEXT NOT NULL,
@@ -126,11 +126,14 @@ def main():
     from memeder.database.connect import connect_to_db
 
     parser = argparse.ArgumentParser()
+    parser.add_argument('--host', required=True, type=str, choices=('test', 'deploy'))
     parser.add_argument('--force', required=False, action='store_true', default=False)
-    parser.add_argument('--test', required=False, action='store_true', default=False)
     args = parser.parse_known_args()[0]
 
-    cursor, connection = connect_to_db(test=args.test)
+    if args.host == 'test':
+        cursor, connection = connect_to_db(env_file='db_credentials_test.env')
+    else:  # args.host == 'deploy':
+        cursor, connection = connect_to_db(env_file='db_credentials.env')
 
     force = args.force
 

@@ -27,3 +27,4 @@ wheels/
 *.session
 *.log
 *.session-journal
+*.env
