@@ -1,7 +1,9 @@
 import os
-from dotenv import load_dotenv
 
+from dotenv import load_dotenv
 import psycopg2
+
+from memeder.paths import get_py_lib_path
 
 
 def connect_to_db(env_file=None):
@@ -9,7 +11,7 @@ def connect_to_db(env_file=None):
         pass
         # loading env variables from heroku env
     elif env_file in ('db_credentials.env', 'db_credentials_test.env'):
-        load_dotenv(env_file)
+        load_dotenv(get_py_lib_path() / 'database' / env_file)
     else:
         raise ValueError(f'`env_file` should be one of the '
                          f'(`None`, `db_credentials.env`, `db_credentials_test.env`). '
