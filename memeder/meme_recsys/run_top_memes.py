@@ -1,3 +1,4 @@
+import argparse
 import time
 
 import numpy as np
@@ -7,13 +8,16 @@ from memeder.interface_tg.config import MEME_REACTION2BUTTON
 from memeder.meme_recsys.run_train_recsys import REACTION2VALUE
 
 
-def top_memes_selection(top_n_memes: int = 100, min_reactions_th: int = 2, min_avg_rating_th: float = 0.1):
-    cursor, connection = connect_to_db()
+def top_memes_selection(env_file: str = None,
+                        top_n_memes: int = 100, min_reactions_th: int = 3, min_avg_rating_th: float = 1):
 
+    cursor, connection = connect_to_db(env_file=env_file)
     q = """SELECT memes_id, reaction FROM users_memes WHERE reaction != %s AND reaction != %s;"""
     cursor.execute(q, (MEME_REACTION2BUTTON['DB_EMPTY'][1], MEME_REACTION2BUTTON['bu_users'][1]))
-
     meme_ids, reactions = np.array(cursor.fetchall()).T
+    connection.commit()
+    connection.close()
+
     meme_ids = np.int64(meme_ids)
     reactions = np.float32(list(map(lambda x: REACTION2VALUE[x], reactions)))
 
@@ -33,29 +37,44 @@ def top_memes_selection(top_n_memes: int = 100, min_reactions_th: int = 2, min_a
     top_counts = meme_id_counts[sorted_idxs]
     top_ratings = avg_rating[sorted_idxs]
 
+    cursor, connection = connect_to_db(env_file=env_file)
     q_del = "DELETE FROM top_memes;"
     cursor.execute(q_del)
+
+    q_add = "INSERT INTO top_memes (meme_id, n_reactions, avg_rating) VALUES"
+    add_values = []
     for meme_id, meme_counts, meme_avg_rating in zip(top_memes, top_counts, top_ratings):
-        q_add = "INSERT INTO top_memes (meme_id, n_reactions, avg_rating) VALUES (%s, %s, %s);"
-        cursor.execute(q_add, (int(meme_id), int(meme_counts), float(meme_avg_rating)))
+        q_add += " (%s, %s, %s),"
+        add_values += [int(meme_id), int(meme_counts), float(meme_avg_rating)]
+    q_add = q_add.strip(',') + ';'
+    cursor.execute(q_add, add_values)
 
     connection.commit()
     connection.close()
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--host', required=True, type=str, choices=('test', 'deploy'))
+    args = parser.parse_known_args()[0]
+
+    if args.host == 'test':
+        env_file = 'db_credentials_test.env'
+    else:  # args.host == 'deploy':
+        env_file = 'db_credentials.env'
+
     retrain_interval_min = 5
     t_retrain = retrain_interval_min * 60
 
     while True:
         print('>>> Run top memes selection...')
         t_start = time.perf_counter()
-        top_memes_selection()
+        top_memes_selection(env_file=env_file, top_n_memes=200)
         t_finish = time.perf_counter()
-        print('>>> Finish top memes selection...')
+        t_train = int(np.round(t_finish - t_start))
+        print(f'>>> Finish top memes selection (in {t_train} s)...')
         print()
 
-        t_train = int(np.round(t_finish - t_start))
         if t_train < t_retrain:
             time.sleep(t_retrain - t_train)
 
