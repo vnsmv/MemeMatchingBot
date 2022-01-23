@@ -1,3 +1,4 @@
+import argparse
 import logging
 
 import numpy as np
@@ -51,11 +52,19 @@ def meme_stole(client, source_name, target_name):
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--host', required=True, type=str, choices=('test', 'deploy'))
+    args = parser.parse_known_args()[0]
+
     logging_filename = 'stole_memes.log'
     logging.basicConfig(filename=logging_filename, level=logging.WARNING)
 
     source_name = 'ffmemesbot'
-    target_name = 'DatingMemeBot'
+
+    if args.host == 'test':
+        target_name = 'MemderTestBot'
+    else:  # args.host == 'deploy':
+        target_name = 'DatingMemeBot'
 
     api_id = 15806656
     api_hash = 'f5fc3ffced16b257c1b36aace17014b9'
