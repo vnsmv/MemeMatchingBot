@@ -136,7 +136,7 @@ def menu_update(message, bot):
     }
     update_profile(chat_id=chat_id, column=update2message[update][1], value=update2message[update][2])
     bot.send_message(chat_id, update2message[update][0] + ' Back to the main menu.')
-    _send_menu(chat_id=chat_id, bot=bot, stage=6)
+    _send_menu(chat_id=chat_id, bot=bot, stage=5)
 
 
 def check_receive_bio(message):

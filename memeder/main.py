@@ -40,18 +40,16 @@ def main():
         start_meme(message, bot)
 
     @bot.message_handler(content_types=['text'],
-                         func=lambda msg: msg.text in ['Set privacy', 'Set preferences', 'Set goals', 'Profile',
-                                                       'Choose sex', '<< main menu', '<< profile settings'])
+                         func=lambda msg: msg.text in ['Set preferences', 'Set goals', 'Profile',
+                                                       'Choose sex', '<< main menu'])
     def _menu_routing(message):
         menu_routing(message, bot)
 
     @bot.message_handler(content_types=['text'],
-                         func=lambda msg: msg.text in ['Seen to males', 'Seen to females', 'Seen to all',
-                                                       'Seen to nobody', 'Show me males', 'Show me females',
-                                                       'Show me all', 'Show me only memes', 'Friends', 'Relationships',
-                                                       'Unspecified', 'Only memes', 'Upload bio', 'Upload photo',
-                                                       'Clear bio', 'Clear photo', 'Male', 'Female',
-                                                       'Prefer not to say'])
+                         func=lambda msg: msg.text in ['Show me males', 'Show me females', 'Show me all',
+                                                       'Show me only memes', 'Friends', 'Relationships', 'Unspecified',
+                                                       'Only memes', 'Upload bio', 'Upload photo', 'Clear bio',
+                                                       'Clear photo', 'Male', 'Female', 'Prefer not to say'])
     def _menu_update(message):
         menu_update(message, bot)
 
