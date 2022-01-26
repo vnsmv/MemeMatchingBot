@@ -5,7 +5,7 @@ import telebot
 from dotenv import load_dotenv
 
 from memeder.paths import get_py_lib_path
-from memeder.content_scheduler import start, process, receive_meme, start_meme, menu_routing, menu_update
+from memeder.content_scheduler import start, process, receive_photo, start_meme, menu_routing, menu_update
 
 
 def main():
@@ -63,7 +63,7 @@ def main():
     # ### Receiving memes: ###
     @bot.message_handler(content_types=['photo'])
     def _handle_photo(message):
-        receive_meme(message=message)
+        receive_photo(message=message)
 
     bot.polling(none_stop=True, interval=0)
 

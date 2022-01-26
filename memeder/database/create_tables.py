@@ -116,6 +116,29 @@ CREATE TABLE top_memes(
 """
 
 
+# ### 8 ###
+create_profiles_table = """
+CREATE TABLE profiles(
+    CHAT_ID BIGINT PRIMARY KEY NOT NULL,
+    PRIVACY INT NOT NULL,
+    PREFERENCES INT NOT NULL,
+    GOALS INT NOT NULL,
+    BIO TEXT NOT NULL,
+    USE_BIO BOOLEAN,
+    BIO_UPDATE_FLAG BOOLEAN,
+    PHOTO_ID TEXT NOT NULL,
+    PHOTO_UNIQUE_ID TEXT,
+    USE_PHOTO BOOLEAN,
+    PHOTO_UPDATE_FLAG BOOLEAN,
+    SEX INT NOT NULL,
+   
+    CONSTRAINT user_const
+        FOREIGN KEY(CHAT_ID)
+            REFERENCES USERS(CHAT_ID)
+);
+"""
+
+
 def main():
     import argparse
     import logging
@@ -146,7 +169,8 @@ def main():
     for creating_query in [create_users_table, create_memes_table,
                            create_users_users_table, create_users_memes_table,
                            create_meme_proposals_table, create_user_proposals_table,
-                           create_top_memes_table]:
+                           create_top_memes_table,
+                           create_profiles_table]:
         try:
             cursor.execute(creating_query)
         except Exception as e:

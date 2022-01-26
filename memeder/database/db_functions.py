@@ -39,6 +39,20 @@ def add_user(tg_first_name, tg_id, tg_username, tg_chat_id, user_bio):
     connection.close()
 
 
+def update_profile(chat_id, column, value):
+    cursor, connection = connect_to_db()
+
+    q = f"UPDATE profiles SET {column} = %s WHERE chat_id = %s;"
+    try:
+        cursor.execute(q, (value, chat_id))
+    except Exception as e:
+        logging.exception(e)
+        cursor.execute("ROLLBACK")
+
+    connection.commit()
+    connection.close()
+
+
 def add_meme(file_id: str, chat_id: int, file_type: str):
     cursor, connection = connect_to_db()
 
@@ -154,11 +168,9 @@ def add_user_user_reaction(chat_id_obj, message_id, reaction):
     date = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
     if len(existing_reaction) == 0:
         logging.exception(f'Updating empty reaction: {chat_id_obj}, {message_id}, {reaction}, {date}.')
-        update_error = True
     elif existing_reaction[-1][0] != USER_REACTION2BUTTON['DB_PENDING'][1]:
         logging.exception(f'Updating final reaction: {chat_id_obj}, {message_id}, {reaction}, '
                           f'{existing_reaction}, {date}.')
-        update_error = True
     else:
         sql_query = """UPDATE users_users SET (reaction, date_reaction) = ( %s, %s)
                     WHERE user_id = %s AND message_id = %s"""
@@ -167,11 +179,9 @@ def add_user_user_reaction(chat_id_obj, message_id, reaction):
         except Exception as e:
             logging.exception(e)
             cursor.execute("ROLLBACK")
-        update_error = False
 
     connection.commit()
     connection.close()
-    return update_error
 
 
 def get_seen_meme_ids(chat_id):

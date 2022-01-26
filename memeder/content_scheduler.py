@@ -1,7 +1,7 @@
 from typing import Union
 
 from memeder.database.db_functions import add_user, user_exist, add_user_meme_reaction, \
-    add_meme, add_user_meme_init, add_user_user_init, add_user_user_reaction
+    add_meme, add_user_meme_init, add_user_user_init, add_user_user_reaction, update_profile
 from memeder.interface_tg.config import MEME_REACTION2BUTTON, USER_REACTION2BUTTON
 from memeder.interface_tg.meme_reply_keyboard import get_meme_reply_inline, get_user_reply_inline, \
     get_user2meme_reply_inline
@@ -73,7 +73,7 @@ def process(call, bot):
 
         # 4. Updating users reactions database:
         if reaction in [v[1] for k, v in USER_REACTION2BUTTON.items() if k.startswith('b')]:
-            add_error = add_user_user_reaction(chat_id, message_id=message_id, reaction=reaction)
+            add_user_user_reaction(chat_id, message_id=message_id, reaction=reaction)
 
             if reaction == USER_REACTION2BUTTON['bm_memes'][1]:
                 # 5. recommend new meme
@@ -90,9 +90,13 @@ def process(call, bot):
     # TODO: do we need to force dating recommendations?
 
 
-def receive_meme(message):
+def receive_photo(message):
+    # TODO: check update photo..
     if message.chat.id in (354637850, 2106431824, ):  # Boris, ffmemesbot (API proxy), ...
         # TODO: file_unique_id :: could be reused across different bots
+        print(message.photo[-1].file_id, flush=True)
+        print(message.photo[-1].file_unique_id, flush=True)
+        print()
         add_meme(file_id=message.photo[-1].file_id, chat_id=message.chat.id, file_type='photo')
 
 
@@ -106,28 +110,29 @@ def menu_update(message, bot):
     chat_id = message.chat.id
     update = message.text
     update2message = {
-        'Seen to males':        'Your privacy is set to `Seen to males`. Back to the main menu.',
-        'Seen to females':      'Your privacy is set to `Seen to females`. Back to the main menu.',
-        'Seen to all':          'Your privacy is set to `Seen to all`. Back to the main menu.',
-        'Seen to nobody':       'Your privacy is set to `Seen to nobody`. Back to the main menu.',
-        'Show me males':        'Your preferences are set to `Show me males`. Back to the main menu.',
-        'Show me females':      'Your preferences are set to `Show me females`. Back to the main menu.',
-        'Show me all':          'Your preferences are set to `Show me all`. Back to the main menu.',
-        'Show me only memes':   'Your preferences are set to `Show me only memes`. Back to the main menu.',
-        'Friends':              'Your goals are set to `Friends`. Back to the main menu.',
-        'Relationships':        'Your goals are set to `Relationships`. Back to the main menu.',
-        'Unspecified':          'Your goals are set to `Unspecified`. Back to the main menu.',
-        'Only memes':           'Your goals are set to `Only memes`. Back to the main menu.',
-        'Upload bio':           'Send me a message, and it will be your bio. Back to the main menu.',
-        'Upload photo':         'Send me a photo, and it will be your profile photo. Back to the main menu.',
-        'Clear bio':            'Your bio is deleted. Back to the main menu.',
-        'Clear photo':          'Your profile photo is deleted. Back to the main menu.',
-        'Male':                 'Your sex is set to `Male`. Back to the main menu.',
-        'Female':               'Your sex is set to `Female`. Back to the main menu.',
-        'Prefer not to say':    'Your sex is set to `Prefer not to say`. Back to the main menu.',
+        'Seen to males':        ('Your privacy is set to `Seen to males`.', 'privacy', 2000),
+        'Seen to females':      ('Your privacy is set to `Seen to females`.', 'privacy', 2001),
+        'Seen to all':          ('Your privacy is set to `Seen to all`.', 'privacy', 2002),
+        'Seen to nobody':       ('Your privacy is set to `Seen to nobody`.', 'privacy', 2003),
+        'Show me males':        ('Your preferences are set to `Show me males`.', 'preferences', 3000),
+        'Show me females':      ('Your preferences are set to `Show me females`.', 'preferences', 3001),
+        'Show me all':          ('Your preferences are set to `Show me all`.', 'preferences', 3002),
+        'Show me only memes':   ('Your preferences are set to `Show me only memes`.', 'preferences', 3003),
+        'Friends':              ('Your goals are set to `Friends`.', 'goals', 4000),
+        'Relationships':        ('Your goals are set to `Relationships`.', 'goals', 4001),
+        'Unspecified':          ('Your goals are set to `Unspecified`.', 'goals', 4002),
+        'Only memes':           ('Your goals are set to `Only memes`.', 'goals', 4003),
+        'Upload bio':           ('Send me a message, and it will be your bio.', 'bio_update_flag', True),
+        'Upload photo':         ('Send me a photo, and it will be your profile photo.', 'photo_update_flag', True),
+        'Clear bio':            ('Your bio is deleted.', 'use_bio', False),
+        'Clear photo':          ('Your profile photo is deleted.', 'use_photo', False),
+        'Male':                 ('Your sex is set to `Male`.', 'sex', 5000),
+        'Female':               ('Your sex is set to `Female`.', 'sex', 5001),
+        'Prefer not to say':    ('Your sex is set to `Prefer not to say`.', 'sex', 5002),
     }
-    bot.send_message(chat_id, update2message[update])
-    _send_menu(chat_id=message.chat.id, bot=bot, stage=6)
+    update_profile(chat_id=chat_id, column=update2message[update][1], value=update2message[update][2])
+    bot.send_message(chat_id, update2message[update][0] + ' Back to the main menu.')
+    _send_menu(chat_id=chat_id, bot=bot, stage=6)
 
 
 def _call_meme_generator(chat_id):
