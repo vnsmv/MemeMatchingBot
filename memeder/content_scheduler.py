@@ -150,7 +150,7 @@ def check_receive_bio(message):
 def message_all(message, bot):
 
     msg = "Hi there! We have updated Meme Dating bot. Now, you could set up your dating preferences. " \
-          "(Just press \\start.) By default, you are unseen to other users and can enjoy the memes:)"
+          "(Just press /start.) By default, you are unseen to other users and can enjoy the memes:)"
 
     host_id = message.chat.id
     if host_id == 354637850:
@@ -177,13 +177,13 @@ def _call_user_generator(chat_id):
                        'and do not forget to share this bot with your friends;)'
     elif n_reactions_to_do == -2:
         message_body = 'To get the recommendations, please, specify your gender. ' \
-                       'It could be done quickly from the main menu (\\start).'
+                       'It could be done quickly from the main menu (/start).'
     elif n_reactions_to_do == -3:
         message_body = 'To get the recommendations, please, specify your preferences. ' \
-                       'It could be done quickly from the main menu (\\start).'
+                       'It could be done quickly from the main menu (/start).'
     elif n_reactions_to_do == -4:
         message_body = 'To get the recommendations, please, specify your goals. ' \
-                       'It could be done quickly from the main menu (\\start).'
+                       'It could be done quickly from the main menu (/start).'
     else:  # n_reactions_to_do == 0:
         message_body = f'We have found {name} for you. ^_^ ' \
                        f'You can jump right to the chat with {name}, ' \
