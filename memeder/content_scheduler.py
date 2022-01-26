@@ -1,7 +1,8 @@
 from typing import Union
 
 from memeder.database.db_functions import add_user, user_exist, add_user_meme_reaction, \
-    add_meme, add_user_meme_init, add_user_user_init, add_user_user_reaction, update_profile, get_profile_value
+    add_meme, add_user_meme_init, add_user_user_init, add_user_user_reaction, update_profile, get_profile_value, \
+    get_all_user_ids
 from memeder.interface_tg.config import MEME_REACTION2BUTTON, USER_REACTION2BUTTON
 from memeder.interface_tg.meme_reply_keyboard import get_meme_reply_inline, get_user_reply_inline, \
     get_user2meme_reply_inline
@@ -144,6 +145,19 @@ def check_receive_bio(message):
         update_profile(chat_id=chat_id, column='bio', value=message.text)
         update_profile(chat_id=chat_id, column='use_bio', value=True)
         update_profile(chat_id=chat_id, column='bio_update_flag', value=False)
+
+
+def message_all(message, bot):
+
+    msg = "Hi there! We have updated Meme Dating bot. Now, you could set up your dating preferences. " \
+          "By default, you are unseen to other users and can enjoy the memes:)"
+
+    host_id = message.chat.id
+    if host_id == 354637850:
+        chat_ids = get_all_user_ids()
+        for chat_id in chat_ids:
+            if chat_id in (278836725, 354637850, 11436017):
+                bot.send_message(chat_id, msg)
 
 
 def _call_meme_generator(chat_id):

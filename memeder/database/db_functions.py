@@ -259,3 +259,21 @@ def get_profile_value(chat_id, column):
     value = cursor.fetchone()[0]
     connection.close()
     return value
+
+
+def get_all_user_ids():
+    cursor, connection = connect_to_db()
+
+    sql_query = """SELECT chat_id FROM users"""
+    try:
+        cursor.execute(sql_query)
+    except Exception as e:
+        logging.exception(e)
+        cursor.execute("ROLLBACK")
+
+    all_user_ids = cursor.fetchall()
+    if all_user_ids:
+        all_user_ids = np.array(all_user_ids).ravel().tolist()
+    connection.commit()
+    connection.close()
+    return all_user_ids

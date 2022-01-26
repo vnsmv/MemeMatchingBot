@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 from memeder.paths import get_py_lib_path
 from memeder.content_scheduler import start, process, receive_photo, start_meme, menu_routing, menu_update, \
-    check_receive_bio
+    check_receive_bio, message_all
 
 
 def main():
@@ -67,6 +67,11 @@ def main():
     @bot.message_handler(content_types=['photo'])
     def _handle_photo(message):
         receive_photo(message=message)
+
+    # ### Send message to all: ###
+    @bot.message_handler(commands=['message_all'])
+    def _message_all(message):
+        message_all(message, bot)
 
     bot.polling(none_stop=True, interval=0)
 

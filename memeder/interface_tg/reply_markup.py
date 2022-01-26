@@ -15,7 +15,10 @@ def get_reply_markup(stage=0):
 
     if (stage == 0) or (stage == 5):
         if stage == 0:
-            message_body = '...'
+            message_body = 'Hi there! By default, you are unseen to other users ' \
+                           'and you can enjoy personalized memes. ' \
+                           'If you want dating recommendations, please, configure your profile ' \
+                           'in the main menu. You also could upload your bio and photo using the menu.'
         else:  # stage == 6:
             message_body = 'In main menu:'
 
