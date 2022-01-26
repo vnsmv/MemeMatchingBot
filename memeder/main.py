@@ -41,7 +41,7 @@ def main():
 
     @bot.message_handler(content_types=['text'],
                          func=lambda msg: msg.text in ['Set preferences', 'Set goals', 'Profile',
-                                                       'Choose sex', '<< main menu'])
+                                                       'Choose gender', '<< main menu'])
     def _menu_routing(message):
         menu_routing(message, bot)
 

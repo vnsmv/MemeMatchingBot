@@ -106,7 +106,7 @@ def receive_photo(message):
 
 
 def menu_routing(message, bot):
-    text2stage = {'Choose sex': 1, 'Set preferences': 2, 'Set goals': 3, 'Profile': 4, '<< main menu': 5}
+    text2stage = {'Choose gender': 1, 'Set preferences': 2, 'Set goals': 3, 'Profile': 4, '<< main menu': 5}
     _send_menu(chat_id=message.chat.id, bot=bot, stage=text2stage[message.text])
 
 
@@ -130,9 +130,8 @@ def menu_update(message, bot):
         'Upload photo':         ('Send me a photo, and it will be your profile photo.', 'photo_update_flag', True),
         'Clear bio':            ('Your bio is deleted.', 'use_bio', False),
         'Clear photo':          ('Your profile photo is deleted.', 'use_photo', False),
-        'Male':                 ('Your sex is set to `Male`.', 'sex', 5000),
-        'Female':               ('Your sex is set to `Female`.', 'sex', 5001),
-        'Prefer not to say':    ('Your sex is set to `Prefer not to say`.', 'sex', 5002),
+        'Male':                 ('Your gender is set to `Male`.', 'sex', 5000),
+        'Female':               ('Your gender is set to `Female`.', 'sex', 5001),
     }
     update_profile(chat_id=chat_id, column=update2message[update][1], value=update2message[update][2])
     bot.send_message(chat_id, update2message[update][0] + ' Back to the main menu.')
@@ -157,16 +156,25 @@ def _call_user_generator(chat_id):
 
     if n_reactions_to_do > 0:
         message_body = f'To calculate the best match for you, '\
-            f'we need more meme reactions. Enjoy {n_reactions_to_do} more memes:)'
+                       f'we need more meme reactions. Enjoy {n_reactions_to_do} more memes:)'
     elif n_reactions_to_do == -1:
         message_body = 'Now, we need some time to update recommendations... ' \
                        'Or you are crazy enough to review all users O.O. ' \
                        'You may enjoy more memes for now, ' \
                        'and do not forget to share this bot with your friends;)'
+    elif n_reactions_to_do == -2:
+        message_body = 'To get the recommendations, please, specify your gender. ' \
+                       'It could be done quickly from the main menu (\\start).'
+    elif n_reactions_to_do == -3:
+        message_body = 'To get the recommendations, please, specify your preferences. ' \
+                       'It could be done quickly from the main menu (\\start).'
+    elif n_reactions_to_do == -4:
+        message_body = 'To get the recommendations, please, specify your goals. ' \
+                       'It could be done quickly from the main menu (\\start).'
     else:  # n_reactions_to_do == 0:
         message_body = f'We have found {name} for you. ^_^ ' \
-            f'You can jump right to the chat with {name}, ' \
-            f'or react and get the next recommendation.'
+                       f'You can jump right to the chat with {name}, ' \
+                       f'or react and get the next recommendation.'
     return chat_id_rec, telegram_username, message_body
 
 

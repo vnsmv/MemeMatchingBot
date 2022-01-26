@@ -91,6 +91,21 @@ def recommend_user(chat_id, cold_start_n_meme: int = 20):
     cursor.execute(q, (chat_id,))
     is_fresh = cursor.fetchone()
 
+    # ### 2. Is sex specified? ###
+    q = "SELECT sex FROM profiles WHERE chat_id = %s;"
+    cursor.execute(q, (chat_id,))
+    sex = cursor.fetchone()
+
+    # ### 3. Is preference not memes? ###
+    q = "SELECT preferences FROM profiles WHERE chat_id = %s;"
+    cursor.execute(q, (chat_id,))
+    preferences = cursor.fetchone()
+
+    # ### 4. Is goal not memes? ###
+    q = "SELECT goals FROM profiles WHERE chat_id = %s;"
+    cursor.execute(q, (chat_id,))
+    goals = cursor.fetchone()
+
     if (is_fresh is None) or is_fresh[0]:
         q = "SELECT memes_id FROM users_memes WHERE chat_id = %s;"
         cursor.execute(q, (chat_id,))
@@ -98,6 +113,15 @@ def recommend_user(chat_id, cold_start_n_meme: int = 20):
 
         n_reactions_to_do = cold_start_n_meme - n_reactions + 1
         chat_id_rec = None
+
+    elif (sex is None) or (sex[0] == 5002):
+        chat_id_rec, n_reactions_to_do = None, -2
+
+    elif (preferences is None) or (preferences[0] == 3003):
+        chat_id_rec, n_reactions_to_do = None, -3
+
+    elif (goals is None) or (goals[0] == 4003):
+        chat_id_rec, n_reactions_to_do = None, -4
 
     else:
         q = "SELECT rec_chat_id FROM user_proposals WHERE chat_id = %s AND status = %s;"

@@ -2,6 +2,7 @@ import argparse
 import time
 
 import numpy as np
+import pandas as pd
 from scipy.sparse import coo_matrix
 from scipy.spatial.distance import cdist
 
@@ -98,8 +99,8 @@ def run_recommendation_train(env_file: str = None,
     users_similarity = cdist(P, P, metric='euclidean')
 
     cursor, connection = connect_to_db(env_file=env_file)
-    q4 = """SELECT user_id, rec_user_id FROM users_users"""
-    cursor.execute(q4)
+    q5 = """SELECT user_id, rec_user_id FROM users_users"""
+    cursor.execute(q5)
     user_pairs = cursor.fetchall()
     connection.commit()
     connection.close()
@@ -113,10 +114,36 @@ def run_recommendation_train(env_file: str = None,
         self_user_obj = np.arange(len(chat_ids))
         U = coo_matrix((np.ones_like(self_user_obj), (self_user_obj, self_user_obj)), shape=(len(chat_ids),) * 2)
 
+    cursor, connection = connect_to_db(env_file=env_file)
+    q6 = "SELECT chat_id, preferences, goals, sex FROM profiles"
+    cursor.execute(q6)
+    profile_records = cursor.fetchall()
+    connection.commit()
+    connection.close()
+
+    df_profiles = pd.DataFrame(profile_records, columns=['chat_id', 'preferences', 'goals', 'sex'])
+    df_profiles = df_profiles[(df_profiles['preferences'] != 3003) &
+                              (df_profiles['goals'] != 4003) &
+                              (df_profiles['sex'] != 5002)]
+    df_profiles['uid'] = df_profiles['chat_id'].apply(lambda x: chat_id2uid[x])
+
     chat_id2recommended_chat_ids = {}
     uids = np.arange(len(chat_ids))
     for uid, u_s in enumerate(users_similarity):
-        unseen_uids = np.int64(list(set(uids.tolist()) - set(U.getrow(uid).indices.tolist())))
+        if df_profiles[df_profiles['uid'] == uid].empty:
+            filtered_by_preferences = []
+        else:
+            r = df_profiles[df_profiles['uid'] == uid].iloc[0]
+            preferences = r['preferences']
+            df_filtered = df_profiles[df_profiles['uid'] != uid]
+            if preferences == 3000:
+                df_filtered = df_filtered[df_filtered['sex'] == 5000]
+            if preferences == 3001:
+                df_filtered = df_filtered[df_filtered['sex'] == 5001]
+
+            filtered_by_preferences = df_filtered['uid'].values.tolist()
+
+        unseen_uids = np.int64(list(set(filtered_by_preferences) - set(U.getrow(uid).indices.tolist())))
         uids_flt = uids[unseen_uids]
 
         recommended_uids_flt = np.argsort(u_s[unseen_uids])[:n_matches]

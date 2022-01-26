@@ -5,7 +5,7 @@ def get_reply_markup(stage=0):
     """
     0 - Main menu (start)
 
-    1 - `Choose sex`
+    1 - `Choose gender`
     2 - `Set preferences`
     3 - `Set goals`
     4 - `Configure profile`
@@ -21,7 +21,7 @@ def get_reply_markup(stage=0):
 
         reply_markup = types.ReplyKeyboardMarkup()
 
-        item_0_0 = types.KeyboardButton('Choose sex')
+        item_0_0 = types.KeyboardButton('Choose gender')
         item_0_1 = types.KeyboardButton('Set preferences')
         item_1_0 = types.KeyboardButton('Set goals')
         item_1_1 = types.KeyboardButton('Profile')
@@ -34,7 +34,7 @@ def get_reply_markup(stage=0):
         return message_body, reply_markup
 
     elif stage == 1:
-        message_body = 'Choosing sex:'
+        message_body = 'Choosing gender:'
 
         reply_markup = types.ReplyKeyboardMarkup()
 
