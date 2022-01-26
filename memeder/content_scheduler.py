@@ -5,6 +5,7 @@ from memeder.database.db_functions import add_user, user_exist, add_user_meme_re
 from memeder.interface_tg.config import MEME_REACTION2BUTTON, USER_REACTION2BUTTON
 from memeder.interface_tg.meme_reply_keyboard import get_meme_reply_inline, get_user_reply_inline, \
     get_user2meme_reply_inline
+from memeder.interface_tg.reply_markup import get_reply_markup
 from memeder.meme_recsys.engine import recommend_meme, recommend_user
 
 
@@ -14,7 +15,7 @@ from memeder.meme_recsys.engine import recommend_meme, recommend_user
 # https://core.telegram.org/bots/api#chat
 
 
-def start(message, bot, force_start: bool = True):
+def start(message, bot):
 
     user = message.from_user
     chat = message.chat
@@ -22,12 +23,21 @@ def start(message, bot, force_start: bool = True):
     user_first_name: str = user.first_name
     tg_username: Union[str, None] = user.username
     chat_id: int = chat.id
-    # user_is_bot: bool = user.is_bot  # TODO: we can set filtering behavior for bots
     # user_last_name: Union[str, None] = user.last_name
 
-    if not user_exist(chat_id):
+    is_new_user = not user_exist(chat_id)
+    if is_new_user:
         add_user(user_first_name, user_id, tg_username, chat_id, '')
 
+    # _send_menu(chat_id, bot=bot, stage=0 if is_new_user else 6)
+    _send_menu(chat_id, bot=bot, stage=0)
+
+    # meme_id, file_id = _call_meme_generator(chat_id)
+    # _send_meme(chat_id, meme_id=meme_id, file_id=file_id, bot=bot)
+
+
+def start_meme(message, bot):
+    chat_id: int = message.chat.id
     meme_id, file_id = _call_meme_generator(chat_id)
     _send_meme(chat_id, meme_id=meme_id, file_id=file_id, bot=bot)
 
@@ -82,7 +92,42 @@ def process(call, bot):
 
 def receive_meme(message):
     if message.chat.id in (354637850, 2106431824, ):  # Boris, ffmemesbot (API proxy), ...
+        # TODO: file_unique_id :: could be reused across different bots
         add_meme(file_id=message.photo[-1].file_id, chat_id=message.chat.id, file_type='photo')
+
+
+def menu_routing(message, bot):
+    text2stage = {'Set privacy': 1, 'Set preferences': 2, 'Set goals': 3, 'Profile': 4, 'Choose sex': 5,
+                  '<< profile settings': 4, '<< main menu': 6}
+    _send_menu(chat_id=message.chat.id, bot=bot, stage=text2stage[message.text])
+
+
+def menu_update(message, bot):
+    chat_id = message.chat.id
+    update = message.text
+    update2message = {
+        'Seen to males':        'Your privacy is set to `Seen to males`. Back to the main menu.',
+        'Seen to females':      'Your privacy is set to `Seen to females`. Back to the main menu.',
+        'Seen to all':          'Your privacy is set to `Seen to all`. Back to the main menu.',
+        'Seen to nobody':       'Your privacy is set to `Seen to nobody`. Back to the main menu.',
+        'Show me males':        'Your preferences are set to `Show me males`. Back to the main menu.',
+        'Show me females':      'Your preferences are set to `Show me females`. Back to the main menu.',
+        'Show me all':          'Your preferences are set to `Show me all`. Back to the main menu.',
+        'Show me only memes':   'Your preferences are set to `Show me only memes`. Back to the main menu.',
+        'Friends':              'Your goals are set to `Friends`. Back to the main menu.',
+        'Relationships':        'Your goals are set to `Relationships`. Back to the main menu.',
+        'Unspecified':          'Your goals are set to `Unspecified`. Back to the main menu.',
+        'Only memes':           'Your goals are set to `Only memes`. Back to the main menu.',
+        'Upload bio':           'Send me a message, and it will be your bio. Back to the main menu.',
+        'Upload photo':         'Send me a photo, and it will be your profile photo. Back to the main menu.',
+        'Clear bio':            'Your bio is deleted. Back to the main menu.',
+        'Clear photo':          'Your profile photo is deleted. Back to the main menu.',
+        'Male':                 'Your sex is set to `Male`. Back to the main menu.',
+        'Female':               'Your sex is set to `Female`. Back to the main menu.',
+        'Prefer not to say':    'Your sex is set to `Prefer not to say`. Back to the main menu.',
+    }
+    bot.send_message(chat_id, update2message[update])
+    _send_menu(chat_id=message.chat.id, bot=bot, stage=6)
 
 
 def _call_meme_generator(chat_id):
@@ -122,3 +167,8 @@ def _send_user(chat_id, chat_id_rec, telegram_username, message_body, bot):
 
 def _send_user2meme(chat_id, message_body, bot):
     bot.send_message(chat_id, message_body, reply_markup=get_user2meme_reply_inline())
+
+
+def _send_menu(chat_id, bot, stage):
+    message_body, reply_markup = get_reply_markup(stage=stage)
+    bot.send_message(chat_id, message_body, reply_markup=reply_markup)
