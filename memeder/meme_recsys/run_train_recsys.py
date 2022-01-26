@@ -211,8 +211,7 @@ def main():
         print(f'>>> Finish recommendation training (in {t_train} s)...')
         print()
 
-        if t_train < t_retrain:
-            time.sleep(t_retrain - t_train)
+        time.sleep(t_retrain)
 
 
 if __name__ == '__main__':

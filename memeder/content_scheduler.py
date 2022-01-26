@@ -187,11 +187,11 @@ def _send_meme(chat_id, meme_id, file_id, bot):
 def _send_user(chat_id, chat_id_rec, telegram_username, message_body, bot):
     bot.send_message(chat_id, message_body.split('^_^')[0] + '^_^')
 
-    if get_profile_value(chat_id, column='use_photo'):
-        bot.send_photo(chat_id, photo=get_profile_value(chat_id, column='photo_id'))
+    if get_profile_value(chat_id_rec, column='use_photo'):
+        bot.send_photo(chat_id, photo=get_profile_value(chat_id_rec, column='photo_id'))
 
-    if get_profile_value(chat_id, column='use_bio'):
-        bio = get_profile_value(chat_id, column='bio')
+    if get_profile_value(chat_id_rec, column='use_bio'):
+        bio = get_profile_value(chat_id_rec, column='bio')
         if bio:
             bot.send_message(chat_id, bio)
 

@@ -40,7 +40,7 @@ def add_user(tg_first_name, tg_id, tg_username, tg_chat_id):
         photo_id, photo_unique_id, use_photo, photo_update_flag, sex)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
     try:
-        cursor.execute(sql_query, (tg_chat_id, 3003, 4003, '', False, False, '', '', False, False, 4002))
+        cursor.execute(sql_query, (tg_chat_id, 3003, 4003, '', False, False, '', '', False, False, 5002))
     except Exception as e:
         logging.exception(e)
         cursor.execute("ROLLBACK")
@@ -198,9 +198,9 @@ def add_user_user_reaction(chat_id_obj, message_id, reaction):
 def get_seen_meme_ids(chat_id):
     cursor, connection = connect_to_db()
 
-    sql_query = """SELECT memes_id FROM users_memes WHERE chat_id = %s"""
+    sql_query = """SELECT memes_id FROM users_memes WHERE chat_id = %s AND reaction != %s"""
     try:
-        cursor.execute(sql_query, (chat_id, ))
+        cursor.execute(sql_query, (chat_id, MEME_REACTION2BUTTON['DB_EMPTY'][1]))
     except Exception as e:
         logging.exception(e)
         cursor.execute("ROLLBACK")
