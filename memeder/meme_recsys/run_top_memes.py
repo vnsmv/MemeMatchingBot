@@ -63,7 +63,7 @@ def main():
     else:  # args.host == 'deploy':
         env_file = 'db_credentials.env'
 
-    retrain_interval_min = 5
+    retrain_interval_min = 60
     t_retrain = retrain_interval_min * 60
 
     while True:
@@ -75,8 +75,7 @@ def main():
         print(f'>>> Finish top memes selection (in {t_train} s)...')
         print()
 
-        if t_train < t_retrain:
-            time.sleep(t_retrain - t_train)
+        time.sleep(t_retrain)
 
 
 if __name__ == '__main__':

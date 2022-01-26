@@ -180,7 +180,8 @@ def run_recommendation_train(env_file: str = None,
             add_values += [chat_id, rec_chat_id, 0]
     q_add = q_add.strip(',') + ';'
 
-    cursor.execute(q_add, tuple(add_values))
+    if add_values:
+        cursor.execute(q_add, tuple(add_values))
     connection.commit()
     connection.close()
 
