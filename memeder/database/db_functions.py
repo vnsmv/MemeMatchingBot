@@ -26,11 +26,21 @@ def user_exist(chat_id):
 def add_user(tg_first_name, tg_id, tg_username, tg_chat_id):
     cursor, connection = connect_to_db()
 
+    date_add = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
+
     sql_query = """INSERT INTO users (name, telegram_id, telegram_username, chat_id, date_add, is_fresh)
     VALUES (%s, %s, %s, %s, %s, %s)"""
     try:
-        date_add = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
         cursor.execute(sql_query, (tg_first_name, tg_id, tg_username, tg_chat_id, date_add, True))
+    except Exception as e:
+        logging.exception(e)
+        cursor.execute("ROLLBACK")
+
+    sql_query = """INSERT INTO profiles (chat_id, privacy, preferences, goals, bio, use_bio, bio_update_flag, 
+        photo_id, photo_unique_id, use_photo, photo_update_flag, sex)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+    try:
+        cursor.execute(sql_query, (tg_chat_id, 2003, 3003, 4003, '', False, False, '', '', False, False, 4002))
     except Exception as e:
         logging.exception(e)
         cursor.execute("ROLLBACK")
@@ -233,6 +243,22 @@ def get_top_meme_ids():
     connection.commit()
     connection.close()
     return top_memes
+
+
+def get_profile_value(chat_id, column):
+    cursor, connection = connect_to_db()
+
+    q = f'SELECT {column} FROM profiles WHERE chat_id = %s;'
+    try:
+        cursor.execute(q, (chat_id, ))
+    except Exception as e:
+        logging.exception(e)
+        cursor.execute("ROLLBACK")
+
+    connection.commit()
+    value = cursor.fetchone()[0]
+    connection.close()
+    return value
 
 
 # Test functions

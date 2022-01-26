@@ -5,7 +5,8 @@ import telebot
 from dotenv import load_dotenv
 
 from memeder.paths import get_py_lib_path
-from memeder.content_scheduler import start, process, receive_photo, start_meme, menu_routing, menu_update
+from memeder.content_scheduler import start, process, receive_photo, start_meme, menu_routing, menu_update, \
+    check_receive_bio
 
 
 def main():
@@ -53,6 +54,10 @@ def main():
                                                        'Prefer not to say'])
     def _menu_update(message):
         menu_update(message, bot)
+
+    @bot.message_handler(content_types=['text'])
+    def _check_receive_bio(message):
+        check_receive_bio(message)
 
     # ### Processing reactions: ###
     @bot.callback_query_handler(func=lambda call: True)

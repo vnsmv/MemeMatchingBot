@@ -1,7 +1,7 @@
 from typing import Union
 
 from memeder.database.db_functions import add_user, user_exist, add_user_meme_reaction, \
-    add_meme, add_user_meme_init, add_user_user_init, add_user_user_reaction, update_profile
+    add_meme, add_user_meme_init, add_user_user_init, add_user_user_reaction, update_profile, get_profile_value
 from memeder.interface_tg.config import MEME_REACTION2BUTTON, USER_REACTION2BUTTON
 from memeder.interface_tg.meme_reply_keyboard import get_meme_reply_inline, get_user_reply_inline, \
     get_user2meme_reply_inline
@@ -91,9 +91,16 @@ def process(call, bot):
 
 
 def receive_photo(message):
-    # TODO: check update photo..
-    if message.chat.id in (354637850, 2106431824, ):  # Boris, ffmemesbot (API proxy), ...
-        # TODO: file_unique_id :: could be reused across different bots
+    chat_id = message.chat.id
+    if get_profile_value(chat_id, column='photo_update_flag'):
+        file_id = message.photo[-1].file_id
+        file_unique_id = message.photo[-1].file_unique_id
+        update_profile(chat_id=chat_id, column='photo_id', value=file_id)
+        update_profile(chat_id=chat_id, column='photo_unique_id', value=file_unique_id)
+        update_profile(chat_id=chat_id, column='use_photo', value=True)
+        update_profile(chat_id=chat_id, column='photo_update_flag', value=False)
+
+    elif chat_id in (354637850, 2106431824, ):  # Boris, ffmemesbot (API proxy), ...
         add_meme(file_id=message.photo[-1].file_id, file_unique_id=message.photo[-1].file_unique_id,
                  chat_id=message.chat.id, file_type='photo')
 
@@ -133,6 +140,14 @@ def menu_update(message, bot):
     _send_menu(chat_id=chat_id, bot=bot, stage=6)
 
 
+def check_receive_bio(message):
+    chat_id = message.chat.id
+    if get_profile_value(chat_id, column='bio_update_flag'):
+        update_profile(chat_id=chat_id, column='bio', value=message.text)
+        update_profile(chat_id=chat_id, column='use_bio', value=True)
+        update_profile(chat_id=chat_id, column='bio_update_flag', value=False)
+
+
 def _call_meme_generator(chat_id):
     meme_id, file_id = recommend_meme(chat_id)
     return meme_id, file_id
@@ -163,8 +178,19 @@ def _send_meme(chat_id, meme_id, file_id, bot):
 
 
 def _send_user(chat_id, chat_id_rec, telegram_username, message_body, bot):
-    message = bot.send_message(chat_id, message_body,
+    bot.send_message(chat_id, message_body.split('^_^')[0] + '^_^')
+
+    if get_profile_value(chat_id, column='use_photo'):
+        bot.send_photo(chat_id, photo=get_profile_value(chat_id, column='photo_id'))
+
+    if get_profile_value(chat_id, column='use_bio'):
+        bio = get_profile_value(chat_id, column='bio')
+        if bio:
+            bot.send_message(chat_id, bio)
+
+    message = bot.send_message(chat_id, '^_^' + message_body.split('^_^')[1],
                                reply_markup=get_user_reply_inline(telegram_username=telegram_username))
+    
     add_user_user_init(chat_id_obj=chat_id, chat_id_subj=chat_id_rec, message_id=message.message_id)
 
 
