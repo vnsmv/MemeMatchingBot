@@ -23,11 +23,11 @@ def user_exist(chat_id):
     return is_exist
 
 
-def add_user(tg_first_name, tg_id, tg_username, tg_chat_id, user_bio):
+def add_user(tg_first_name, tg_id, tg_username, tg_chat_id):
     cursor, connection = connect_to_db()
 
-    sql_query = """INSERT INTO users (name, user_bio, telegram_id, telegram_username, chat_id, date_add, is_fresh)
-    VALUES (%s, %s, %s, %s, %s, %s, %s)"""
+    sql_query = """INSERT INTO users (name, telegram_id, telegram_username, chat_id, date_add, is_fresh)
+    VALUES (%s, %s, %s, %s, %s, %s)"""
     try:
         date_add = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
         cursor.execute(sql_query, (tg_first_name, user_bio, tg_id, tg_username, tg_chat_id, date_add, True))
@@ -53,7 +53,7 @@ def update_profile(chat_id, column, value):
     connection.close()
 
 
-def add_meme(file_id: str, chat_id: int, file_type: str):
+def add_meme(file_id: str, file_unique_id: str, chat_id: int, file_type: str):
     cursor, connection = connect_to_db()
 
     sql_query = """SELECT file_id FROM memes"""
@@ -65,10 +65,11 @@ def add_meme(file_id: str, chat_id: int, file_type: str):
 
     file_ids = cursor.fetchall()
     if (not file_ids) or (file_id not in np.array(file_ids).squeeze(-1)):
-        sql_query = """INSERT INTO memes (file_id, author_id, create_date, file_type) VALUES (%s, %s, %s, %s)"""
+        sql_query = """INSERT INTO memes (file_id, file_unique_id, author_id, create_date, file_type) 
+        VALUES (%s, %s, %s, %s, %s)"""
         try:
             date = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
-            cursor.execute(sql_query, (file_id, chat_id, date, file_type))
+            cursor.execute(sql_query, (file_id, file_unique_id, chat_id, date, file_type))
         except Exception as e:
             logging.exception(e)
             cursor.execute("ROLLBACK")

@@ -27,7 +27,7 @@ def start(message, bot):
 
     is_new_user = not user_exist(chat_id)
     if is_new_user:
-        add_user(user_first_name, user_id, tg_username, chat_id, '')
+        add_user(user_first_name, user_id, tg_username, chat_id)
 
     # _send_menu(chat_id, bot=bot, stage=0 if is_new_user else 6)
     _send_menu(chat_id, bot=bot, stage=0)
@@ -94,10 +94,8 @@ def receive_photo(message):
     # TODO: check update photo..
     if message.chat.id in (354637850, 2106431824, ):  # Boris, ffmemesbot (API proxy), ...
         # TODO: file_unique_id :: could be reused across different bots
-        print(message.photo[-1].file_id, flush=True)
-        print(message.photo[-1].file_unique_id, flush=True)
-        print()
-        add_meme(file_id=message.photo[-1].file_id, chat_id=message.chat.id, file_type='photo')
+        add_meme(file_id=message.photo[-1].file_id, file_unique_id=message.photo[-1].file_unique_id,
+                 chat_id=message.chat.id, file_type='photo')
 
 
 def menu_routing(message, bot):
