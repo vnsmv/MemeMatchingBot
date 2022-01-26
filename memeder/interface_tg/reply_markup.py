@@ -5,17 +5,15 @@ def get_reply_markup(stage=0):
     """
     0 - Main menu (start)
 
-    1 - `Set privacy`
+    1 - `Choose sex`
     2 - `Set preferences`
     3 - `Set goals`
     4 - `Configure profile`
 
-    5 - `Configure profile` >> `Choose sex`
-
-    6 - Main menu (returning)
+    5 - Main menu (returning)
     """
 
-    if (stage == 0) or (stage == 6):
+    if (stage == 0) or (stage == 5):
         if stage == 0:
             message_body = '...'
         else:  # stage == 6:
@@ -23,7 +21,7 @@ def get_reply_markup(stage=0):
 
         reply_markup = types.ReplyKeyboardMarkup()
 
-        item_0_0 = types.KeyboardButton('Set privacy')
+        item_0_0 = types.KeyboardButton('Choose sex')
         item_0_1 = types.KeyboardButton('Set preferences')
         item_1_0 = types.KeyboardButton('Set goals')
         item_1_1 = types.KeyboardButton('Profile')
@@ -36,20 +34,16 @@ def get_reply_markup(stage=0):
         return message_body, reply_markup
 
     elif stage == 1:
-        message_body = 'In privacy settings:'
+        message_body = 'Choosing sex:'
 
         reply_markup = types.ReplyKeyboardMarkup()
-        # 'Seen to males', 'Seen to females', 'Seen to all', 'Seen to nobody', '<< main menu',
 
-        item_0_0 = types.KeyboardButton('Seen to males')
-        item_0_1 = types.KeyboardButton('Seen to females')
-        item_1_0 = types.KeyboardButton('Seen to all')
-        item_1_1 = types.KeyboardButton('Seen to nobody')
-        item_2 = types.KeyboardButton('<< main menu')
+        item_0_0 = types.KeyboardButton('Male')
+        item_0_1 = types.KeyboardButton('Female')
+        item_1 = types.KeyboardButton('<< main menu')
 
         reply_markup.row(item_0_0, item_0_1)
-        reply_markup.row(item_1_0, item_1_1)
-        reply_markup.row(item_2)
+        reply_markup.row(item_1)
 
         return message_body, reply_markup
 
@@ -106,23 +100,6 @@ def get_reply_markup(stage=0):
         reply_markup.row(item_1_0, item_1_1)
         reply_markup.row(item_2)
         reply_markup.row(item_3)
-
-        return message_body, reply_markup
-
-    elif stage == 5:
-        message_body = 'Choosing sex:'
-
-        reply_markup = types.ReplyKeyboardMarkup()
-        # 'Upload bio', 'Upload photo', 'Clear bio', 'Clear photo', '<< main menu',
-
-        item_0_0 = types.KeyboardButton('Male')
-        item_0_1 = types.KeyboardButton('Female')
-        item_1 = types.KeyboardButton('Prefer not to say')
-        item_2 = types.KeyboardButton('<< profile settings')
-
-        reply_markup.row(item_0_0, item_0_1)
-        reply_markup.row(item_1)
-        reply_markup.row(item_2)
 
         return message_body, reply_markup
 

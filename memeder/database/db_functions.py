@@ -36,11 +36,11 @@ def add_user(tg_first_name, tg_id, tg_username, tg_chat_id):
         logging.exception(e)
         cursor.execute("ROLLBACK")
 
-    sql_query = """INSERT INTO profiles (chat_id, privacy, preferences, goals, bio, use_bio, bio_update_flag, 
+    sql_query = """INSERT INTO profiles (chat_id, preferences, goals, bio, use_bio, bio_update_flag, 
         photo_id, photo_unique_id, use_photo, photo_update_flag, sex)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
     try:
-        cursor.execute(sql_query, (tg_chat_id, 2003, 3003, 4003, '', False, False, '', '', False, False, 4002))
+        cursor.execute(sql_query, (tg_chat_id, 3003, 4003, '', False, False, '', '', False, False, 4002))
     except Exception as e:
         logging.exception(e)
         cursor.execute("ROLLBACK")
@@ -259,10 +259,3 @@ def get_profile_value(chat_id, column):
     value = cursor.fetchone()[0]
     connection.close()
     return value
-
-
-# Test functions
-# if __name__ == '__main__':
-#     # add_user('sdfsdf', 123, 123, 123, 'dfs_askask', 'bio')
-#     print(user_exist('followthesun'))
-#     pass

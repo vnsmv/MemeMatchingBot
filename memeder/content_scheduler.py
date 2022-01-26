@@ -29,7 +29,7 @@ def start(message, bot):
     if is_new_user:
         add_user(user_first_name, user_id, tg_username, chat_id)
 
-    # _send_menu(chat_id, bot=bot, stage=0 if is_new_user else 6)
+    # _send_menu(chat_id, bot=bot, stage=0 if is_new_user else 5)
     _send_menu(chat_id, bot=bot, stage=0)
 
     # meme_id, file_id = _call_meme_generator(chat_id)
@@ -106,8 +106,7 @@ def receive_photo(message):
 
 
 def menu_routing(message, bot):
-    text2stage = {'Set privacy': 1, 'Set preferences': 2, 'Set goals': 3, 'Profile': 4, 'Choose sex': 5,
-                  '<< profile settings': 4, '<< main menu': 6}
+    text2stage = {'Choose sex': 1, 'Set preferences': 2, 'Set goals': 3, 'Profile': 4, '<< main menu': 5}
     _send_menu(chat_id=message.chat.id, bot=bot, stage=text2stage[message.text])
 
 
@@ -115,10 +114,10 @@ def menu_update(message, bot):
     chat_id = message.chat.id
     update = message.text
     update2message = {
-        'Seen to males':        ('Your privacy is set to `Seen to males`.', 'privacy', 2000),
-        'Seen to females':      ('Your privacy is set to `Seen to females`.', 'privacy', 2001),
-        'Seen to all':          ('Your privacy is set to `Seen to all`.', 'privacy', 2002),
-        'Seen to nobody':       ('Your privacy is set to `Seen to nobody`.', 'privacy', 2003),
+        # 'Seen to males':        ('Your privacy is set to `Seen to males`.', 'privacy', 2000),
+        # 'Seen to females':      ('Your privacy is set to `Seen to females`.', 'privacy', 2001),
+        # 'Seen to all':          ('Your privacy is set to `Seen to all`.', 'privacy', 2002),
+        # 'Seen to nobody':       ('Your privacy is set to `Seen to nobody`.', 'privacy', 2003),
         'Show me males':        ('Your preferences are set to `Show me males`.', 'preferences', 3000),
         'Show me females':      ('Your preferences are set to `Show me females`.', 'preferences', 3001),
         'Show me all':          ('Your preferences are set to `Show me all`.', 'preferences', 3002),
@@ -190,7 +189,7 @@ def _send_user(chat_id, chat_id_rec, telegram_username, message_body, bot):
 
     message = bot.send_message(chat_id, '^_^' + message_body.split('^_^')[1],
                                reply_markup=get_user_reply_inline(telegram_username=telegram_username))
-    
+
     add_user_user_init(chat_id_obj=chat_id, chat_id_subj=chat_id_rec, message_id=message.message_id)
 
 

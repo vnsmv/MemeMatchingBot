@@ -22,14 +22,14 @@ def main():
     users = np.array(cursor.fetchall()).ravel().tolist()
 
     q_add = "INSERT INTO profiles "
-    q_add += "(chat_id, privacy, preferences, goals, bio, use_bio, bio_update_flag, "
+    q_add += "(chat_id, preferences, goals, bio, use_bio, bio_update_flag, "
     q_add += "photo_id, photo_unique_id, use_photo, photo_update_flag, sex) VALUES"
     add_values = []
     for chat_id in users:
-        q_add += " (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s),"
+        q_add += " (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s),"
         add_values += [
             chat_id,
-            int(np.random.choice((2000, 2001, 2002, 2003))) if random else 2003,
+            # int(np.random.choice((2000, 2001, 2002, 2003))) if random else 2003,
             int(np.random.choice((3000, 3001, 3002, 3003))) if random else 3003,
             int(np.random.choice((4000, 4001, 4002, 4003))) if random else 4003,
             'Sample random bio' if random else '',
