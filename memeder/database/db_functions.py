@@ -30,7 +30,7 @@ def add_user(tg_first_name, tg_id, tg_username, tg_chat_id):
     VALUES (%s, %s, %s, %s, %s, %s)"""
     try:
         date_add = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
-        cursor.execute(sql_query, (tg_first_name, user_bio, tg_id, tg_username, tg_chat_id, date_add, True))
+        cursor.execute(sql_query, (tg_first_name, tg_id, tg_username, tg_chat_id, date_add, True))
     except Exception as e:
         logging.exception(e)
         cursor.execute("ROLLBACK")
