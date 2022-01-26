@@ -33,6 +33,11 @@ def main():
     def _start(message):
         start(message, bot)
 
+    # ### Send message to all: ###
+    @bot.message_handler(commands=['post'])
+    def _message_all(message):
+        message_all(message, bot)
+
     # ### Menu: ###
     @bot.message_handler(content_types=['text'],
                          func=lambda msg: msg.text in ['<< BACK TO MEMES'])
@@ -67,11 +72,6 @@ def main():
     @bot.message_handler(content_types=['photo'])
     def _handle_photo(message):
         receive_photo(message=message)
-
-    # ### Send message to all: ###
-    @bot.message_handler(commands=['message_all'])
-    def _message_all(message):
-        message_all(message, bot)
 
     bot.polling(none_stop=True, interval=0)
 
