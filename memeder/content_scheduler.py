@@ -149,8 +149,6 @@ def check_receive_bio(message):
 
 def message_all(message, bot):
 
-    msg = "Hi there! We have updated Meme Dating bot. Now, you could set up your dating preferences. " \
-          "(Just press /start.) By default, you are unseen to other users and can enjoy the memes:)"
     msg = \
         """
 Hi there,
@@ -165,8 +163,8 @@ Meme Dating team on the line! We received your feedback and present you v 0.2. W
     if host_id == 354637850:
         chat_ids = get_all_user_ids()
         for chat_id in chat_ids:
-            if chat_id in (481807223, 354637850, 11436017):
-                bot.send_message(chat_id, msg)
+            # if chat_id in (481807223, 354637850, 11436017):
+            bot.send_message(chat_id, msg)
 
 
 def _call_meme_generator(chat_id):
