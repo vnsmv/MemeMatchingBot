@@ -153,13 +153,13 @@ def message_all(message, bot):
           "(Just press /start.) By default, you are unseen to other users and can enjoy the memes:)"
     msg = \
         """
-        Hi there,\n
-        Meme Dating team on the line! We received your feedback and present you v 0.2. What's new:\n
-        - User's photo 🌠  and bio 🖌\n 
-        - Dating preferences (show me just girls/boys/all/memes) 🤦‍♀️🙎‍♂️\n
-        - Better memes recommendation system !💥\n
-        > Soon, we will add .gif and .mp4 support so you will be able to enjoy better memes.
-        """
+Hi there,
+Meme Dating team on the line! We received your feedback and present you v 0.2. What's new:
+- User's photo 🌠  and bio 🖌
+- Dating preferences (show me just girls/boys/all/memes) 🤦‍♀️🙎‍♂️
+- Better memes recommendation system !💥
+> Soon, we will add .gif and .mp4 support so you will be able to enjoy better memes.
+"""
 
     host_id = message.chat.id
     if host_id == 354637850:
