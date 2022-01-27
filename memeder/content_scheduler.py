@@ -154,10 +154,10 @@ def message_all(message, bot):
     msg = \
         """
 Hi there,
-Meme Dating team on the line! We received your feedback and present you v 0.2. What's new:
-- User's photo 🌠  and bio 🖌
-- Dating preferences (show me just girls/boys/all/memes) 🤦‍♀️🙎‍♂️
-- Better memes recommendation system !💥
+Meme Dating team on the line! We received your feedback and present you v 0.2. What's new:\n
+- User's photo 🌠  and bio 🖌\n
+- Dating preferences (show me just girls/boys/all/memes) 🤦‍♀️🙎‍♂️\n
+- Better memes recommendation system !💥\n
 > Soon, we will add .gif and .mp4 support so you will be able to enjoy better memes.
 """
 
