@@ -9,13 +9,13 @@ from memeder.interface_tg.meme_reply_keyboard import get_meme_reply_inline, get_
     get_user2meme_reply_inline
 from memeder.interface_tg.reply_markup import get_reply_markup
 from memeder.meme_recsys.engine import recommend_meme, recommend_user
+from memeder.meme_recsys.refreshing_activity import top_memes_selection, is_sending_meme, select_meme
 
 
 # https://core.telegram.org/bots/api#message +
 # https://github.com/eternnoir/pyTelegramBotAPI#types =
 # https://core.telegram.org/bots/api#user
 # https://core.telegram.org/bots/api#chat
-from memeder.meme_recsys.refreshing_activity import top_memes_selection, is_sending_meme, select_meme
 
 
 def start(message, bot):

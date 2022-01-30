@@ -5,3 +5,4 @@ psycopg2
 python-dotenv
 tqdm
 scipy
+numba
