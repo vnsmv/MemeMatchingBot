@@ -75,8 +75,8 @@ def top_memes_selection(top_n_memes: int = 500, min_reactions_th: int = 2, min_a
 def select_meme(chat_id, top_meme_ids):
     cursor, connection = connect_to_db()
 
-    q = "SELECT memes_id FROM users_memes WHERE chat_id = %s AND reaction != %s AND reaction != %s;"
-    cursor.execute(q, (chat_id, MEME_REACTION2BUTTON['DB_EMPTY'][1], MEME_REACTION2BUTTON['bu_users'][1]))
+    q = "SELECT memes_id FROM users_memes WHERE chat_id = %s AND reaction != %s;"
+    cursor.execute(q, (chat_id, MEME_REACTION2BUTTON['bu_users'][1]))
 
     seen_memes = cursor.fetchall()
     if seen_memes:

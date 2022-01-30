@@ -190,9 +190,9 @@ def meme_all(message, bot):
 
                     try:
                         _send_meme(chat_id, meme_id=meme_id, file_id=file_id, bot=bot)
-                        print('Sent a refresh meme to ', chat_id, flush=True)
+                        print(f'Sent a refresh meme {meme_id} to {chat_id}', flush=True)
                     except Exception:
-                        print('Failed to send a refresh meme to ', chat_id, flush=True)
+                        print(f'Failed to send a refresh meme {meme_id} to {chat_id}', flush=True)
                         pass
 
 
