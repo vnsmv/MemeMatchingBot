@@ -182,18 +182,18 @@ def meme_all(message, bot):
         top_meme_ids, _, _ = top_memes_selection()
 
         for chat_id in chat_ids:
-            if chat_id in (481807223, 354637850, 11436017):
-                if is_sending_meme(chat_id=chat_id, time_delta=datetime.timedelta(seconds=1)):
-                    meme_id, file_id = select_meme(chat_id, top_meme_ids)
-                    if meme_id is None:
-                        meme_id, file_id = _call_meme_generator(chat_id)
+            # if chat_id in (481807223, 354637850, 11436017):
+            if is_sending_meme(chat_id=chat_id, time_delta=datetime.timedelta(days=2)):
+                meme_id, file_id = select_meme(chat_id, top_meme_ids)
+                if meme_id is None:
+                    meme_id, file_id = _call_meme_generator(chat_id)
 
-                    try:
-                        _send_meme(chat_id, meme_id=meme_id, file_id=file_id, bot=bot)
-                        print(f'Sent a refresh meme {meme_id} to {chat_id}', flush=True)
-                    except Exception:
-                        print(f'Failed to send a refresh meme {meme_id} to {chat_id}', flush=True)
-                        pass
+                try:
+                    _send_meme(chat_id, meme_id=meme_id, file_id=file_id, bot=bot)
+                    print(f'Sent a refresh meme {meme_id} to {chat_id}', flush=True)
+                except Exception:
+                    print(f'Failed to send a refresh meme {meme_id} to {chat_id}', flush=True)
+                    pass
 
 
 def _call_meme_generator(chat_id):
