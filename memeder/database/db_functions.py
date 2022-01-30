@@ -121,7 +121,7 @@ def add_user_meme_reaction(chat_id, message_id, reaction):
                           f'Updating empty reaction: {chat_id}, {message_id}, {reaction}.')
     else:
         if (existing_reaction[0] == MEME_REACTION2BUTTON['DB_EMPTY'][1]) or\
-           (existing_reaction[0] == MEME_REACTION2BUTTON['user'][1]):
+           (existing_reaction[0] == MEME_REACTION2BUTTON['bu_users'][1]):
             sql_query = """UPDATE users_memes SET (reaction, date_reaction) = (%s, %s)
             WHERE chat_id = %s AND message_id = %s"""
             try:
