@@ -1,3 +1,4 @@
+import datetime
 from typing import Union
 
 from memeder.database.db_functions import add_user, user_exist, add_user_meme_reaction, \
@@ -14,6 +15,7 @@ from memeder.meme_recsys.engine import recommend_meme, recommend_user
 # https://github.com/eternnoir/pyTelegramBotAPI#types =
 # https://core.telegram.org/bots/api#user
 # https://core.telegram.org/bots/api#chat
+from memeder.meme_recsys.refreshing_activity import top_memes_selection, is_sending_meme, select_meme
 
 
 def start(message, bot):
@@ -170,6 +172,28 @@ Meme Dating team on the line! We received your feedback and present you v 0.2. W
             except Exception:
                 print('Failed to send a message to ', chat_id, flush=True)
                 pass
+
+
+def meme_all(message, bot):
+
+    host_id = message.chat.id
+    if host_id == 354637850:
+        chat_ids = get_all_user_ids()
+        top_meme_ids, _, _ = top_memes_selection()
+
+        for chat_id in chat_ids:
+            if chat_id in (481807223, 354637850, 11436017):
+                if is_sending_meme(chat_id=chat_id, time_delta=datetime.timedelta(days=1)):
+                    meme_id, file_id = select_meme(chat_id, top_meme_ids)
+                    if meme_id is None:
+                        meme_id, file_id = _call_meme_generator(chat_id)
+
+                    try:
+                        _send_meme(chat_id, meme_id=meme_id, file_id=file_id, bot=bot)
+                        print('Sent a refresh meme to ', chat_id, flush=True)
+                    except Exception:
+                        print('Failed to send a refresh meme to ', chat_id, flush=True)
+                        pass
 
 
 def _call_meme_generator(chat_id):

@@ -8,8 +8,8 @@ from memeder.interface_tg.config import MEME_REACTION2BUTTON
 from memeder.meme_recsys.run_train_recsys import REACTION2VALUE
 
 
-def top_memes_selection(env_file: str = None,
-                        top_n_memes: int = 100, min_reactions_th: int = 3, min_avg_rating_th: float = 1):
+def update_top_memes(env_file: str = None,
+                     top_n_memes: int = 100, min_reactions_th: int = 3, min_avg_rating_th: float = 1):
 
     cursor, connection = connect_to_db(env_file=env_file)
     q = """SELECT memes_id, reaction FROM users_memes WHERE reaction != %s AND reaction != %s;"""
@@ -67,13 +67,13 @@ def main():
     t_retrain = retrain_interval_min * 60
 
     while True:
-        print('>>> Run top memes selection...')
+        print('>>> Run top memes selection...', flush=True)
         t_start = time.perf_counter()
-        top_memes_selection(env_file=env_file, top_n_memes=200)
+        update_top_memes(env_file=env_file, top_n_memes=200)
         t_finish = time.perf_counter()
         t_train = int(np.round(t_finish - t_start))
-        print(f'>>> Finish top memes selection (in {t_train} s)...')
-        print()
+        print(f'>>> Finish top memes selection (in {t_train} s)...', flush=True)
+        print(flush=True)
 
         time.sleep(t_retrain)
 

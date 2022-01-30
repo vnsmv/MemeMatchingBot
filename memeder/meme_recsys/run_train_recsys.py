@@ -204,13 +204,13 @@ def main():
     t_retrain = retrain_interval_min * 60
 
     while True:
-        print('>>> Run recommendation training...')
+        print('>>> Run recommendation training...', flush=True)
         t_start = time.perf_counter()
         run_recommendation_train(env_file=env_file, n_memes=n_memes, n_matches=n_matches)
         t_finish = time.perf_counter()
         t_train = int(np.round(t_finish - t_start))
-        print(f'>>> Finish recommendation training (in {t_train} s)...')
-        print()
+        print(f'>>> Finish recommendation training (in {t_train} s)...', flush=True)
+        print(flush=True)
 
         time.sleep(t_retrain)
 
