@@ -183,7 +183,7 @@ def meme_all(message, bot):
 
         for chat_id in chat_ids:
             if chat_id in (481807223, 354637850, 11436017):
-                if is_sending_meme(chat_id=chat_id, time_delta=datetime.timedelta(days=1)):
+                if is_sending_meme(chat_id=chat_id, time_delta=datetime.timedelta(seconds=1)):
                     meme_id, file_id = select_meme(chat_id, top_meme_ids)
                     if meme_id is None:
                         meme_id, file_id = _call_meme_generator(chat_id)
