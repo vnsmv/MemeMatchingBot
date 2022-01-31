@@ -217,11 +217,9 @@ def _call_user_generator(chat_id):
                        '(type command /start)'
     elif n_reactions_to_do == -3:
         message_body = 'Specify your preferences \n' \
-                        '\U0002699 \n' \
                        '(type command /start)'
     elif n_reactions_to_do == -4:
         message_body = 'Specify your goals \n ' \
-                        '\U0002764  \U0001F923'\
                        'It could be done quickly from the main menu (/start).'
     else:  # n_reactions_to_do == 0:
         message_body = f' {name} '
