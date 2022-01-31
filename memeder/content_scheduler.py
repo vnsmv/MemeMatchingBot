@@ -228,9 +228,9 @@ def _call_user_generator(chat_id):
     return chat_id_rec, telegram_username, message_body
 
 
-def _send_meme(chat_id, meme_id, file_id, bot):update_profile
+def _send_meme(chat_id, meme_id, file_id, bot): #update_profile
     bot.send_photo(chat_id, photo=file_id)
-    message = bot.send_message(chat_id, '/U0001F3AF	', reply_markup=get_meme_reply_inline())
+    message = bot.send_message(chat_id, ' ', reply_markup=get_meme_reply_inline())
     add_user_meme_init(chat_id=chat_id, meme_id=meme_id, message_id=message.message_id)
 
 
