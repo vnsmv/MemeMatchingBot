@@ -17,7 +17,7 @@ def get_meme_reply_inline():
 
     buttons_row1 = {button: types.InlineKeyboardButton(text=MEME_REACTION2BUTTON[button][0],
                                                        callback_data=MEME_REACTION2BUTTON[button][1])
-                    for button in ('b2_like', 'b1_upside', 'b2_dislike')}
+                    for button in ('b2_dislike', 'b1_upside', 'b2_like')}
     buttons_row2 = {button: types.InlineKeyboardButton(text=MEME_REACTION2BUTTON[button][0],
                                                        callback_data=MEME_REACTION2BUTTON[button][1])
                     for button in ('bu_users', )}
