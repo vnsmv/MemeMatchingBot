@@ -208,23 +208,23 @@ def _call_user_generator(chat_id):
         message_body = f'To calculate the best match for you, '\
                        f'we need more meme reactions. Enjoy {n_reactions_to_do} more memes:)'
     elif n_reactions_to_do == -1:
-        message_body = 'Now, we need some time to update recommendations... ' \
-                       'Or you are crazy enough to review all users O.O. ' \
-                       'You may enjoy more memes for now, ' \
-                       'and do not forget to share this bot with your friends;)'
+        message_body = 'We need some time to update recommendations  \U000231B \n' \
+                       'Or you review all users  \U0001F642' \
+
     elif n_reactions_to_do == -2:
-        message_body = 'To get the recommendations, please, specify your gender. ' \
-                       'It could be done quickly from the main menu (/start).'
+        message_body = 'Specify your gender \n' \
+                        '\U0001F466 ' + '\U0001F467 \n' \
+                       '(type command /start)'
     elif n_reactions_to_do == -3:
-        message_body = 'To get the recommendations, please, specify your preferences. ' \
-                       'It could be done quickly from the main menu (/start).'
+        message_body = 'Specify your preferences \n' \
+                        '\U0002699 \n' \
+                       '(type command /start)'
     elif n_reactions_to_do == -4:
-        message_body = 'To get the recommendations, please, specify your goals. ' \
+        message_body = 'Specify your goals \n ' \
+                        '\U0002764  \U0001F923'\
                        'It could be done quickly from the main menu (/start).'
     else:  # n_reactions_to_do == 0:
-        message_body = f'We have found {name} for you. ^_^ ' \
-                       f'You can jump right to the chat with {name}, ' \
-                       f'or react and get the next recommendation.'
+        message_body = f' {name} '
     return chat_id_rec, telegram_username, message_body
 
 
