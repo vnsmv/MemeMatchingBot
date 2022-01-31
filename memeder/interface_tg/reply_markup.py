@@ -98,12 +98,12 @@ def get_reply_markup(stage=0):
         item_0_1 = types.KeyboardButton('Upload photo')
         item_1_0 = types.KeyboardButton('Clear bio')
         item_1_1 = types.KeyboardButton('Clear photo')
-        item_2 = types.KeyboardButton('Choose sex')
+        # item_2 = types.KeyboardButton('Choose sex')
         item_3 = types.KeyboardButton('<< main menu')
 
         reply_markup.row(item_0_0, item_0_1)
         reply_markup.row(item_1_0, item_1_1)
-        reply_markup.row(item_2)
+        # reply_markup.row(item_2)
         reply_markup.row(item_3)
 
         return message_body, reply_markup
