@@ -32,9 +32,9 @@ def get_reply_markup(stage=0):
         item_1_1 = types.KeyboardButton('Update profile')
         item_2 = types.KeyboardButton('To memes \U0001F519')
 
-        reply_markup.row(item_0_1, item_2)
+        reply_markup.row(item_0_1, item_1_1)
         # reply_markup.row(item_1_0, item_1_1)
-        # reply_markup.row(item_2)
+        reply_markup.row(item_2)
 
         return message_body, reply_markup
 
