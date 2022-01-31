@@ -23,13 +23,13 @@ def get_reply_markup(stage=0):
         else:  # stage == 6:
             message_body = 'In main menu:'
 
-        reply_markup = types.ReplyKeyboardMarkup()
+        reply_markup = types.InlineKeyboardMarkup()
 
-        item_0_0 = types.KeyboardButton('Choose gender')
-        item_0_1 = types.KeyboardButton('Set preferences')
-        item_1_0 = types.KeyboardButton('Set goals')
-        item_1_1 = types.KeyboardButton('Profile')
-        item_2 = types.KeyboardButton('<< BACK TO MEMES')
+        item_0_0 = types.InlineKeyboardButton('Choose gender')
+        item_0_1 = types.InlineKeyboardButton('Set preferences')
+        item_1_0 = types.InlineKeyboardButton('Set goals')
+        item_1_1 = types.InlineKeyboardButton('Profile')
+        item_2 = types.InlineKeyboardButton('<< BACK TO MEMES')
 
         reply_markup.row(item_0_0, item_0_1)
         reply_markup.row(item_1_0, item_1_1)
@@ -40,11 +40,11 @@ def get_reply_markup(stage=0):
     elif stage == 1:
         message_body = 'Choosing gender:'
 
-        reply_markup = types.ReplyKeyboardMarkup()
+        reply_markup = types.InlineKeyboardMarkup()
 
-        item_0_0 = types.KeyboardButton('Male')
-        item_0_1 = types.KeyboardButton('Female')
-        item_1 = types.KeyboardButton('<< main menu')
+        item_0_0 = types.InlineKeyboardButton('Male')
+        item_0_1 = types.InlineKeyboardButton('Female')
+        item_1 = types.InlineKeyboardButton('<< main menu')
 
         reply_markup.row(item_0_0, item_0_1)
         reply_markup.row(item_1)
@@ -54,14 +54,14 @@ def get_reply_markup(stage=0):
     elif stage == 2:
         message_body = 'In preferences settings:'
 
-        reply_markup = types.ReplyKeyboardMarkup()
+        reply_markup = types.InlineKeyboardMarkup()
         # 'Show me males', 'Show me females', 'Show me all', 'Show me only memes', '<< main menu',
 
-        item_0_0 = types.KeyboardButton('Show me males')
-        item_0_1 = types.KeyboardButton('Show me females')
-        item_1_0 = types.KeyboardButton('Show me all')
-        item_1_1 = types.KeyboardButton('Show me only memes')
-        item_2 = types.KeyboardButton('<< main menu')
+        item_0_0 = types.InlineKeyboardButton('Show me males')
+        item_0_1 = types.InlineKeyboardButton('Show me females')
+        item_1_0 = types.InlineKeyboardButton('Show me all')
+        item_1_1 = types.InlineKeyboardButton('Show me only memes')
+        item_2 = types.InlineKeyboardButton('<< main menu')
 
         reply_markup.row(item_0_0, item_0_1)
         reply_markup.row(item_1_0, item_1_1)
@@ -72,14 +72,14 @@ def get_reply_markup(stage=0):
     elif stage == 3:
         message_body = 'In goals settings:'
 
-        reply_markup = types.ReplyKeyboardMarkup()
+        reply_markup = types.InlineKeyboardMarkup()
         # 'Friends', 'Relationships', 'Unspecified', 'Only memes', '<< main menu',
 
-        item_0_0 = types.KeyboardButton('Friends')
-        item_0_1 = types.KeyboardButton('Relationships')
-        item_1_0 = types.KeyboardButton('Unspecified')
-        item_1_1 = types.KeyboardButton('Only memes')
-        item_2 = types.KeyboardButton('<< main menu')
+        item_0_0 = types.InlineKeyboardButton('Friends')
+        item_0_1 = types.InlineKeyboardButton('Relationships')
+        item_1_0 = types.InlineKeyboardButton('Unspecified')
+        item_1_1 = types.InlineKeyboardButton('Only memes')
+        item_2 = types.InlineKeyboardButton('<< main menu')
 
         reply_markup.row(item_0_0, item_0_1)
         reply_markup.row(item_1_0, item_1_1)
@@ -90,15 +90,15 @@ def get_reply_markup(stage=0):
     elif stage == 4:
         message_body = 'In profile settings:'
 
-        reply_markup = types.ReplyKeyboardMarkup()
+        reply_markup = types.InlineKeyboardMarkup()
         # 'Upload bio', 'Upload photo', 'Clear bio', 'Clear photo', '<< main menu',
 
-        item_0_0 = types.KeyboardButton('Upload bio')
-        item_0_1 = types.KeyboardButton('Upload photo')
-        item_1_0 = types.KeyboardButton('Clear bio')
-        item_1_1 = types.KeyboardButton('Clear photo')
-        item_2 = types.KeyboardButton('Choose sex')
-        item_3 = types.KeyboardButton('<< main menu')
+        item_0_0 = types.InlineKeyboardButton('Upload bio')
+        item_0_1 = types.InlineKeyboardButton('Upload photo')
+        item_1_0 = types.InlineKeyboardButton('Clear bio')
+        item_1_1 = types.InlineKeyboardButton('Clear photo')
+        item_2 = types.InlineKeyboardButton('Choose sex')
+        item_3 = types.InlineKeyboardButton('<< main menu')
 
         reply_markup.row(item_0_0, item_0_1)
         reply_markup.row(item_1_0, item_1_1)
