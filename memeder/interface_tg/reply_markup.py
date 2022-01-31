@@ -26,20 +26,20 @@ def get_reply_markup(stage=0):
 
         reply_markup = types.ReplyKeyboardMarkup()
 
-        item_0_0 = types.KeyboardButton('Choose gender')
+        # item_0_0 = types.KeyboardButton('Choose gender')
         item_0_1 = types.KeyboardButton('Set preferences')
-        item_1_0 = types.KeyboardButton('Set goals')
-        item_1_1 = types.KeyboardButton('Profile')
-        item_2 = types.KeyboardButton('<< BACK TO MEMES')
+        # item_1_0 = types.KeyboardButton('Set goals')
+        item_1_1 = types.KeyboardButton('Update profile')
+        item_2 = types.KeyboardButton('To memes \U0001F519')
 
-        reply_markup.row(item_0_0, item_0_1)
-        reply_markup.row(item_1_0, item_1_1)
-        reply_markup.row(item_2)
+        reply_markup.row(item_0_1, item_2)
+        # reply_markup.row(item_1_0, item_1_1)
+        # reply_markup.row(item_2)
 
         return message_body, reply_markup
 
     elif stage == 1:
-        message_body = 'Choosing gender:'
+        # message_body = 'Choosing gender:'
 
         reply_markup = types.ReplyKeyboardMarkup()
 
