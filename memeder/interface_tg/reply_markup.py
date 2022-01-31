@@ -17,7 +17,7 @@ def get_reply_markup(stage=0):
         if stage == 0:
             message_body = 'Configure your profile to find your best match! \n' \
                            '· Sex \U0001F466  \U0001F467 \n' \
-                           '· Preferences for dating \U0001F498  \n' \
+                           '· Preferences for the dating \U0001F498  \U0001F923\n' \
                            '· Describe yourself! \U0001F58A \n' \
                            '· Share your photo \U0001F320'
         else:  # stage == 6:
