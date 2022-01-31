@@ -27,13 +27,13 @@ def get_reply_markup(stage=0):
         reply_markup = types.ReplyKeyboardMarkup()
 
         # item_0_0 = types.KeyboardButton('Choose gender')
-        item_0_1 = types.KeyboardButton('Set preferences')
-        # item_1_0 = types.KeyboardButton('Set goals')
-        item_1_1 = types.KeyboardButton('Update profile')
-        item_2 = types.KeyboardButton('To memes \U0001F519')
+        item_0_1 = types.KeyboardButton('Shown profiles')
+        item_1_0 = types.KeyboardButton('Goals ')
+        item_1_1 = types.KeyboardButton('Profile')
+        item_2 = types.KeyboardButton('\U0001F519')
 
         reply_markup.row(item_0_1, item_1_1)
-        # reply_markup.row(item_1_0, item_1_1)
+        reply_markup.row(item_1_0, item_1_1)
         reply_markup.row(item_2)
 
         return message_body, reply_markup
@@ -45,12 +45,12 @@ def get_reply_markup(stage=0):
 
         item_0_0 = types.KeyboardButton('Male')
         item_0_1 = types.KeyboardButton('Female')
-        item_1 = types.KeyboardButton('<< main menu')
+        item_2 = types.KeyboardButton('\U0001F519')
 
         reply_markup.row(item_0_0, item_0_1)
-        reply_markup.row(item_1)
+        reply_markup.row(item_2)
 
-        return message_body, reply_markup
+        return reply_markup
 
     elif stage == 2:
         message_body = 'In preferences settings:'
@@ -62,7 +62,7 @@ def get_reply_markup(stage=0):
         item_0_1 = types.KeyboardButton('Show me females')
         item_1_0 = types.KeyboardButton('Show me all')
         item_1_1 = types.KeyboardButton('Show me only memes')
-        item_2 = types.KeyboardButton('<< main menu')
+        item_2 = types.KeyboardButton('\U0001F519')
 
         reply_markup.row(item_0_0, item_0_1)
         reply_markup.row(item_1_0, item_1_1)
@@ -71,7 +71,7 @@ def get_reply_markup(stage=0):
         return message_body, reply_markup
 
     elif stage == 3:
-        message_body = 'In goals settings:'
+        message_body = 'Goals:'
 
         reply_markup = types.ReplyKeyboardMarkup()
         # 'Friends', 'Relationships', 'Unspecified', 'Only memes', '<< main menu',
@@ -80,7 +80,7 @@ def get_reply_markup(stage=0):
         item_0_1 = types.KeyboardButton('Relationships')
         item_1_0 = types.KeyboardButton('Unspecified')
         item_1_1 = types.KeyboardButton('Only memes')
-        item_2 = types.KeyboardButton('<< main menu')
+        item_2 = types.KeyboardButton('\U0001F519')
 
         reply_markup.row(item_0_0, item_0_1)
         reply_markup.row(item_1_0, item_1_1)
@@ -89,7 +89,7 @@ def get_reply_markup(stage=0):
         return message_body, reply_markup
 
     elif stage == 4:
-        message_body = 'In profile settings:'
+        message_body = ' Your profile:'
 
         reply_markup = types.ReplyKeyboardMarkup()
         # 'Upload bio', 'Upload photo', 'Clear bio', 'Clear photo', '<< main menu',
@@ -98,15 +98,15 @@ def get_reply_markup(stage=0):
         item_0_1 = types.KeyboardButton('Upload photo')
         item_1_0 = types.KeyboardButton('Clear bio')
         item_1_1 = types.KeyboardButton('Clear photo')
-        # item_2 = types.KeyboardButton('Choose sex')
-        item_3 = types.KeyboardButton('<< main menu')
+        item_2 = types.KeyboardButton('Choose sex')
+        item_3 = types.KeyboardButton('\U0001F519')
 
         reply_markup.row(item_0_0, item_0_1)
         reply_markup.row(item_1_0, item_1_1)
-        # reply_markup.row(item_2)
+        reply_markup.row(item_2)
         reply_markup.row(item_3)
 
         return message_body, reply_markup
 
     else:
-        return 'Sample text', None
+        return 'Success!', None
