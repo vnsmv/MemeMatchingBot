@@ -27,12 +27,11 @@ def get_reply_markup(stage=0):
         reply_markup = types.ReplyKeyboardMarkup()
 
         # item_0_0 = types.KeyboardButton('Choose gender')
-        item_0_1 = types.KeyboardButton('Shown profiles')
-        item_1_0 = types.KeyboardButton('Goals ')
+        # item_0_1 = types.KeyboardButton('Shown profiles')
+        item_1_0 = types.KeyboardButton('Matching settings')
         item_1_1 = types.KeyboardButton('Profile')
         item_2 = types.KeyboardButton('\U0001F519')
 
-        reply_markup.row(item_0_1, item_1_1)
         reply_markup.row(item_1_0, item_1_1)
         reply_markup.row(item_2)
 
@@ -109,4 +108,4 @@ def get_reply_markup(stage=0):
         return message_body, reply_markup
 
     else:
-        return 'Success!', None
+        return 'Done!', None
