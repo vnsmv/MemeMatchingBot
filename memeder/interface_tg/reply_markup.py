@@ -26,14 +26,14 @@ def get_reply_markup(stage=0):
 
         reply_markup = types.ReplyKeyboardMarkup()
 
-        item_0_0 = types.KeyboardButton('Choose gender')
+        item_0_0 = types.KeyboardButton('Sex \U0001F466  \U0001F467')
         item_0_1 = types.KeyboardButton('Set preferences')
-        item_1_0 = types.KeyboardButton('Set goals')
-        item_1_1 = types.KeyboardButton('Profile')
-        item_2 = types.KeyboardButton('<< BACK TO MEMES')
+        item_1_0 = types.KeyboardButton('What are you searching for? \n \U0001F498 \U0001F923')
+        item_1_1 = types.KeyboardButton('Edit Profile \U0001F58A \U0001F320 \n')
+        item_2 = types.KeyboardButton('\U0001F519')
 
         reply_markup.row(item_0_0, item_0_1)
-        reply_markup.row(item_1_0, item_1_1)
+        reply_markup.row(item_1_1, item_1_0)
         reply_markup.row(item_2)
 
         return message_body, reply_markup
