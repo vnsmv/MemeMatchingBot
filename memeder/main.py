@@ -60,7 +60,7 @@ def main():
                          func=lambda msg: msg.text in ['Boys \U0001F466', 'Girls \U0001F469', 'All \U0001F469 \U0001F9D1',
                                                        'Only memes \U0001F60E', 'Friends \U0001F92A', 'Relationships \U0001F498', "I don't know \U0001F914",
                                                        'Just kill my free time \U0001F63C', 'Bio \U0001F53C', 'Photo \U0001F53C', 'Clear bio \U0001F6AB',
-                                                       'Clear photo \U0001F6AB', 'Male', 'Female', 'Prefer not to say'])
+                                                       'Clear photo \U0001F6AB', 'Boy \U0001F468', 'Girl \U0001F469', 'Prefer not to say'])
     def _menu_update(message):
         menu_update(message, bot)
 
