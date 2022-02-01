@@ -233,7 +233,7 @@ def _send_meme(chat_id, meme_id, file_id, bot): #update_profile
 
 
 def _send_user(chat_id, chat_id_rec, telegram_username, message_body, bot):
-    # bot.send_message(chat_id, message_body.split('^_^')[0] + '^_^')
+    bot.send_message(chat_id, message_body.split('^_^')[0] + '^_^')
     # if user don't upload a photo
     bot.send_photo(chat_id, photo=get_profile_value(chat_id_rec, column='photo_id'))
 
