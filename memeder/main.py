@@ -45,13 +45,14 @@ def main():
 
     # ### Menu: ###
     @bot.message_handler(content_types=['text'],
-                         func=lambda msg: msg.text in ['<< BACK TO MEMES'])
+                         func=lambda msg: msg.text in ['\U0001F519'])
     def _start_meme(message):
         start_meme(message, bot)
 
     @bot.message_handler(content_types=['text'],
-                         func=lambda msg: msg.text in ['Set preferences', 'Set goals', 'Profile',
-                                                       'Choose gender', '<< main menu'])
+                         func=lambda msg: msg.text in ['Sex \U0001F466  \U0001F467',
+                                                       'Matches preferences', 'I am searching for \U0001F498 \U0001F923',
+                                                       'Edit Profile \U0001F58A \U0001F320', '\U0001F519'])
     def _menu_routing(message):
         menu_routing(message, bot)
 
