@@ -22,7 +22,7 @@ def get_reply_markup(stage=0):
                            # '· Describe yourself! \U0001F58A \n' \
                            # '· Share your photo \U0001F320'
         else:  # stage == 6:
-            message_body = 'In main menu:'
+            message_body = 'Main menu::'
 
         reply_markup = types.ReplyKeyboardMarkup()
 

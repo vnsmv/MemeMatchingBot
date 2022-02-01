@@ -123,9 +123,9 @@ def menu_update(message, bot):
         # 'Seen to nobody':       ('Your privacy is set to `Seen to nobody`.', 'privacy', 2003),
         'Boys \U0001F466':        ('Ok, will show you only boys.', 'preferences', 3000),
         'Girls \U0001F469':      ('Ok, will show you just girls.', 'preferences', 3001),
-        'All \U0001F469 \U0001F9D1':          ('Will show you all users.', 'preferences', 3002),
-        'Only memes \U0001F60E':   ('Just memes,  good choice bro!', 'preferences', 3003),
-        'Friends \U0001F92A':              ('Your goals are set to `Friends`.', 'goals', 4000),
+        'All \U0001F469 \U0001F9D1':          ('Ok, will show you all users.', 'preferences', 3002),
+        'Only memes \U0001F60E':   ('Just memes, good choice!', 'preferences', 3003),
+        'Friends \U0001F92A':              ('Yeap!', 'goals', 4000),
         'Relationships \U0001F498':        ('Good look to find you love;)', 'goals', 4001),
         "I don't know \U0001F914":          ('Killing free time?)', 'goals', 4002),
         'Just killing my free time \U0001F63C':           ('Just memes, got it!', 'goals', 4003),
@@ -137,7 +137,7 @@ def menu_update(message, bot):
         'Girl \U0001F469':               ('Success!', 'sex', 5001),
     }
     update_profile(chat_id=chat_id, column=update2message[update][1], value=update2message[update][2])
-    bot.send_message(chat_id, update2message[update][0] + ' Back to the main menu.')
+    bot.send_message(chat_id, update2message[update][0] )
     _send_menu(chat_id=chat_id, bot=bot, stage=5)
 
 
