@@ -15,12 +15,12 @@ def get_reply_markup(stage=0):
 
     if (stage == 0) or (stage == 5):
         if stage == 0:
-            message_body = 'Configure your profile to find your best match! \n' \
-                            ''\
-                           '· Sex \U0001F466  \U0001F467 \n' \
-                           '· Preferences for the dating \U0001F498  \U0001F923\n' \
-                           '· Describe yourself! \U0001F58A \n' \
-                           '· Share your photo \U0001F320'
+            message_body = 'Configure your profile to find your best match!'
+                           #  ''\
+                           # '· Sex \U0001F466  \U0001F467 \n' \
+                           # '· Preferences for the dating \U0001F498  \U0001F923\n' \
+                           # '· Describe yourself! \U0001F58A \n' \
+                           # '· Share your photo \U0001F320'
         else:  # stage == 6:
             message_body = 'In main menu:'
 
@@ -28,7 +28,7 @@ def get_reply_markup(stage=0):
 
         item_0_0 = types.KeyboardButton('Sex \U0001F466  \U0001F467')
         item_0_1 = types.KeyboardButton('Set preferences')
-        item_1_0 = types.KeyboardButton('What are you searching for? \n \U0001F498 \U0001F923')
+        item_1_0 = types.KeyboardButton('What are you \n searching for? \n \U0001F498 \U0001F923')
         item_1_1 = types.KeyboardButton('Edit Profile \U0001F58A \U0001F320 \n')
         item_2 = types.KeyboardButton('\U0001F519')
 
@@ -53,16 +53,16 @@ def get_reply_markup(stage=0):
         return message_body, reply_markup
 
     elif stage == 2:
-        message_body = 'In preferences settings:'
+        message_body = 'I want to see:'
 
         reply_markup = types.ReplyKeyboardMarkup()
         # 'Show me males', 'Show me females', 'Show me all', 'Show me only memes', '<< main menu',
 
-        item_0_0 = types.KeyboardButton('Show me males')
-        item_0_1 = types.KeyboardButton('Show me females')
-        item_1_0 = types.KeyboardButton('Show me all')
-        item_1_1 = types.KeyboardButton('Show me only memes')
-        item_2 = types.KeyboardButton('<< main menu')
+        item_0_0 = types.KeyboardButton('Boys \U0001F466')
+        item_0_1 = types.KeyboardButton('Girls \U0001F469')
+        item_1_0 = types.KeyboardButton('All \U0001F469 \U0001F9D1')
+        item_1_1 = types.KeyboardButton('Only memes \U0001F60E')
+        item_2 = types.KeyboardButton('\U0001F519')
 
         reply_markup.row(item_0_0, item_0_1)
         reply_markup.row(item_1_0, item_1_1)
