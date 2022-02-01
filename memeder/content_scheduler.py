@@ -109,7 +109,7 @@ def receive_photo(message):
 
 
 def menu_routing(message, bot):
-    text2stage = {'Choose gender': 1, 'Set preferences': 2, 'Set goals': 3, 'Profile': 4, '<< main menu': 5}
+    text2stage = {'Sex \U0001F466  \U0001F467': 1, 'Matches preferences': 2, 'I am searching for \U0001F498 \U0001F923': 3, 'Edit Profile \U0001F58A \U0001F320': 4, '\U0001F519': 5}
     _send_menu(chat_id=message.chat.id, bot=bot, stage=text2stage[message.text])
 
 

@@ -28,8 +28,8 @@ def get_reply_markup(stage=0):
 
         item_0_0 = types.KeyboardButton('Sex \U0001F466  \U0001F467')
         item_0_1 = types.KeyboardButton('Matches preferences')
-        item_1_0 = types.KeyboardButton('I am searching for \n \U0001F498 \U0001F923')
-        item_1_1 = types.KeyboardButton('Edit Profile \U0001F58A \U0001F320 \n')
+        item_1_0 = types.KeyboardButton('I am searching for \U0001F498 \U0001F923')
+        item_1_1 = types.KeyboardButton('Edit Profile \U0001F58A \U0001F320')
         item_2 = types.KeyboardButton('\U0001F519')
 
         reply_markup.row(item_0_0, item_0_1)
