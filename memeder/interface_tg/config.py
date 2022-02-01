@@ -24,9 +24,9 @@ MEME_REACTION2BUTTON = {
 
 USER_REACTION2BUTTON = {
     # TODO: configure buttons, the emoji are random now.
-    'b1_like':          ("\U0001f44D",                                                             '10000'),
+    'b1_like':          ("\U0001F495",                                                             '10000'),
     'b1_chat':          ('Chat',                                                                   None),
-    'b1_dislike':       ("\U0001f44E",                                                             '10001'),
+    'b1_dislike':       ("\U0001F504",                                                             '10001'),
 
     'bm_memes':         ('Back to memes',                                                          'memes'),
 
