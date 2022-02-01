@@ -79,7 +79,7 @@ def get_reply_markup(stage=0):
         item_0_0 = types.KeyboardButton('Friends \U0001F92A')
         item_0_1 = types.KeyboardButton('Relationships \U0001F498')
         item_1_0 = types.KeyboardButton("I don't know \U0001F914")
-        item_1_1 = types.KeyboardButton('Just kill my free time \U0001F63C')
+        item_1_1 = types.KeyboardButton('Just killing my free time \U0001F63C')
         item_2 = types.KeyboardButton('\U0001F519')
 
         reply_markup.row(item_0_0, item_0_1)
