@@ -208,7 +208,7 @@ def _call_user_generator(chat_id):
         message_body = f'To calculate the best match for you, '\
                        f'we need more meme reactions. Enjoy {n_reactions_to_do} more memes:)'
     elif n_reactions_to_do == -1:
-        message_body = 'We need some time to update recommendations' \
+        message_body = 'We need some time to update recommendations ' \
                        'Or you review all users  \U0001F642' \
 
     elif n_reactions_to_do == -2:

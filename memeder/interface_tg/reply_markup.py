@@ -30,7 +30,7 @@ def get_reply_markup(stage=0):
         item_0_1 = types.KeyboardButton('Matches preferences')
         item_1_0 = types.KeyboardButton('I am searching for \U0001F498 \U0001F923')
         item_1_1 = types.KeyboardButton('Edit Profile \U0001F58A \U0001F320')
-        item_2 = types.KeyboardButton('\U0001F519')
+        item_2 = types.KeyboardButton('Memes \U0001F519')
 
         reply_markup.row(item_0_0, item_0_1)
         reply_markup.row(item_1_1, item_1_0)
@@ -45,7 +45,7 @@ def get_reply_markup(stage=0):
 
         item_0_0 = types.KeyboardButton('Boy \U0001F468')
         item_0_1 = types.KeyboardButton('Girl \U0001F469')
-        item_1 = types.KeyboardButton('\U0001F519')
+        item_1 = types.KeyboardButton('Main menu \U0001F519')
 
         reply_markup.row(item_0_0, item_0_1)
         reply_markup.row(item_1)
@@ -62,7 +62,7 @@ def get_reply_markup(stage=0):
         item_0_1 = types.KeyboardButton('Girls \U0001F469')
         item_1_0 = types.KeyboardButton('All \U0001F469 \U0001F9D1')
         item_1_1 = types.KeyboardButton('Only memes \U0001F60E')
-        item_2 = types.KeyboardButton('\U0001F519')
+        item_2 = types.KeyboardButton('Main menu \U0001F519')
 
         reply_markup.row(item_0_0, item_0_1)
         reply_markup.row(item_1_0, item_1_1)
@@ -80,7 +80,7 @@ def get_reply_markup(stage=0):
         item_0_1 = types.KeyboardButton('Relationships \U0001F498')
         item_1_0 = types.KeyboardButton("I don't know \U0001F914")
         item_1_1 = types.KeyboardButton('Just killing my free time \U0001F63C')
-        item_2 = types.KeyboardButton('\U0001F519')
+        item_2 = types.KeyboardButton('Main menu \U0001F519')
 
         reply_markup.row(item_0_0, item_0_1)
         reply_markup.row(item_1_0, item_1_1)
@@ -99,7 +99,7 @@ def get_reply_markup(stage=0):
         item_1_0 = types.KeyboardButton('Clear bio \U0001F6AB')
         item_1_1 = types.KeyboardButton('Clear photo \U0001F6AB')
         # item_2 = types.KeyboardButton('Choose sex')
-        item_3 = types.KeyboardButton('\U0001F519')
+        item_3 = types.KeyboardButton('Main menu \U0001F519')
 
         reply_markup.row(item_0_0, item_0_1)
         reply_markup.row(item_1_0, item_1_1)
