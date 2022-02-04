@@ -62,12 +62,12 @@ def process(call, bot):
         if reaction in [v[1] for k, v in MEME_BUTTONS.items() if k.startswith('b')]:
 
             if reaction == MEME_BUTTONS['bu_users'][1]:
-                chat_id_rec, telegram_username, message_body = _call_user_generator(chat_id=chat_id)
+                chat_id_rec, telegram_username, name, message_body = _call_user_generator(chat_id=chat_id)
                 if chat_id_rec is None:
                     _send_user2meme(chat_id=chat_id, message_body=message_body, bot=bot)
                 else:
-                    _send_user(chat_id=chat_id, chat_id_rec=chat_id_rec, telegram_username=telegram_username,
-                               message_body=message_body, bot=bot)
+                    _send_user(chat_id=chat_id, chat_id_rec=chat_id_rec, telegram_username=telegram_username, name=name,
+                               bot=bot)
             else:
                 add_user_meme_reaction(chat_id, message_id=message_id, reaction=reaction)
 
@@ -84,12 +84,12 @@ def process(call, bot):
                 meme_id, file_id = _call_meme_generator(chat_id)
                 _send_meme(chat_id, meme_id=meme_id, file_id=file_id, bot=bot)
             else:
-                chat_id_rec, telegram_username, message_body = _call_user_generator(chat_id=chat_id)
+                chat_id_rec, telegram_username, name, message_body = _call_user_generator(chat_id=chat_id)
                 if chat_id_rec is None:
                     _send_user2meme(chat_id=chat_id, message_body=message_body, bot=bot)
                 else:
-                    _send_user(chat_id=chat_id, chat_id_rec=chat_id_rec, telegram_username=telegram_username,
-                               message_body=message_body, bot=bot)
+                    _send_user(chat_id=chat_id, chat_id_rec=chat_id_rec, telegram_username=telegram_username, name=name,
+                               bot=bot)
 
     # TODO: do we need to force dating recommendations?
 
@@ -198,8 +198,8 @@ def _call_user_generator(chat_id):
         message_body = 'Specify your goals \n ' \
                        'It could be done quickly from the main menu (/start).'
     else:  # n_reactions_to_do == 0:
-        message_body = f' {name} '
-    return chat_id_rec, telegram_username, message_body
+        message_body = None
+    return chat_id_rec, telegram_username, name, message_body
 
 
 def _send_meme(chat_id, meme_id, file_id, bot):  # update_profile
@@ -208,21 +208,32 @@ def _send_meme(chat_id, meme_id, file_id, bot):  # update_profile
     add_user_meme_init(chat_id=chat_id, meme_id=meme_id, message_id=message.message_id)
 
 
-def _send_user(chat_id, chat_id_rec, telegram_username, message_body, bot):
-    bot.send_message(chat_id, message_body.split('^_^')[0] + '^_^')
-    # if user don't upload a photo
-    bot.send_photo(chat_id, photo=get_profile_value(chat_id_rec, column='photo_id'))
+def _send_user(chat_id, chat_id_rec, telegram_username, name, bot):
+    bot.send_message(chat_id, 'photo placeholder')
 
-    if get_profile_value(chat_id_rec, column='use_photo'):
-        bot.send_photo(chat_id, photo=get_profile_value(chat_id_rec, column='photo_id'))
+    profile_description = f'**{name}**\n'
 
+    goals_code = get_profile_value(chat_id_rec, column='goals')
+    profile_description += f'\U0001F3AF {goals_code}'
+
+    compatibility = 69  # TODO: train + request compatibility
+    profile_description += f'\U0001F4AB	Memes compatibility: {compatibility}%'
+
+    bio = ''
     if get_profile_value(chat_id_rec, column='use_bio'):
         bio = get_profile_value(chat_id_rec, column='bio')
-        if bio:
-            bot.send_message(chat_id, bio)
+    if not bio:
+        bio = 'User has no bio yet...'
+    profile_description += f'\U0001F58B {bio}'
 
-    message = bot.send_message(chat_id, '^_^' + message_body.split('^_^')[1],
-                               reply_markup=get_user_reply_inline(telegram_username=telegram_username))
+    bot.send_message(chat_id, profile_description,
+                     reply_markup=get_user_reply_inline(telegram_username=telegram_username))
+
+    # if user don't upload a photo
+    # bot.send_photo(chat_id, photo=get_profile_value(chat_id_rec, column='photo_id'))
+
+    # if get_profile_value(chat_id_rec, column='use_photo'):
+    #     bot.send_photo(chat_id, photo=get_profile_value(chat_id_rec, column='photo_id'))
 
     add_user_user_init(chat_id_obj=chat_id, chat_id_subj=chat_id_rec, message_id=message.message_id)
 

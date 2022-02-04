@@ -49,7 +49,7 @@ MENU_BUTTONS = {
     'm1_girl':          ('Girl \U0001F469', 'Success!', 'sex', 5001),
 
     'm2_boys':          ('Boys \U0001F466', 'Got it! \n Dont hesitate to write first \U0001F609', 'preferences', 3000),
-    'm2_girls':         ('Girls \U0001F469', 'Ok, \n fingers crossed! \U0001F60A', 'preferences', 3001),
+    'm2_girls':         ('Girls \U0001F469', 'Ok, fingers crossed! \U0001F91E', 'preferences', 3001),
     'm2_all':           ('All \U0001F469 \U0001F9D1', 'Ok, we will show you all users', 'preferences', 3002),
     'm2_memes':         ('Only memes \U0001F60E', 'Just memes, good choice \U0001F60F', 'preferences', 3003),
 

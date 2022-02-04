@@ -14,9 +14,11 @@ msg_g1 = \
         """
 Hello there,
 
-Thanks for being part of the community. Currently, it's 350 users and 12 000 memes reactions, but it's time to move on 🚀
+Thanks for being part of the community. Currently, it's 350 users and 12 000 memes reactions,
+but it's time to move on 🚀
 
-We collect feedback and present an updated interface for our product. What's new:
+We collect feedback and present an updated interface for our bot.
+What's new:
 
 📊 Percentage of memes compatibility
 
@@ -24,11 +26,11 @@ We collect feedback and present an updated interface for our product. What's new
 
 🌠 New format of photo and bio
 
- 🔁 Renew all the buttons
+🔁 Renew all the buttons
 
-We work hard for you and find inspiration in users' stories. We know that at least four people go to date via our product! Congratulations 💥
+We work hard for you and find inspiration in your stories. We know that at least four people go to date via our bot! Congratulations 💥
 
-In starting to develop the product, our goal is to create it fun and cool. For this reason, we announce "dating challenges." The award ceremony will take place in a bar in the center of Moscow.🥂
+Our goal is to keep developing fun and cool. For this reason, we announce "dating challenges." The award ceremony will take place in a bar in the center of Moscow.🥂
 
 The details of the first challenge and prizes will be announced tomorrow. Keep in touch.
 
