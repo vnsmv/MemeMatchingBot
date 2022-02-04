@@ -33,10 +33,10 @@ def get_user_reply_inline(telegram_username):
     markup_inline = types.InlineKeyboardMarkup()
 
     markup_inline.row(
-        types.InlineKeyboardButton(text=USER_BUTTONS['b1_chat'][0],
-                                   url=f'https://t.me/{telegram_username}?start=+666'),
         types.InlineKeyboardButton(text=USER_BUTTONS['b1_next'][0],
                                    callback_data=USER_BUTTONS['b1_next'][1]),
+        types.InlineKeyboardButton(text=USER_BUTTONS['b1_chat'][0],
+                                   url=f'https://t.me/{telegram_username}?start=+666'),
     )
 
     markup_inline.row(

@@ -212,18 +212,17 @@ def _send_user(chat_id, chat_id_rec, telegram_username, name, bot):
     placeholder_file_id_girl = 'AgACAgIAAxkBAAIHuWH9l108zGSCs9jM3Ew4Rsy5hHuSAAL6uTEb-TzwS0Thnpzg9heoAQADAgADeAADIwQ'
 
     if get_profile_value(chat_id_rec, column='use_photo'):
-        unique_photo_id = get_profile_value(chat_id_rec, column='photo_unique_id')
+        photo_id = get_profile_value(chat_id_rec, column='photo_id')
         # TODO: always replace random string in test bot with placeholder files
         if get_profile_value(chat_id_rec, column='sex') == MENU_BUTTONS['m1_girl'][-1]:
-            unique_photo_id = placeholder_file_id_girl
+            photo_id = placeholder_file_id_girl
         else:  # get_profile_value(chat_id_rec, column='sex') == MENU_BUTTONS['m1_boy'][-1]:
-            unique_photo_id = placeholder_file_id_boy
+            photo_id = placeholder_file_id_boy
     else:
         if get_profile_value(chat_id_rec, column='sex') == MENU_BUTTONS['m1_girl'][-1]:
-            unique_photo_id = placeholder_file_id_girl
+            photo_id = placeholder_file_id_girl
         else:  # get_profile_value(chat_id_rec, column='sex') == MENU_BUTTONS['m1_boy'][-1]:
-            unique_photo_id = placeholder_file_id_boy
-    bot.send_photo(chat_id, photo=unique_photo_id)
+            photo_id = placeholder_file_id_boy
 
     profile_description = f'{name}\n\n'
 
@@ -240,8 +239,8 @@ def _send_user(chat_id, chat_id_rec, telegram_username, name, bot):
         bio = 'User has no bio yet...'
     profile_description += f'\U0001F58B {bio}'
 
-    message = bot.send_message(chat_id, profile_description,
-                               reply_markup=get_user_reply_inline(telegram_username=telegram_username))
+    message = bot.send_photo(chat_id, photo=photo_id, caption=profile_description,
+                             reply_markup=get_user_reply_inline(telegram_username=telegram_username))
 
     # if user don't upload a photo
     # bot.send_photo(chat_id, photo=get_profile_value(chat_id_rec, column='photo_id'))
