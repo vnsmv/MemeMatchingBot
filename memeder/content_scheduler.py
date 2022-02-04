@@ -105,6 +105,9 @@ def receive_photo(message):
         update_profile(chat_id=chat_id, column='photo_update_flag', value=False)
 
     elif chat_id in (354637850, 2106431824, ):  # Boris, ffmemesbot (API proxy), ...
+        print(message.photo[-1].file_id, flush=True)
+        print(message.photo[-1].file_unique_id, flush=True)
+        print()
         add_meme(file_id=message.photo[-1].file_id, file_unique_id=message.photo[-1].file_unique_id,
                  chat_id=message.chat.id, file_type='photo')
 
@@ -211,13 +214,13 @@ def _send_meme(chat_id, meme_id, file_id, bot):  # update_profile
 def _send_user(chat_id, chat_id_rec, telegram_username, name, bot):
     bot.send_message(chat_id, 'photo placeholder')
 
-    profile_description = f'**{name}**\n'
+    profile_description = f'{name}\n\n'
 
     goals_code = get_profile_value(chat_id_rec, column='goals')
-    profile_description += f'\U0001F3AF {goals_code}'
+    profile_description += f'\U0001F3AF {goals_code}\n\n'
 
     compatibility = 69  # TODO: train + request compatibility
-    profile_description += f'\U0001F4AB	Memes compatibility: {compatibility}%'
+    profile_description += f'\U0001F4AB	Memes compatibility: {compatibility}%\n\n'
 
     bio = ''
     if get_profile_value(chat_id_rec, column='use_bio'):
@@ -226,8 +229,8 @@ def _send_user(chat_id, chat_id_rec, telegram_username, name, bot):
         bio = 'User has no bio yet...'
     profile_description += f'\U0001F58B {bio}'
 
-    bot.send_message(chat_id, profile_description,
-                     reply_markup=get_user_reply_inline(telegram_username=telegram_username))
+    message = bot.send_message(chat_id, profile_description,
+                               reply_markup=get_user_reply_inline(telegram_username=telegram_username))
 
     # if user don't upload a photo
     # bot.send_photo(chat_id, photo=get_profile_value(chat_id_rec, column='photo_id'))
