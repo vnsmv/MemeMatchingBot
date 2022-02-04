@@ -203,29 +203,26 @@ def _call_user_generator(chat_id):
 
 
 def _send_meme(chat_id, meme_id, file_id, bot):  # update_profile
-    # bot.send_message(chat_id, 'New meme for you:)')
     message = bot.send_photo(chat_id, photo=file_id, reply_markup=get_meme_reply_inline())
     add_user_meme_init(chat_id=chat_id, meme_id=meme_id, message_id=message.message_id)
 
 
 def _send_user(chat_id, chat_id_rec, telegram_username, name, bot):
-    # placeholder_file_id_boy = 'AgACAgIAAxkBAAIHuGH9lzK528n-FqhWWO1OfxPzwRDOAAL4uTEb-TzwS_7FLjvKnNoXAQADAgADeAADIwQ'
-    placeholder_unique_file_id_boy = 'AQAD-LkxG_k88Et9'
-    # placeholder_file_id_girl = 'AgACAgIAAxkBAAIHuWH9l108zGSCs9jM3Ew4Rsy5hHuSAAL6uTEb-TzwS0Thnpzg9heoAQADAgADeAADIwQ'
-    placeholder_unique_file_id_girl = 'AQAD-rkxG_k88Et9'
+    placeholder_file_id_boy = 'AgACAgIAAxkBAAIHuGH9lzK528n-FqhWWO1OfxPzwRDOAAL4uTEb-TzwS_7FLjvKnNoXAQADAgADeAADIwQ'
+    placeholder_file_id_girl = 'AgACAgIAAxkBAAIHuWH9l108zGSCs9jM3Ew4Rsy5hHuSAAL6uTEb-TzwS0Thnpzg9heoAQADAgADeAADIwQ'
 
     if get_profile_value(chat_id_rec, column='use_photo'):
         unique_photo_id = get_profile_value(chat_id_rec, column='photo_unique_id')
         # TODO: always replace random string in test bot with placeholder files
         if get_profile_value(chat_id_rec, column='sex') == MENU_BUTTONS['m1_girl'][-1]:
-            unique_photo_id = placeholder_unique_file_id_girl
+            unique_photo_id = placeholder_file_id_girl
         else:  # get_profile_value(chat_id_rec, column='sex') == MENU_BUTTONS['m1_boy'][-1]:
-            unique_photo_id = placeholder_unique_file_id_boy
+            unique_photo_id = placeholder_file_id_boy
     else:
         if get_profile_value(chat_id_rec, column='sex') == MENU_BUTTONS['m1_girl'][-1]:
-            unique_photo_id = placeholder_unique_file_id_girl
+            unique_photo_id = placeholder_file_id_girl
         else:  # get_profile_value(chat_id_rec, column='sex') == MENU_BUTTONS['m1_boy'][-1]:
-            unique_photo_id = placeholder_unique_file_id_boy
+            unique_photo_id = placeholder_file_id_boy
     bot.send_photo(chat_id, photo=unique_photo_id)
 
     profile_description = f'{name}\n\n'
