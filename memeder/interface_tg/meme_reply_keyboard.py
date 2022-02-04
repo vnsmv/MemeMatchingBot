@@ -17,7 +17,7 @@ def get_meme_reply_inline():
 
     buttons_row1 = {button: types.InlineKeyboardButton(text=MEME_BUTTONS[button][0],
                                                        callback_data=MEME_BUTTONS[button][1])
-                    for button in ('b2_dislike', 'b1_upside', 'b2_like')}
+                    for button in ('b2_dislike', 'b1_neutral', 'b2_like')}
     buttons_row2 = {button: types.InlineKeyboardButton(text=MEME_BUTTONS[button][0],
                                                        callback_data=MEME_BUTTONS[button][1])
                     for button in ('bu_users', )}
@@ -33,13 +33,10 @@ def get_user_reply_inline(telegram_username):
     markup_inline = types.InlineKeyboardMarkup()
 
     markup_inline.row(
-        # types.InlineKeyboardButton(text=USER_REACTION2BUTTON['b1_chat'][0],
-        #                            # callback_data=USER_REACTION2BUTTON['b1_chat'][1],
-        #                            url=f'https://t.me/{telegram_username}?start=+666'),
-        types.InlineKeyboardButton(text=USER_BUTTONS['b1_like'][0],
-                                   callback_data=USER_BUTTONS['b1_like'][1]),
-        types.InlineKeyboardButton(text=USER_BUTTONS['b1_dislike'][0],
-                                   callback_data=USER_BUTTONS['b1_dislike'][1])
+        types.InlineKeyboardButton(text=USER_BUTTONS['b1_chat'][0],
+                                   url=f'https://t.me/{telegram_username}?start=+666'),
+        types.InlineKeyboardButton(text=USER_BUTTONS['b1_next'][0],
+                                   callback_data=USER_BUTTONS['b1_next'][1]),
     )
 
     markup_inline.row(

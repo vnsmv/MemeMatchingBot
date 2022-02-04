@@ -84,8 +84,14 @@ def run_recommendation_train(env_file: str = None,
         unseen_top_iids = np.int64(list(set(top_iids) - set(seen_iids)))
 
         recommended_iids = iids[unseen_iids][np.argsort(u_p.dot(Q.T)[unseen_iids])[:-n_memes - 1:-1]]
-        annotate_iids = np.random.choice(globally_unseen_iids, size=int(annotation_ratio * n_memes))
+
+        if globally_unseen_iids:
+            annotate_iids = np.random.choice(globally_unseen_iids, size=int(annotation_ratio * n_memes))
+        else:
+            annotate_iids = np.int64([])
+
         random_iids = np.random.choice(unseen_iids, size=int(personal_exploration_ratio * n_memes))
+
         if len(unseen_top_iids) >= int(top_ratio * n_memes):
             unseen_top_iids = np.random.choice(unseen_top_iids, size=int(top_ratio * n_memes))
 

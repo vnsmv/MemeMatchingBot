@@ -34,7 +34,7 @@ def start(message, bot):
     if is_new_user:
         add_user(user_first_name, user_id, tg_username, chat_id)
 
-    _send_menu(chat_id, bot=bot, button='m_main_menu')
+    _send_menu(chat_id, bot=bot, button='m_start')
 
     # meme_id, file_id = _call_meme_generator(chat_id)
     # _send_meme(chat_id, meme_id=meme_id, file_id=file_id, bot=bot)
@@ -184,16 +184,16 @@ def _call_user_generator(chat_id):
         message_body = f'To calculate the best match for you, '\
                        f'we need more meme reactions. Enjoy {n_reactions_to_do} more memes:)'
     elif n_reactions_to_do == -1:
-        message_body = 'We need some time to update recommendations ' \
-                       'Or you review all users  \U0001F642' \
+        message_body = 'We need some time to update recommendations for you...\n' \
+                       'Or you have seen all matches already \U0001F642' \
 
     elif n_reactions_to_do == -2:
         message_body = 'Specify your gender \n' \
-                        '\U0001F466 ' + '\U0001F467 \n' \
-                       '(type command /start)'
+                        '\U0001F466 \U0001F467 \n' \
+                       '(type /start to go to the main menu)'
     elif n_reactions_to_do == -3:
         message_body = 'Specify your preferences \n' \
-                       '(type command /start)'
+                       '(type /start to go to the main menu)'
     elif n_reactions_to_do == -4:
         message_body = 'Specify your goals \n ' \
                        'It could be done quickly from the main menu (/start).'

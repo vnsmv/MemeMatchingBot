@@ -24,9 +24,8 @@ MEME_BUTTONS = {
 
 USER_BUTTONS = {
     # TODO: configure buttons, the emoji are random now.
-    'b1_like':          ("\U0001F495",                                                             '10000'),
-    'b1_chat':          ('Chat',                                                                   None),
-    'b1_dislike':       ("\U0001F504",                                                             '10001'),
+    'b1_chat':          ('Chat \U0001F4AC',                                                        None),
+    'b1_next':          ('Next \U000023ED',                                                        '10001'),
 
     'bm_memes':         ('Back to memes',                                                          'memes'),
 
