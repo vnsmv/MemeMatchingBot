@@ -4,7 +4,7 @@ from datetime import datetime
 import numpy as np
 
 from memeder.database.connect import connect_to_db
-from memeder.interface_tg.config import MEME_REACTION2BUTTON, USER_REACTION2BUTTON
+from memeder.interface_tg.config import MEME_BUTTONS, USER_BUTTONS
 
 
 def user_exist(chat_id):
@@ -90,11 +90,11 @@ def add_meme(file_id: str, file_unique_id: str, chat_id: int, file_type: str):
 
 def add_user_meme_init(chat_id, meme_id, message_id):
     cursor, connection = connect_to_db()
-    sql_query = """INSERT INTO users_memes (chat_id, memes_id, reaction, date, message_id) VALUES (%s, %s, %s, %s, %s)"""
+    sql_query = "INSERT INTO users_memes (chat_id, memes_id, reaction, date, message_id) VALUES (%s, %s, %s, %s, %s);"
 
     try:
         date = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
-        cursor.execute(sql_query, (chat_id, meme_id, MEME_REACTION2BUTTON['DB_EMPTY'][1], date, message_id))
+        cursor.execute(sql_query, (chat_id, meme_id, MEME_BUTTONS['DB_EMPTY'][1], date, message_id))
     except Exception as e:
         logging.exception(e)
         cursor.execute("ROLLBACK")
@@ -120,8 +120,8 @@ def add_user_meme_reaction(chat_id, message_id, reaction):
         logging.exception(f'add_user_meme_reaction: '
                           f'Updating empty reaction: {chat_id}, {message_id}, {reaction}.')
     else:
-        if (existing_reaction[0] == MEME_REACTION2BUTTON['DB_EMPTY'][1]) or\
-           (existing_reaction[0] == MEME_REACTION2BUTTON['bu_users'][1]):
+        if (existing_reaction[0] == MEME_BUTTONS['DB_EMPTY'][1]) or\
+           (existing_reaction[0] == MEME_BUTTONS['bu_users'][1]):
             sql_query = """UPDATE users_memes SET (reaction, date_reaction) = (%s, %s)
             WHERE chat_id = %s AND message_id = %s"""
             try:
@@ -151,7 +151,7 @@ def add_user_user_init(chat_id_obj, chat_id_subj, message_id):
         sql_query = """INSERT INTO users_users (user_id, rec_user_id, reaction, date, message_id)
         VALUES (%s, %s, %s, %s, %s)"""
         try:
-            cursor.execute(sql_query, (chat_id_obj, chat_id_subj, USER_REACTION2BUTTON['DB_PENDING'][1], date,
+            cursor.execute(sql_query, (chat_id_obj, chat_id_subj, USER_BUTTONS['DB_PENDING'][1], date,
                                        message_id))
         except Exception as e:
             logging.exception(e)
@@ -180,7 +180,7 @@ def add_user_user_reaction(chat_id_obj, message_id, reaction):
     date = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
     if len(existing_reaction) == 0:
         logging.exception(f'Updating empty reaction: {chat_id_obj}, {message_id}, {reaction}, {date}.')
-    elif existing_reaction[-1][0] != USER_REACTION2BUTTON['DB_PENDING'][1]:
+    elif existing_reaction[-1][0] != USER_BUTTONS['DB_PENDING'][1]:
         logging.exception(f'Updating final reaction: {chat_id_obj}, {message_id}, {reaction}, '
                           f'{existing_reaction}, {date}.')
     else:
@@ -201,7 +201,7 @@ def get_seen_meme_ids(chat_id):
 
     sql_query = """SELECT memes_id FROM users_memes WHERE chat_id = %s AND reaction != %s"""
     try:
-        cursor.execute(sql_query, (chat_id, MEME_REACTION2BUTTON['DB_EMPTY'][1]))
+        cursor.execute(sql_query, (chat_id, MEME_BUTTONS['DB_EMPTY'][1]))
     except Exception as e:
         logging.exception(e)
         cursor.execute("ROLLBACK")

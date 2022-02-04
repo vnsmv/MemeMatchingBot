@@ -4,12 +4,14 @@ from typing import Union
 from memeder.database.db_functions import add_user, user_exist, add_user_meme_reaction, \
     add_meme, add_user_meme_init, add_user_user_init, add_user_user_reaction, update_profile, get_profile_value, \
     get_all_user_ids
-from memeder.interface_tg.config import MEME_REACTION2BUTTON, USER_REACTION2BUTTON
+from memeder.interface_tg.config import MEME_BUTTONS, USER_BUTTONS, menu_routing_buttons, menu_update_buttons, \
+    MENU_BUTTONS
 from memeder.interface_tg.meme_reply_keyboard import get_meme_reply_inline, get_user_reply_inline, \
     get_user2meme_reply_inline
-from memeder.interface_tg.reply_markup import get_reply_markup
+from memeder.interface_tg.menu_keyboard import get_reply_markup
 from memeder.meme_recsys.engine import recommend_meme, recommend_user
 from memeder.meme_recsys.refreshing_activity import top_memes_selection, is_sending_meme, select_meme
+from memeder.interface_tg.glob_messages import msg_g1
 
 
 # https://core.telegram.org/bots/api#message +
@@ -32,8 +34,7 @@ def start(message, bot):
     if is_new_user:
         add_user(user_first_name, user_id, tg_username, chat_id)
 
-    # _send_menu(chat_id, bot=bot, stage=0 if is_new_user else 5)
-    _send_menu(chat_id, bot=bot, stage=0)
+    _send_menu(chat_id, bot=bot, button='m_main_menu')
 
     # meme_id, file_id = _call_meme_generator(chat_id)
     # _send_meme(chat_id, meme_id=meme_id, file_id=file_id, bot=bot)
@@ -58,9 +59,9 @@ def process(call, bot):
         message_id = call.message.message_id
 
         # 1. Updating meme reactions database:
-        if reaction in [v[1] for k, v in MEME_REACTION2BUTTON.items() if k.startswith('b')]:
+        if reaction in [v[1] for k, v in MEME_BUTTONS.items() if k.startswith('b')]:
 
-            if reaction == MEME_REACTION2BUTTON['bu_users'][1]:
+            if reaction == MEME_BUTTONS['bu_users'][1]:
                 chat_id_rec, telegram_username, message_body = _call_user_generator(chat_id=chat_id)
                 if chat_id_rec is None:
                     _send_user2meme(chat_id=chat_id, message_body=message_body, bot=bot)
@@ -75,10 +76,10 @@ def process(call, bot):
                 _send_meme(chat_id, meme_id=meme_id, file_id=file_id, bot=bot)
 
         # 4. Updating users reactions database:
-        if reaction in [v[1] for k, v in USER_REACTION2BUTTON.items() if k.startswith('b')]:
+        if reaction in [v[1] for k, v in USER_BUTTONS.items() if k.startswith('b')]:
             add_user_user_reaction(chat_id, message_id=message_id, reaction=reaction)
 
-            if reaction == USER_REACTION2BUTTON['bm_memes'][1]:
+            if reaction == USER_BUTTONS['bm_memes'][1]:
                 # 5. recommend new meme
                 meme_id, file_id = _call_meme_generator(chat_id)
                 _send_meme(chat_id, meme_id=meme_id, file_id=file_id, bot=bot)
@@ -109,36 +110,19 @@ def receive_photo(message):
 
 
 def menu_routing(message, bot):
-    text2stage = {'Sex \U0001F466  \U0001F467': 1, 'Matches preferences': 2, 'I am searching for \U0001F498 \U0001F923': 3, 'Edit Profile \U0001F58A \U0001F320': 4, 'Main menu \U0001F519': 5}
-    _send_menu(chat_id=message.chat.id, bot=bot, stage=text2stage[message.text])
+    text2button = {MENU_BUTTONS[b][0]: b for b in menu_routing_buttons}
+    _send_menu(chat_id=message.chat.id, bot=bot, button=text2button[message.text])
 
 
 def menu_update(message, bot):
     chat_id = message.chat.id
-    update = message.text
-    update2message = {
-        # 'Seen to males':        ('Your privacy is set to `Seen to males`.', 'privacy', 2000),
-        # 'Seen to females':      ('Your privacy is set to `Seen to females`.', 'privacy', 2001),
-        # 'Seen to all':          ('Your privacy is set to `Seen to all`.', 'privacy', 2002),
-        # 'Seen to nobody':       ('Your privacy is set to `Seen to nobody`.', 'privacy', 2003),
-        'Boys \U0001F466':        ('Got it! \n Dont hesitate to write first \U0001F609', 'preferences', 3000),
-        'Girls \U0001F469':      ('Ok, \n fingers crossed! \U0001F60A', 'preferences', 3001),
-        'All \U0001F469 \U0001F9D1':          ('Ok, will show you all users', 'preferences', 3002),
-        'Only memes \U0001F60E':   ('Just memes, good choice!', 'preferences', 3003),
-        'Friends \U0001F92A':              ('Yeap!', 'goals', 4000),
-        'Relationships \U0001F498':        ('Good look to find you love \U0001F49E', 'goals', 4001),
-        "I don't know \U0001F914":          ('Killing free time?)', 'goals', 4002),
-        'Just killing my free time \U0001F63C':           ('Just memes, got it!', 'goals', 4003),
-        'Bio \U0001F53C':           ('Send me your bio:)', 'bio_update_flag', True),
-        'Photo \U0001F53C':         ('Send me your photo:)', 'photo_update_flag', True),
-        'Clear bio \U0001F6AB':            ('Successfully deleted bio', 'use_bio', False),
-        'Clear photo \U0001F6AB':          ('Successfully deleted photo', 'use_photo', False),
-        'Boy \U0001F468':                 ('Success!', 'sex', 5000),
-        'Girl \U0001F469':               ('Success!', 'sex', 5001),
-    }
-    update_profile(chat_id=chat_id, column=update2message[update][1], value=update2message[update][2])
-    bot.send_message(chat_id, update2message[update][0] )
-    _send_menu(chat_id=chat_id, bot=bot, stage=5)
+
+    text2button_data = {MENU_BUTTONS[b][0]: MENU_BUTTONS[b] for b in menu_update_buttons}
+    button_data = text2button_data[message.text]
+
+    update_profile(chat_id=chat_id, column=button_data[2], value=button_data[3])
+    bot.send_message(chat_id, button_data[1])
+    _send_menu(chat_id=chat_id, bot=bot, button='m_main_menu')
 
 
 def check_receive_bio(message):
@@ -151,27 +135,19 @@ def check_receive_bio(message):
 
 def message_all(message, bot):
 
-    msg = \
-        """
-Hi there,
-Meme Dating team on the line! We received your feedback and present you v 0.2. What's new:\n
-- User's photo 🌠  and bio 🖌\n
-- Dating preferences (show me just girls/boys/all/memes) 🤦‍♀️🙎‍♂️\n
-- Better memes recommendation system !💥\n
-> Soon, we will add .gif and .mp4 support so you will be able to enjoy better memes.
-"""
+    msg = msg_g1
 
     host_id = message.chat.id
     if host_id == 354637850:
         chat_ids = get_all_user_ids()
         for chat_id in chat_ids:
-            # if chat_id in (481807223, 354637850, 11436017):
-            try:
-                bot.send_message(chat_id, msg)
-                print('Sent message to ', chat_id, flush=True)
-            except Exception:
-                print('Failed to send a message to ', chat_id, flush=True)
-                pass
+            if chat_id in (481807223, 354637850, 11436017):
+                try:
+                    bot.send_message(chat_id, msg)
+                    print('Sent message to ', chat_id, flush=True)
+                except Exception:
+                    print('Failed to send a message to ', chat_id, flush=True)
+                    pass
 
 
 def meme_all(message, bot):
@@ -226,7 +202,7 @@ def _call_user_generator(chat_id):
     return chat_id_rec, telegram_username, message_body
 
 
-def _send_meme(chat_id, meme_id, file_id, bot): #update_profile
+def _send_meme(chat_id, meme_id, file_id, bot):  # update_profile
     # bot.send_message(chat_id, 'New meme for you:)')
     message = bot.send_photo(chat_id, photo=file_id, reply_markup=get_meme_reply_inline())
     add_user_meme_init(chat_id=chat_id, meme_id=meme_id, message_id=message.message_id)
@@ -255,6 +231,6 @@ def _send_user2meme(chat_id, message_body, bot):
     bot.send_message(chat_id, message_body, reply_markup=get_user2meme_reply_inline())
 
 
-def _send_menu(chat_id, bot, stage):
-    message_body, reply_markup = get_reply_markup(stage=stage)
+def _send_menu(chat_id, bot, button):
+    message_body, reply_markup = get_reply_markup(button=button)
     bot.send_message(chat_id, message_body, reply_markup=reply_markup)

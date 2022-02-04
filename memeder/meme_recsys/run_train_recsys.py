@@ -7,7 +7,7 @@ from scipy.sparse import coo_matrix
 from scipy.spatial.distance import cdist
 
 from memeder.database.connect import connect_to_db
-from memeder.interface_tg.config import MEME_REACTION2BUTTON
+from memeder.interface_tg.config import MEME_BUTTONS
 from memeder.meme_recsys.matrix_factorization import unbiased_matrix_factorization
 
 
@@ -34,7 +34,7 @@ def run_recommendation_train(env_file: str = None,
     meme_ids = [meme_id[0] for meme_id in cursor.fetchall()]
 
     q3 = "SELECT chat_id, memes_id, reaction FROM users_memes WHERE reaction != %s AND reaction != %s;"
-    cursor.execute(q3, (MEME_REACTION2BUTTON['DB_EMPTY'][1], MEME_REACTION2BUTTON['bu_users'][1]))
+    cursor.execute(q3, (MEME_BUTTONS['DB_EMPTY'][1], MEME_BUTTONS['bu_users'][1]))
     users, items, reactions = np.array(cursor.fetchall()).T
 
     q4 = "SELECT meme_id FROM top_memes;"

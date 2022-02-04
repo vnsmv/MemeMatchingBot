@@ -4,7 +4,7 @@ import time
 import numpy as np
 
 from memeder.database.connect import connect_to_db
-from memeder.interface_tg.config import MEME_REACTION2BUTTON
+from memeder.interface_tg.config import MEME_BUTTONS
 from memeder.meme_recsys.run_train_recsys import REACTION2VALUE
 
 
@@ -13,7 +13,7 @@ def update_top_memes(env_file: str = None,
 
     cursor, connection = connect_to_db(env_file=env_file)
     q = """SELECT memes_id, reaction FROM users_memes WHERE reaction != %s AND reaction != %s;"""
-    cursor.execute(q, (MEME_REACTION2BUTTON['DB_EMPTY'][1], MEME_REACTION2BUTTON['bu_users'][1]))
+    cursor.execute(q, (MEME_BUTTONS['DB_EMPTY'][1], MEME_BUTTONS['bu_users'][1]))
     meme_ids, reactions = np.array(cursor.fetchall()).T
     connection.commit()
     connection.close()
