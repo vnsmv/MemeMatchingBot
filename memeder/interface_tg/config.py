@@ -35,7 +35,8 @@ USER_BUTTONS = {
 
 MENU_BUTTONS = {
     # button_text, message, profile_column (if any), profile_value (if any)
-    'm_start':          (None, 'Configure your profile to find your best match!', None, None),
+    'm_start':          (None, 'In main menu.\nHere, you can configure your profile to find your best match!', None,
+                         None),
 
     'm0_gender':        ('Gender \U0001F466 \U0001F467', 'Choose your gender:', None, None),
     'm0_preferences':   ('Preferences', 'Show me:', None, None),

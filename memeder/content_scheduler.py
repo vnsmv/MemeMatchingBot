@@ -106,10 +106,10 @@ def receive_photo(message):
         update_profile(chat_id=chat_id, column='photo_update_flag', value=False)
 
     elif chat_id in (354637850, 2106431824, ):  # Boris, ffmemesbot (API proxy), ...
-        print(message.photo[-1].file_id)
-        print()
-        # add_meme(file_id=message.photo[-1].file_id, file_unique_id=message.photo[-1].file_unique_id,
-        #          chat_id=message.chat.id, file_type='photo')
+        # print(message.photo[-1].file_id)
+        # print()
+        add_meme(file_id=message.photo[-1].file_id, file_unique_id=message.photo[-1].file_unique_id,
+                 chat_id=message.chat.id, file_type='photo')
 
 
 def menu_routing(message, bot):
