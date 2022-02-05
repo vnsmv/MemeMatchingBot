@@ -5,7 +5,7 @@ from math import sqrt
 
 @njit
 def mf_sgd_step(user_idx, item_idx, feedback, P, Q, lrate, reg):
-    '''SGD optimization function.'''
+    """SGD optimization function."""
 
     cum_error = 0
     for k in range(len(feedback)):
@@ -31,7 +31,7 @@ def mf_sgd_step(user_idx, item_idx, feedback, P, Q, lrate, reg):
 def unbiased_matrix_factorization(R_train,
                                   rank=10, lrate=0.005, reg=0.05, num_epochs=100, tol=1e-4,
                                   seed=None, verbose=False):
-    '''
+    """
     Function to compute weighted matrix factorization (MF) based on a
     train dataset `R_train`. Given be the model: `R_hat = P.dot(Q.T)`.
 
@@ -48,7 +48,7 @@ def unbiased_matrix_factorization(R_train,
     ---------------------------------------
     Returns:
     Two matricies (factors): P, Q.
-    '''
+    """
 
     # TODO: add assertions
     # TODO: patient tolerance
@@ -76,6 +76,7 @@ def unbiased_matrix_factorization(R_train,
             print('Epoch {} RMSE: {}'.format(epoch + 1, rmse))
 
         last_err = new_err
-        if err_delta < tol: break
+        if err_delta < tol:
+            break
 
     return P, Q

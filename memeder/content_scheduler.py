@@ -1,4 +1,5 @@
 import datetime
+import os
 from typing import Union
 
 from memeder.database.db_functions import add_user, user_exist, add_user_meme_reaction, \
@@ -62,12 +63,12 @@ def process(call, bot):
         if reaction in [v[1] for k, v in MEME_BUTTONS.items() if k.startswith('b')]:
 
             if reaction == MEME_BUTTONS['bu_users'][1]:
-                chat_id_rec, telegram_username, name, message_body = _call_user_generator(chat_id=chat_id)
+                chat_id_rec, similarity, telegram_username, name, message_body = _call_user_generator(chat_id=chat_id)
                 if chat_id_rec is None:
                     _send_user2meme(chat_id=chat_id, message_body=message_body, bot=bot)
                 else:
-                    _send_user(chat_id=chat_id, chat_id_rec=chat_id_rec, telegram_username=telegram_username, name=name,
-                               bot=bot)
+                    _send_user(chat_id=chat_id, chat_id_rec=chat_id_rec, similarity=similarity,
+                               telegram_username=telegram_username, name=name, bot=bot)
             else:
                 add_user_meme_reaction(chat_id, message_id=message_id, reaction=reaction)
 
@@ -84,12 +85,12 @@ def process(call, bot):
                 meme_id, file_id = _call_meme_generator(chat_id)
                 _send_meme(chat_id, meme_id=meme_id, file_id=file_id, bot=bot)
             else:
-                chat_id_rec, telegram_username, name, message_body = _call_user_generator(chat_id=chat_id)
+                chat_id_rec, similarity, telegram_username, name, message_body = _call_user_generator(chat_id=chat_id)
                 if chat_id_rec is None:
                     _send_user2meme(chat_id=chat_id, message_body=message_body, bot=bot)
                 else:
-                    _send_user(chat_id=chat_id, chat_id_rec=chat_id_rec, telegram_username=telegram_username, name=name,
-                               bot=bot)
+                    _send_user(chat_id=chat_id, chat_id_rec=chat_id_rec, similarity=similarity,
+                               telegram_username=telegram_username, name=name, bot=bot)
 
     # TODO: do we need to force dating recommendations?
 
@@ -105,8 +106,10 @@ def receive_photo(message):
         update_profile(chat_id=chat_id, column='photo_update_flag', value=False)
 
     elif chat_id in (354637850, 2106431824, ):  # Boris, ffmemesbot (API proxy), ...
-        add_meme(file_id=message.photo[-1].file_id, file_unique_id=message.photo[-1].file_unique_id,
-                 chat_id=message.chat.id, file_type='photo')
+        print(message.photo[-1].file_id)
+        print()
+        # add_meme(file_id=message.photo[-1].file_id, file_unique_id=message.photo[-1].file_unique_id,
+        #          chat_id=message.chat.id, file_type='photo')
 
 
 def menu_routing(message, bot):
@@ -178,7 +181,7 @@ def _call_meme_generator(chat_id):
 
 
 def _call_user_generator(chat_id):
-    chat_id_rec, telegram_username, name, n_reactions_to_do = recommend_user(chat_id=chat_id)
+    chat_id_rec, similarity, telegram_username, name, n_reactions_to_do = recommend_user(chat_id=chat_id)
 
     if n_reactions_to_do > 0:
         message_body = f'To calculate the best match for you, '\
@@ -199,7 +202,7 @@ def _call_user_generator(chat_id):
                        'It could be done quickly from the main menu (/start).'
     else:  # n_reactions_to_do == 0:
         message_body = None
-    return chat_id_rec, telegram_username, name, message_body
+    return chat_id_rec, similarity, telegram_username, name, message_body
 
 
 def _send_meme(chat_id, meme_id, file_id, bot):  # update_profile
@@ -207,30 +210,26 @@ def _send_meme(chat_id, meme_id, file_id, bot):  # update_profile
     add_user_meme_init(chat_id=chat_id, meme_id=meme_id, message_id=message.message_id)
 
 
-def _send_user(chat_id, chat_id_rec, telegram_username, name, bot):
-    placeholder_file_id_boy = 'AgACAgIAAxkBAAIHuGH9lzK528n-FqhWWO1OfxPzwRDOAAL4uTEb-TzwS_7FLjvKnNoXAQADAgADeAADIwQ'
-    placeholder_file_id_girl = 'AgACAgIAAxkBAAIHuWH9l108zGSCs9jM3Ew4Rsy5hHuSAAL6uTEb-TzwS0Thnpzg9heoAQADAgADeAADIwQ'
+def _send_user(chat_id, chat_id_rec, similarity, telegram_username, name, bot):
+    boy_photo_id = os.environ.get('BOY_PHOTO_ID')
+    girl_photo_id = os.environ.get('GIRL_PHOTO_ID')
 
     if get_profile_value(chat_id_rec, column='use_photo'):
         photo_id = get_profile_value(chat_id_rec, column='photo_id')
         # TODO: always replace random string in test bot with placeholder files
-        if get_profile_value(chat_id_rec, column='sex') == MENU_BUTTONS['m1_girl'][-1]:
-            photo_id = placeholder_file_id_girl
-        else:  # get_profile_value(chat_id_rec, column='sex') == MENU_BUTTONS['m1_boy'][-1]:
-            photo_id = placeholder_file_id_boy
     else:
         if get_profile_value(chat_id_rec, column='sex') == MENU_BUTTONS['m1_girl'][-1]:
-            photo_id = placeholder_file_id_girl
+            photo_id = girl_photo_id
         else:  # get_profile_value(chat_id_rec, column='sex') == MENU_BUTTONS['m1_boy'][-1]:
-            photo_id = placeholder_file_id_boy
+            photo_id = boy_photo_id
 
     profile_description = f'{name}\n\n'
 
     goals_code = get_profile_value(chat_id_rec, column='goals')
-    profile_description += f'\U0001F3AF {goals_code}\n\n'
+    goals_code2text = {MENU_BUTTONS[k][3]: MENU_BUTTONS[k][0] for k in MENU_BUTTONS.keys() if k.startswith('m4')}
+    profile_description += f'\U0001F3AF {goals_code2text[goals_code]}\n\n'
 
-    compatibility = 69  # TODO: train + request compatibility
-    profile_description += f'\U0001F4AB	Memes compatibility: {compatibility}%\n\n'
+    profile_description += f'\U0001F4AB	Memes compatibility: {similarity}%\n\n'
 
     bio = ''
     if get_profile_value(chat_id_rec, column='use_bio'):

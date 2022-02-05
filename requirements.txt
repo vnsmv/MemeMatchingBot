@@ -6,3 +6,5 @@ python-dotenv
 tqdm
 scipy
 numba
+scikit-learn
+scikit-image

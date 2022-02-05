@@ -42,7 +42,7 @@ def is_sending_meme(chat_id,
     return (sending_meme_status, delta) if return_delta else sending_meme_status
 
 
-def top_memes_selection(top_n_memes: int = 500, min_reactions_th: int = 2, min_avg_rating_th: float = 0):
+def top_memes_selection(top_n_memes: int = 500, min_reactions_th: int = 3, min_avg_rating_th: float = 0):
     cursor, connection = connect_to_db()
     q = """SELECT memes_id, reaction FROM users_memes WHERE reaction != %s AND reaction != %s;"""
     cursor.execute(q, (MEME_BUTTONS['DB_EMPTY'][1], MEME_BUTTONS['bu_users'][1]))

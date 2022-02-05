@@ -1,10 +1,14 @@
 import argparse
 import time
+from itertools import product
 
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
 from scipy.sparse import coo_matrix
 from scipy.spatial.distance import cdist
+from sklearn.model_selection import train_test_split
+from skimage.exposure import adjust_gamma
 
 from memeder.database.connect import connect_to_db
 from memeder.interface_tg.config import MEME_BUTTONS
@@ -65,10 +69,8 @@ def run_recommendation_train(env_file: str = None,
     R = coo_matrix((values, (users, items)), shape=(len(chat_ids), len(meme_ids)))
 
     # ### 2. Training MF (matrix factorization): ###
-    P, Q = unbiased_matrix_factorization(R, rank=3, num_epochs=10, lrate=0.07, reg=0.1, seed=seed)
-    # TODO: should be retrained with other parameters with larger dataset!
-    # TODO: run grid search!
-    # val RMSE = 0.7757
+    P, Q = train_mf(R=R, seed=seed)
+    # val RMSE = 0.7441
 
     # ### 3. Getting memes recommendations: ###
     chat_id2recommended_meme_ids = {}
@@ -103,6 +105,7 @@ def run_recommendation_train(env_file: str = None,
 
     # ### 4. Getting users recommendations: ###
     users_similarity = cdist(P, P, metric='euclidean')
+    users_similarity_percentage = get_users_similarity_percentage(users_similarity=users_similarity)
 
     cursor, connection = connect_to_db(env_file=env_file)
     q5 = """SELECT user_id, rec_user_id FROM users_users"""
@@ -133,9 +136,9 @@ def run_recommendation_train(env_file: str = None,
                               (df_profiles['sex'] != 5002)]
     df_profiles['uid'] = df_profiles['chat_id'].apply(lambda x: chat_id2uid[x])
 
-    chat_id2recommended_chat_ids = {}
+    chat_id2recommended_chat_ids, chat_id2percentages = {}, {}
     uids = np.arange(len(chat_ids))
-    for uid, u_s in enumerate(users_similarity):
+    for uid, (u_s, u_s_p) in enumerate(zip(users_similarity, users_similarity_percentage)):
         if df_profiles[df_profiles['uid'] == uid].empty:
             filtered_by_preferences = []
         else:
@@ -153,8 +156,10 @@ def run_recommendation_train(env_file: str = None,
         uids_flt = uids[unseen_uids]
 
         recommended_uids_flt = np.argsort(u_s[unseen_uids])[:n_matches]
+        recommended_percentage = u_s_p[unseen_uids][recommended_uids_flt].tolist()
         recommended_chat_ids = list(map(lambda x: uid2chat_id[x], uids_flt[recommended_uids_flt]))
         chat_id2recommended_chat_ids[uid2chat_id[uid]] = recommended_chat_ids
+        chat_id2percentages[uid2chat_id[uid]] = recommended_percentage
 
     # ### 5. Updating meme proposals: ###
     cursor, connection = connect_to_db(env_file=env_file)
@@ -178,18 +183,64 @@ def run_recommendation_train(env_file: str = None,
     q_del = "DELETE FROM user_proposals;"
     cursor.execute(q_del)
 
-    q_add = "INSERT INTO user_proposals (chat_id, rec_chat_id, status) VALUES"
+    q_add = "INSERT INTO user_proposals (chat_id, rec_chat_id, status, similarity) VALUES"
     add_values = []
     for chat_id, recommended_chat_ids in chat_id2recommended_chat_ids.items():
-        for rec_chat_id in recommended_chat_ids:
-            q_add += " (%s, %s, %s),"
-            add_values += [chat_id, rec_chat_id, 0]
+        users_similarities = chat_id2percentages[chat_id]
+        for rec_chat_id, rec_similarity in zip(recommended_chat_ids, users_similarities):
+            q_add += " (%s, %s, %s, %s),"
+            add_values += [chat_id, rec_chat_id, 0, rec_similarity]
     q_add = q_add.strip(',') + ';'
 
     if add_values:
         cursor.execute(q_add, tuple(add_values))
     connection.commit()
     connection.close()
+
+
+def train_mf(R, seed=42):
+    data, row, col, shape = R.data, R.row, R.col, R.shape
+    train_idx, test_idx = train_test_split(np.arange(len(data)), test_size=0.1, random_state=seed)
+    R_train = coo_matrix((data[train_idx], (row[train_idx], col[train_idx])), shape=shape)
+    R_test = coo_matrix((data[test_idx], (row[test_idx], col[test_idx])), shape=shape)
+
+    def get_coo_rmse(r_test, r_pred):
+        elems_pred = r_pred[(r_test.row, r_test.col)]
+        elems_test = r_test.data
+        return np.sqrt(np.mean((elems_pred - elems_test) ** 2))
+
+    params_grid = {
+        'rank': [2, 3, 4, 5],
+        'num_epochs': [8, 9, 10, 11, 12],
+        'lrate': np.linspace(0.05, 0.15, num=5),
+        'reg': np.linspace(0.05, 0.15, num=5),
+    }
+
+    min_rmse, min_params = np.inf, None
+    for params in tqdm(product(*params_grid.values())):
+        mf_kwargs = {k: v for k, v in zip(params_grid.keys(), params)}
+        p, q = unbiased_matrix_factorization(R_train, seed=seed, **mf_kwargs)
+        r_pred = p.dot(q.T)
+        rmse = get_coo_rmse(R_test, r_pred)
+        if rmse <= min_rmse:
+            min_rmse = rmse
+            min_params = mf_kwargs
+
+    print(f'Best RMSE = {min_rmse:.4f}', flush=True)
+    print(f'At MF params = {min_params}', flush=True)
+
+    P, Q = unbiased_matrix_factorization(R, seed=seed, **min_params)
+    return P, Q
+
+
+def get_users_similarity_percentage(users_similarity):
+    us_percent_comp = users_similarity[users_similarity != 0]
+    a_max = us_percent_comp.max()
+    us_percent_comp -= a_max
+    a_min = us_percent_comp.min()
+
+    users_similarity_percentage = adjust_gamma((users_similarity - a_max) / a_min, 2)
+    return np.int64(np.round(users_similarity_percentage * 100))
 
 
 def main():

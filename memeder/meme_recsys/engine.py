@@ -113,25 +113,26 @@ def recommend_user(chat_id, cold_start_n_meme: int = 20):
 
         n_reactions_to_do = cold_start_n_meme - n_reactions + 1
         chat_id_rec = None
+        similarity = None
 
     elif (sex is None) or (sex[0] == 5002):
-        chat_id_rec, n_reactions_to_do = None, -2
+        chat_id_rec, similarity, n_reactions_to_do = None, None, -2
 
     elif (preferences is None) or (preferences[0] == 3003):
-        chat_id_rec, n_reactions_to_do = None, -3
+        chat_id_rec, similarity, n_reactions_to_do = None, None, -3
 
     elif (goals is None) or (goals[0] == 4003):
-        chat_id_rec, n_reactions_to_do = None, -4
+        chat_id_rec, similarity, n_reactions_to_do = None, None, -4
 
     else:
-        q = "SELECT rec_chat_id FROM user_proposals WHERE chat_id = %s AND status = %s;"
+        q = "SELECT rec_chat_id, similarity FROM user_proposals WHERE chat_id = %s AND status = %s;"
         cursor.execute(q, (chat_id, 0))
-        chat_id_rec = cursor.fetchone()
+        chat_id_rec__similarity = cursor.fetchone()
 
-        if chat_id_rec is None:
-            chat_id_rec, n_reactions_to_do = None, -1
+        if chat_id_rec__similarity is None:
+            chat_id_rec, similarity, n_reactions_to_do = None, None, -1
         else:
-            chat_id_rec, n_reactions_to_do = chat_id_rec[0], 0
+            chat_id_rec, similarity, n_reactions_to_do = chat_id_rec__similarity[0], chat_id_rec__similarity[1], 0
             q = "UPDATE user_proposals SET status = %s WHERE chat_id = %s AND rec_chat_id = %s"
             try:
                 cursor.execute(q, (1, chat_id, chat_id_rec))
@@ -147,4 +148,4 @@ def recommend_user(chat_id, cold_start_n_meme: int = 20):
     connection.commit()
     connection.close()
 
-    return chat_id_rec, telegram_username, name, n_reactions_to_do
+    return chat_id_rec, similarity, telegram_username, name, n_reactions_to_do
