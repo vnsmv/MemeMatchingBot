@@ -128,12 +128,14 @@ def menu_update(message, bot):
     _send_menu(chat_id=chat_id, bot=bot, button='m_main_menu')
 
 
-def check_receive_bio(message):
+def check_receive_bio(message, bot):
     chat_id = message.chat.id
     if get_profile_value(chat_id, column='bio_update_flag'):
         update_profile(chat_id=chat_id, column='bio', value=message.text)
         update_profile(chat_id=chat_id, column='use_bio', value=True)
         update_profile(chat_id=chat_id, column='bio_update_flag', value=False)
+    else:  # interpret as a start:
+        start(message, bot)
 
 
 def message_all(message, bot):
@@ -144,13 +146,13 @@ def message_all(message, bot):
     if host_id == 354637850:
         chat_ids = get_all_user_ids()
         for chat_id in chat_ids:
-            if chat_id in (481807223, 354637850, 11436017):
-                try:
-                    bot.send_message(chat_id, msg)
-                    print('Sent message to ', chat_id, flush=True)
-                except Exception:
-                    print('Failed to send a message to ', chat_id, flush=True)
-                    pass
+            # if chat_id in (481807223, 354637850, 11436017):
+            try:
+                bot.send_message(chat_id, msg)
+                print('Sent message to ', chat_id, flush=True)
+            except Exception:
+                print('Failed to send a message to ', chat_id, flush=True)
+                pass
 
 
 def meme_all(message, bot):
@@ -240,12 +242,6 @@ def _send_user(chat_id, chat_id_rec, similarity, telegram_username, name, bot):
 
     message = bot.send_photo(chat_id, photo=photo_id, caption=profile_description,
                              reply_markup=get_user_reply_inline(telegram_username=telegram_username))
-
-    # if user don't upload a photo
-    # bot.send_photo(chat_id, photo=get_profile_value(chat_id_rec, column='photo_id'))
-
-    # if get_profile_value(chat_id_rec, column='use_photo'):
-    #     bot.send_photo(chat_id, photo=get_profile_value(chat_id_rec, column='photo_id'))
 
     add_user_user_init(chat_id_obj=chat_id, chat_id_subj=chat_id_rec, message_id=message.message_id)
 

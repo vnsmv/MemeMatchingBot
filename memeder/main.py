@@ -62,7 +62,7 @@ def main():
 
     @bot.message_handler(content_types=['text'])
     def _check_receive_bio(message):
-        check_receive_bio(message)
+        check_receive_bio(message, bot)
 
     # ### Processing reactions: ###
     @bot.callback_query_handler(func=lambda call: True)
