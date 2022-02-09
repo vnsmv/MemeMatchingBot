@@ -63,7 +63,7 @@ def update_profile(chat_id, column, value):
     connection.close()
 
 
-def add_meme(file_id: str, file_unique_id: str, chat_id: int, file_type: str):
+def add_meme(file_id: str, file_unique_id: str, chat_id: int, file_type: str, caption: str):
     cursor, connection = connect_to_db()
 
     sql_query = """SELECT file_id FROM memes"""
@@ -75,11 +75,11 @@ def add_meme(file_id: str, file_unique_id: str, chat_id: int, file_type: str):
 
     file_ids = cursor.fetchall()
     if (not file_ids) or (file_id not in np.array(file_ids).squeeze(-1)):
-        sql_query = """INSERT INTO memes (file_id, file_unique_id, author_id, create_date, file_type) 
-        VALUES (%s, %s, %s, %s, %s)"""
+        sql_query = """INSERT INTO memes (file_id, file_unique_id, author_id, create_date, file_type, caption) 
+        VALUES (%s, %s, %s, %s, %s, %s);"""
         try:
             date = datetime.now().strftime("%m/%d/%Y %H:%M:%S")
-            cursor.execute(sql_query, (file_id, file_unique_id, chat_id, date, file_type))
+            cursor.execute(sql_query, (file_id, file_unique_id, chat_id, date, file_type, caption))
         except Exception as e:
             logging.exception(e)
             cursor.execute("ROLLBACK")

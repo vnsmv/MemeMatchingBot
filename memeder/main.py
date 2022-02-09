@@ -75,6 +75,14 @@ def main():
     def _handle_photo(message):
         receive_photo(message=message)
 
+    # @bot.message_handler(content_types=['video'])
+    # def _handle_video(message):
+    #     receive_video(message=message)
+    #
+    # @bot.message_handler(content_types=['animation'])
+    # def _handle_animation(message):
+    #     receive_animation(message=message)
+
     bot.polling(none_stop=True, interval=0)
 
 

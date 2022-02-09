@@ -12,7 +12,7 @@ from memeder.interface_tg.meme_reply_keyboard import get_meme_reply_inline, get_
 from memeder.interface_tg.menu_keyboard import get_reply_markup
 from memeder.meme_recsys.engine import recommend_meme, recommend_user
 from memeder.meme_recsys.refreshing_activity import top_memes_selection, is_sending_meme, select_meme
-from memeder.interface_tg.glob_messages import msg_g1
+from memeder.interface_tg.glob_messages import msg_g2
 
 
 # https://core.telegram.org/bots/api#message +
@@ -96,20 +96,24 @@ def process(call, bot):
 
 
 def receive_photo(message):
+    file_id = message.photo[-1].file_id
+    file_unique_id = message.photo[-1].file_unique_id
     chat_id = message.chat.id
+    file_type = 'photo'
+    caption = message.caption
+
     if get_profile_value(chat_id, column='photo_update_flag'):
-        file_id = message.photo[-1].file_id
-        file_unique_id = message.photo[-1].file_unique_id
         update_profile(chat_id=chat_id, column='photo_id', value=file_id)
         update_profile(chat_id=chat_id, column='photo_unique_id', value=file_unique_id)
         update_profile(chat_id=chat_id, column='use_photo', value=True)
         update_profile(chat_id=chat_id, column='photo_update_flag', value=False)
 
     elif chat_id in (354637850, 2106431824, ):  # Boris, ffmemesbot (API proxy), ...
-        # print(message.photo[-1].file_id)
-        # print()
-        add_meme(file_id=message.photo[-1].file_id, file_unique_id=message.photo[-1].file_unique_id,
-                 chat_id=message.chat.id, file_type='photo')
+        # ### Add photo meme: ###
+        print('[CAPTION]:', caption, caption is None)
+        print()
+        # add_meme(file_id=file_id, file_unique_id=file_unique_id, chat_id=message.chat.id, file_type='photo',
+        #          caption='')
 
 
 def menu_routing(message, bot):
@@ -140,19 +144,19 @@ def check_receive_bio(message, bot):
 
 def message_all(message, bot):
 
-    msg = msg_g1
+    msg = msg_g2
 
     host_id = message.chat.id
     if host_id == 354637850:
         chat_ids = get_all_user_ids()
         for chat_id in chat_ids:
-            # if chat_id in (481807223, 354637850, 11436017):
-            try:
-                bot.send_message(chat_id, msg)
-                print('Sent message to ', chat_id, flush=True)
-            except Exception:
-                print('Failed to send a message to ', chat_id, flush=True)
-                pass
+            if chat_id in (481807223, 354637850, 11436017):
+                try:
+                    bot.send_message(chat_id, msg)
+                    print('Sent message to ', chat_id, flush=True)
+                except Exception:
+                    print('Failed to send a message to ', chat_id, flush=True)
+                    pass
 
 
 def meme_all(message, bot):
@@ -205,6 +209,10 @@ def _call_user_generator(chat_id):
     else:  # n_reactions_to_do == 0:
         message_body = None
     return chat_id_rec, similarity, telegram_username, name, message_body
+
+
+# def _add_meme(file_id: str, file_unique_id: str, chat_id: int, file_type: str, caption: str):
+#     add_meme(file_id=file_id)
 
 
 def _send_meme(chat_id, meme_id, file_id, bot):  # update_profile
