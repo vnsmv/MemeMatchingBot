@@ -20,8 +20,8 @@ REACTION2VALUE = {'1001': -4, '107': -3, '106': -2, '105': -1, '104': 0,
 
 
 def run_recommendation_train(env_file: str = None,
-                             n_memes: int = 200, n_matches: int = 30,
-                             personal_exploration_ratio=0.1, annotation_ratio=0.1, top_ratio=0.2,
+                             n_memes: int = 50, n_matches: int = 30,
+                             personal_exploration_ratio=0.1, annotation_ratio=0.1, top_ratio=0.4,
                              seed=42):
 
     # TODO: try-except the cursor executions...

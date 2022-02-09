@@ -2,6 +2,9 @@ import numpy as np
 
 from memeder.database.db_functions import get_seen_meme_ids, get_all_meme_ids, get_top_meme_ids
 from memeder.database.connect import connect_to_db
+from memeder.interface_tg.config import MEME_BUTTONS
+
+COLD_START_N_MEME = 30
 
 
 def get_random_meme() -> (int, str):
@@ -26,7 +29,42 @@ def chat_id2telegram_username_and_name(chat_id: int, cursor):
     return telegram_username, name
 
 
-def recommend_meme(chat_id, cold_start_n_meme: int = 20):
+def get_next_meme(chat_id: int, cursor):
+
+    def _get_next_meme_recursion(_chat_id: int = chat_id, _cursor=cursor):
+        _q = "SELECT meme_id FROM meme_proposals WHERE chat_id = %s AND status = %s;"
+        _cursor.execute(_q, (_chat_id, 0))
+        _meme_id = _cursor.fetchone()
+
+        if _meme_id is None:
+            _meme_id, _file_id = get_random_meme()
+        else:
+            _meme_id = _meme_id[0]
+            _q = "UPDATE meme_proposals SET status = %s WHERE chat_id = %s AND meme_id = %s"
+            _cursor.execute(_q, (1, _chat_id, _meme_id))
+
+            _q = "SELECT reaction FROM users_memes WHERE memes_id = %s AND chat_id = %s;"
+            _cursor.execute(_q, (_meme_id, _chat_id))
+            _reaction = _cursor.fetchone()
+
+            if _reaction is None:
+                _file_id = meme_id2file_id(meme_id=_meme_id, cursor=_cursor)
+            elif _reaction[0] == MEME_BUTTONS['DB_EMPTY'][1]:
+                _file_id = meme_id2file_id(meme_id=_meme_id, cursor=_cursor)
+            else:
+                _meme_id, _file_id = _get_next_meme_recursion()
+
+        return _meme_id, _file_id
+
+    try:
+        meme_id, file_id = _get_next_meme_recursion()
+    except RecursionError:
+        meme_id, file_id = get_random_meme()
+
+    return meme_id, file_id
+
+
+def recommend_meme(chat_id, cold_start_n_meme: int = COLD_START_N_MEME):
 
     cursor, connection = connect_to_db()
 
@@ -61,21 +99,7 @@ def recommend_meme(chat_id, cold_start_n_meme: int = 20):
             cursor.execute(q, (False, chat_id))
 
     else:
-        q = "SELECT meme_id FROM meme_proposals WHERE chat_id = %s AND status = %s;"
-        cursor.execute(q, (chat_id, 0))
-        meme_id = cursor.fetchone()
-
-        if meme_id is None:
-            meme_id, file_id = get_random_meme()
-        else:
-            meme_id = meme_id[0]
-            file_id = meme_id2file_id(meme_id=meme_id, cursor=cursor)
-            q = "UPDATE meme_proposals SET status = %s WHERE chat_id = %s AND meme_id = %s"
-            try:
-                cursor.execute(q, (1, chat_id, meme_id))
-            except Exception:
-                # actually the table is being updated now:)
-                pass
+        meme_id, file_id = get_next_meme(chat_id=chat_id, cursor=cursor)
 
     connection.commit()
     connection.close()
@@ -83,7 +107,7 @@ def recommend_meme(chat_id, cold_start_n_meme: int = 20):
     return meme_id, file_id
 
 
-def recommend_user(chat_id, cold_start_n_meme: int = 20):
+def recommend_user(chat_id, cold_start_n_meme: int = COLD_START_N_MEME):
     cursor, connection = connect_to_db()
 
     # ### 1. Is cold start? ###

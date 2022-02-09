@@ -9,7 +9,7 @@ from memeder.meme_recsys.run_train_recsys import REACTION2VALUE
 
 
 def update_top_memes(env_file: str = None,
-                     top_n_memes: int = 100, min_reactions_th: int = 3, min_avg_rating_th: float = 1):
+                     top_n_memes: int = 200, min_reactions_th: int = 3, min_avg_rating_th: float = 1):
 
     cursor, connection = connect_to_db(env_file=env_file)
     q = """SELECT memes_id, reaction FROM users_memes WHERE reaction != %s AND reaction != %s;"""
