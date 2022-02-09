@@ -37,14 +37,11 @@ def start(message, bot):
 
     _send_menu(chat_id, bot=bot, button='m_start')
 
-    # meme_id, file_id = _call_meme_generator(chat_id)
-    # _send_meme(chat_id, meme_id=meme_id, file_id=file_id, bot=bot)
-
 
 def start_meme(message, bot):
     chat_id: int = message.chat.id
-    meme_id, file_id = _call_meme_generator(chat_id)
-    _send_meme(chat_id, meme_id=meme_id, file_id=file_id, bot=bot)
+    meme_id, file_id, file_type, caption = recommend_meme(chat_id)
+    _send_meme(chat_id, meme_id=meme_id, file_id=file_id, file_type=file_type, caption=caption, bot=bot)
 
 
 def process(call, bot):
@@ -73,8 +70,8 @@ def process(call, bot):
                 add_user_meme_reaction(chat_id, message_id=message_id, reaction=reaction)
 
                 # 3. recommend new meme
-                meme_id, file_id = _call_meme_generator(chat_id)
-                _send_meme(chat_id, meme_id=meme_id, file_id=file_id, bot=bot)
+                meme_id, file_id, file_type, caption = recommend_meme(chat_id)
+                _send_meme(chat_id, meme_id=meme_id, file_id=file_id, file_type=file_type, caption=caption, bot=bot)
 
         # 4. Updating users reactions database:
         if reaction in [v[1] for k, v in USER_BUTTONS.items() if k.startswith('b')]:
@@ -82,8 +79,8 @@ def process(call, bot):
 
             if reaction == USER_BUTTONS['bm_memes'][1]:
                 # 5. recommend new meme
-                meme_id, file_id = _call_meme_generator(chat_id)
-                _send_meme(chat_id, meme_id=meme_id, file_id=file_id, bot=bot)
+                meme_id, file_id, file_type, caption = recommend_meme(chat_id)
+                _send_meme(chat_id, meme_id=meme_id, file_id=file_id, file_type=file_type, caption=caption, bot=bot)
             else:
                 chat_id_rec, similarity, telegram_username, name, message_body = _call_user_generator(chat_id=chat_id)
                 if chat_id_rec is None:
@@ -95,25 +92,36 @@ def process(call, bot):
     # TODO: do we need to force dating recommendations?
 
 
-def receive_photo(message):
-    file_id = message.photo[-1].file_id
-    file_unique_id = message.photo[-1].file_unique_id
+def receive_content(message, file_type: str):
     chat_id = message.chat.id
-    file_type = 'photo'
     caption = message.caption
 
-    if get_profile_value(chat_id, column='photo_update_flag'):
-        update_profile(chat_id=chat_id, column='photo_id', value=file_id)
-        update_profile(chat_id=chat_id, column='photo_unique_id', value=file_unique_id)
-        update_profile(chat_id=chat_id, column='use_photo', value=True)
-        update_profile(chat_id=chat_id, column='photo_update_flag', value=False)
+    if file_type == 'photo':
+        file_id = message.photo[-1].file_id
+        file_unique_id = message.photo[-1].file_unique_id
 
-    elif chat_id in (354637850, 2106431824, ):  # Boris, ffmemesbot (API proxy), ...
-        # ### Add photo meme: ###
-        print('[CAPTION]:', caption, caption is None)
-        print()
-        # add_meme(file_id=file_id, file_unique_id=file_unique_id, chat_id=message.chat.id, file_type='photo',
-        #          caption='')
+        if get_profile_value(chat_id, column='photo_update_flag'):
+            update_profile(chat_id=chat_id, column='photo_id', value=file_id)
+            update_profile(chat_id=chat_id, column='photo_unique_id', value=file_unique_id)
+            update_profile(chat_id=chat_id, column='use_photo', value=True)
+            update_profile(chat_id=chat_id, column='photo_update_flag', value=False)
+
+        elif chat_id in (354637850, 2106431824, ):  # Boris, ffmemesbot (API proxy), ...
+            add_meme(file_id=file_id, file_unique_id=file_unique_id, chat_id=chat_id, file_type=file_type,
+                     caption=caption)
+
+    elif file_type == 'video':
+        file_id = message.video[-1].file_id
+        file_unique_id = message.video[-1].file_unique_id
+        add_meme(file_id=file_id, file_unique_id=file_unique_id, chat_id=chat_id, file_type=file_type, caption=caption)
+
+    elif file_type == 'animation':
+        file_id = message.animation[-1].file_id
+        file_unique_id = message.animation[-1].file_unique_id
+        add_meme(file_id=file_id, file_unique_id=file_unique_id, chat_id=chat_id, file_type=file_type, caption=caption)
+
+    else:  # TODO: some mistake?
+        pass
 
 
 def menu_routing(message, bot):
@@ -150,13 +158,13 @@ def message_all(message, bot):
     if host_id == 354637850:
         chat_ids = get_all_user_ids()
         for chat_id in chat_ids:
-            if chat_id in (481807223, 354637850, 11436017):
-                try:
-                    bot.send_message(chat_id, msg)
-                    print('Sent message to ', chat_id, flush=True)
-                except Exception:
-                    print('Failed to send a message to ', chat_id, flush=True)
-                    pass
+            # if chat_id in (481807223, 354637850, 11436017):
+            try:
+                bot.send_message(chat_id, msg)
+                print('Sent message to ', chat_id, flush=True)
+            except Exception:
+                print('Failed to send a message to ', chat_id, flush=True)
+                pass
 
 
 def meme_all(message, bot):
@@ -169,21 +177,16 @@ def meme_all(message, bot):
         for chat_id in chat_ids:
             # if chat_id in (481807223, 354637850, 11436017):
             if is_sending_meme(chat_id=chat_id, time_delta=datetime.timedelta(days=2)):
-                meme_id, file_id = select_meme(chat_id, top_meme_ids)
+                meme_id, file_id, file_type, caption = select_meme(chat_id, top_meme_ids)
                 if meme_id is None:
-                    meme_id, file_id = _call_meme_generator(chat_id)
+                    meme_id, file_id, file_type, caption = recommend_meme(chat_id)
 
                 try:
-                    _send_meme(chat_id, meme_id=meme_id, file_id=file_id, bot=bot)
+                    _send_meme(chat_id, meme_id=meme_id, file_id=file_id, file_type=file_type, caption=caption, bot=bot)
                     print(f'Sent a refresh meme {meme_id} to {chat_id}', flush=True)
                 except Exception:
                     print(f'Failed to send a refresh meme {meme_id} to {chat_id}', flush=True)
                     pass
-
-
-def _call_meme_generator(chat_id):
-    meme_id, file_id = recommend_meme(chat_id)
-    return meme_id, file_id
 
 
 def _call_user_generator(chat_id):
@@ -211,12 +214,13 @@ def _call_user_generator(chat_id):
     return chat_id_rec, similarity, telegram_username, name, message_body
 
 
-# def _add_meme(file_id: str, file_unique_id: str, chat_id: int, file_type: str, caption: str):
-#     add_meme(file_id=file_id)
-
-
-def _send_meme(chat_id, meme_id, file_id, bot):  # update_profile
-    message = bot.send_photo(chat_id, photo=file_id, reply_markup=get_meme_reply_inline())
+def _send_meme(chat_id, meme_id, file_id, file_type, caption, bot):
+    if file_type == 'photo':
+        message = bot.send_photo(chat_id, photo=file_id, caption=caption, reply_markup=get_meme_reply_inline())
+    elif file_type == 'video':
+        message = bot.send_video(chat_id, video=file_id, caption=caption, reply_markup=get_meme_reply_inline())
+    else:  # file_type == 'animation':
+        message = bot.send_animation(chat_id, animation=file_id, caption=caption, reply_markup=get_meme_reply_inline())
     add_user_meme_init(chat_id=chat_id, meme_id=meme_id, message_id=message.message_id)
 
 

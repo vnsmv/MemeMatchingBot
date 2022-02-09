@@ -87,16 +87,16 @@ def select_meme(chat_id, top_meme_ids):
     for meme_id in top_meme_ids:
         if meme_id not in seen_memes:
             meme_id = int(meme_id)
-            q = "SELECT file_id FROM memes WHERE id = %s;"
+            q = "SELECT file_id, file_type, caption FROM memes WHERE id = %s;"
             cursor.execute(q, (meme_id, ))
-            file_id = cursor.fetchone()[0]
+            file_id, file_type, caption = cursor.fetchone()
 
             connection.commit()
             connection.close()
 
-            return meme_id, file_id
+            return meme_id, file_id, file_type, caption
 
     connection.commit()
     connection.close()
 
-    return None, None
+    return None, None, None, None

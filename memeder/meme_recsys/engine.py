@@ -95,16 +95,20 @@ def recommend_meme(chat_id, cold_start_n_meme: int = COLD_START_N_MEME):
         n_reactions = len(cursor.fetchall())
 
         if n_reactions >= cold_start_n_meme:
-            q = "UPDATE users SET is_fresh = %s WHERE chat_id = %s"
+            q = "UPDATE users SET is_fresh = %s WHERE chat_id = %s;"
             cursor.execute(q, (False, chat_id))
 
     else:
         meme_id, file_id = get_next_meme(chat_id=chat_id, cursor=cursor)
 
+    q = "SELECT file_type, caption FROM memes WHERE id = %s;"
+    cursor.execute(q, (meme_id, ))
+    file_type, caption = cursor.fetchone()
+
     connection.commit()
     connection.close()
 
-    return meme_id, file_id
+    return meme_id, file_id, file_type, caption
 
 
 def recommend_user(chat_id, cold_start_n_meme: int = COLD_START_N_MEME):

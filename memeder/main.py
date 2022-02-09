@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 from memeder.interface_tg.config import MENU_BUTTONS, menu_routing_buttons, menu_update_buttons
 from memeder.paths import get_py_lib_path
-from memeder.content_scheduler import start, process, receive_photo, start_meme, menu_routing, menu_update, \
+from memeder.content_scheduler import start, process, receive_content, start_meme, menu_routing, menu_update, \
     check_receive_bio, message_all, meme_all
 
 
@@ -73,15 +73,15 @@ def main():
     # ### Receiving memes: ###
     @bot.message_handler(content_types=['photo'])
     def _handle_photo(message):
-        receive_photo(message=message)
+        receive_content(message=message, file_type='photo')
 
-    # @bot.message_handler(content_types=['video'])
-    # def _handle_video(message):
-    #     receive_video(message=message)
-    #
-    # @bot.message_handler(content_types=['animation'])
-    # def _handle_animation(message):
-    #     receive_animation(message=message)
+    @bot.message_handler(content_types=['video'])
+    def _handle_video(message):
+        receive_content(message=message, file_type='video')
+
+    @bot.message_handler(content_types=['animation'])
+    def _handle_animation(message):
+        receive_content(message=message, file_type='animation')
 
     bot.polling(none_stop=True, interval=0)
 
