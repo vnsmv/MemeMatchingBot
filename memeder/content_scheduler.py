@@ -111,13 +111,13 @@ def receive_content(message, file_type: str):
                      caption=caption)
 
     elif file_type == 'video':
-        file_id = message.video[-1].file_id
-        file_unique_id = message.video[-1].file_unique_id
+        file_id = message.video.file_id
+        file_unique_id = message.video.file_unique_id
         add_meme(file_id=file_id, file_unique_id=file_unique_id, chat_id=chat_id, file_type=file_type, caption=caption)
 
     elif file_type == 'animation':
-        file_id = message.animation[-1].file_id
-        file_unique_id = message.animation[-1].file_unique_id
+        file_id = message.animation.file_id
+        file_unique_id = message.animation.file_unique_id
         add_meme(file_id=file_id, file_unique_id=file_unique_id, chat_id=chat_id, file_type=file_type, caption=caption)
 
     else:  # TODO: some mistake?
