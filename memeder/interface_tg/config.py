@@ -17,7 +17,7 @@ MEME_BUTTONS = {
     # 'b1_neutral':    ('\U0001F610',                                                              '106'),
     'b1_yawning':    ('\U0001F971',                                                              '107'),
 
-    'bu_users':      ('Give me the best match',                                                  'user'),
+    'bu_users':      ('Matching \U0001F3B0',                                                     'user'),
 
     'DB_EMPTY':      (None,                                                                      '1002')
 }
