@@ -134,6 +134,7 @@ def run_recommendation_train(env_file: str = None,
     df_profiles = df_profiles[(df_profiles['preferences'] != 3003) &
                               (df_profiles['goals'] != 4003) &
                               (df_profiles['sex'] != 5002)]
+    df_profiles = df_profiles[np.array([(_id in chat_ids) for _id in df_profiles['chat_id'].values])]
     df_profiles['uid'] = df_profiles['chat_id'].apply(lambda x: chat_id2uid[x])
 
     chat_id2recommended_chat_ids, chat_id2percentages = {}, {}
