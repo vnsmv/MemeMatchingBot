@@ -12,7 +12,7 @@ from memeder.interface_tg.meme_reply_keyboard import get_meme_reply_inline, get_
 from memeder.interface_tg.menu_keyboard import get_reply_markup
 from memeder.meme_recsys.engine import recommend_meme, recommend_user
 from memeder.meme_recsys.refreshing_activity import top_memes_selection, is_sending_meme, select_meme
-from memeder.interface_tg.glob_messages import msg_g2
+from memeder.interface_tg.glob_messages import msg_g3
 
 
 # https://core.telegram.org/bots/api#message +
@@ -152,19 +152,19 @@ def check_receive_bio(message, bot):
 
 def message_all(message, bot):
 
-    msg = msg_g2
+    msg = msg_g3
 
     host_id = message.chat.id
     if host_id == 354637850:
         chat_ids = get_all_user_ids()
         for chat_id in chat_ids:
-            # if chat_id in (481807223, 354637850, 11436017):
-            try:
-                bot.send_message(chat_id, msg)
-                print('Sent message to ', chat_id, flush=True)
-            except Exception:
-                print('Failed to send a message to ', chat_id, flush=True)
-                pass
+            if chat_id in (481807223, 354637850, 11436017):
+                try:
+                    bot.send_message(chat_id, msg)
+                    print('Sent message to ', chat_id, flush=True)
+                except Exception:
+                    print('Failed to send a message to ', chat_id, flush=True)
+                    pass
 
 
 def meme_all(message, bot):
