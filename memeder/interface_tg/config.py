@@ -1,4 +1,3 @@
-from memeder.meme_recsys.engine import COLD_START_N_MEME
 
 
 MEME_BUTTONS = {
@@ -71,8 +70,8 @@ menu_routing_buttons = ['m0_gender', 'm0_preferences', 'm0_profile', 'm0_goals',
 menu_update_buttons = [b for b in MENU_BUTTONS.keys() if b.startswith(('m1', 'm2', 'm3', 'm4'))]
 
 MATCHING_MESSAGES = {
-    1: f'Чтобы получать рекомендации пользователей, нужно просмотреть хотя бы {COLD_START_N_MEME} мемов.',
-    2: 'Вам осталось посмотреть еще {}',
+    1: 'Чтобы получать рекомендации пользователей, нужно просмотреть хотя бы {} мемов.'
+       'Вам осталось посмотреть еще {}.',
 
     -1: 'Мы пока что не обновили рекомендации пользоваталей для вас.'
         'Но за просмотром мемов время летит незаметно \U0001F60F',

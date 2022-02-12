@@ -2,15 +2,18 @@ import datetime
 import os
 from typing import Union
 
-from memeder.database.db_functions import add_user, user_exist, add_user_meme_reaction, \
-    add_meme, add_user_meme_init, add_user_user_init, add_user_user_reaction, update_profile, get_profile_value, \
-    get_all_user_ids
-from memeder.interface_tg.config import MEME_BUTTONS, USER_BUTTONS, menu_routing_buttons, menu_update_buttons, \
-    MENU_BUTTONS, MATCHING_MESSAGES
-from memeder.interface_tg.meme_reply_keyboard import get_meme_reply_inline, get_user_reply_inline, \
-    get_user2meme_reply_inline
+from memeder.database.db_functions import (
+    add_user, user_exist, add_user_meme_reaction, add_meme, add_user_meme_init, add_user_user_init,
+    add_user_user_reaction, update_profile, get_profile_value, get_all_user_ids
+)
+from memeder.interface_tg.config import (
+    MEME_BUTTONS, USER_BUTTONS, menu_routing_buttons, menu_update_buttons, MENU_BUTTONS, MATCHING_MESSAGES
+)
+from memeder.interface_tg.meme_reply_keyboard import (
+    get_meme_reply_inline, get_user_reply_inline, get_user2meme_reply_inline
+)
 from memeder.interface_tg.menu_keyboard import get_reply_markup
-from memeder.meme_recsys.engine import recommend_meme, recommend_user
+from memeder.meme_recsys.engine import recommend_meme, recommend_user, COLD_START_N_MEME
 from memeder.meme_recsys.refreshing_activity import top_memes_selection, is_sending_meme, select_meme
 from memeder.interface_tg.glob_messages import msg_g3
 
@@ -195,7 +198,7 @@ def _call_user_generator(chat_id):
     if n_reactions_to_do == 0:
         message_body = None  # OK
     elif n_reactions_to_do > 0:
-        message_body = MATCHING_MESSAGES[1] + MATCHING_MESSAGES[2].format(n_reactions_to_do)
+        message_body = MATCHING_MESSAGES[1].format(COLD_START_N_MEME, n_reactions_to_do)
     else:  # n_reactions_to_do < 0:  # --> and it's an error code
         message_body = MATCHING_MESSAGES[n_reactions_to_do]
     return chat_id_rec, similarity, telegram_username, name, message_body
