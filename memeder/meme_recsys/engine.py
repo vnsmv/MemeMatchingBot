@@ -4,6 +4,7 @@ from memeder.database.db_functions import get_seen_meme_ids, get_all_meme_ids, g
 from memeder.database.connect import connect_to_db
 from memeder.interface_tg.config import MEME_BUTTONS
 
+
 COLD_START_N_MEME = 30
 
 

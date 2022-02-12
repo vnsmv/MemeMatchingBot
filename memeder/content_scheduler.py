@@ -6,7 +6,7 @@ from memeder.database.db_functions import add_user, user_exist, add_user_meme_re
     add_meme, add_user_meme_init, add_user_user_init, add_user_user_reaction, update_profile, get_profile_value, \
     get_all_user_ids
 from memeder.interface_tg.config import MEME_BUTTONS, USER_BUTTONS, menu_routing_buttons, menu_update_buttons, \
-    MENU_BUTTONS
+    MENU_BUTTONS, MATCHING_MESSAGES
 from memeder.interface_tg.meme_reply_keyboard import get_meme_reply_inline, get_user_reply_inline, \
     get_user2meme_reply_inline
 from memeder.interface_tg.menu_keyboard import get_reply_markup
@@ -192,25 +192,12 @@ def meme_all(message, bot):
 def _call_user_generator(chat_id):
     chat_id_rec, similarity, telegram_username, name, n_reactions_to_do = recommend_user(chat_id=chat_id)
 
-    if n_reactions_to_do > 0:
-        message_body = f'To calculate the best match for you, '\
-                       f'we need more meme reactions. Enjoy {n_reactions_to_do} more memes:)'
-    elif n_reactions_to_do == -1:
-        message_body = 'We need some time to update recommendations for you...\n' \
-                       'Or you have seen all matches already \U0001F642' \
-
-    elif n_reactions_to_do == -2:
-        message_body = 'Specify your gender \n' \
-                        '\U0001F466 \U0001F467 \n' \
-                       '(type /start to go to the main menu)'
-    elif n_reactions_to_do == -3:
-        message_body = 'Specify your preferences \n' \
-                       '(type /start to go to the main menu)'
-    elif n_reactions_to_do == -4:
-        message_body = 'Specify your goals \n ' \
-                       'It could be done quickly from the main menu (/start).'
-    else:  # n_reactions_to_do == 0:
-        message_body = None
+    if n_reactions_to_do == 0:
+        message_body = None  # OK
+    elif n_reactions_to_do > 0:
+        message_body = MATCHING_MESSAGES[1] + MATCHING_MESSAGES[2].format(n_reactions_to_do)
+    else:  # n_reactions_to_do < 0:  # --> and it's an error code
+        message_body = MATCHING_MESSAGES[n_reactions_to_do]
     return chat_id_rec, similarity, telegram_username, name, message_body
 
 
