@@ -192,6 +192,30 @@ def meme_all(message, bot):
                     pass
 
 
+def top10memes(bot):
+    # TODO: auto process + weekly process
+    boris_id = 354637850
+    memes_info = (
+        (4931, 'AgACAgQAAxkBAAEBHWRiBIBj_ONuIYBP2P40GEAoFPQLggAC7aoxG5SqnFBgFytBrBrHdwEAAwIAA3cAAyME', 'photo', None),
+        (3465, 'AgACAgQAAxkBAAEBDpViBChDXzco8wpn0iPaBWz8K9FRdAACQ6sxG7BFvFEZKHmq8z51oQEAAwIAA3kAAyME', 'photo',
+         "We've struck the mother load"),
+        (1996, 'AgACAgQAAxkBAAITe2Gxdx13TCQEFKOl0KCRE9tGP9STAALDqzEbNpEUUssRiHZtbc2bAQADAgADeAADIwQ', 'photo', None),
+        (278, 'AgACAgQAAxkBAAIGG2Gwjsp6BEJMMOo7KeHXqhGYtlnMAAKxqjEb7-TtUSu1LwcpsE4MAQADAgADdwADIwQ', 'photo', None),
+        (2878, 'AgACAgIAAxkBAAL-pGIEBNdoqFs9CbbeKsYSIBwcP_tcAAITuDEbvki5S4GkgVazHRkXAQADAgADeAADIwQ', 'photo', None),
+        (2690, 'AgACAgQAAxkBAAIWimGxo9iFvx2T8BnRIZWkYqtkSiDgAALrqjEbyyxFUNGCOigw1Qd0AQADAgADeQADIwQ', 'photo', None),
+        (88, 'AgACAgIAAxkBAAIFImGv1rpwuogl0s6GFW80KVhcwVv3AALmrjEb2wrJScTxuvwoa1cxAQADAgADeAADIwQ', 'photo', None),
+        (509, 'AgACAgQAAxkBAAIH9GGwxbpb_KfJyF-gPvPBaFrSlI83AAL1qjEb2f6kUapKNH9tfgn_AQADAgADeQADIwQ', 'photo', None),
+        (239, 'AgACAgIAAxkBAAIF7GGwjCblvT2ny4vq2eSIAvmrnyITAAJgtjEbrLuJSCDarwOKXNKGAQADAgADeQADIwQ', 'photo', None),
+        (253, 'AgACAgQAAxkBAAIGAAFhsI1KGUX5CXDNm2rcxdpqadFBtQACWqsxGx07rFDeqiu5cdYtUwEAAwIAA3kAAyME', 'photo', None),
+    )
+    for m in memes_info:
+        try:
+            _send_meme(chat_id=boris_id, meme_id=m[0], file_id=m[1], file_type=m[2], caption=m[3], bot=bot,
+                       uploading_content=True)
+        except Exception:
+            pass
+
+
 def _call_user_generator(chat_id):
     chat_id_rec, similarity, telegram_username, name, n_reactions_to_do = recommend_user(chat_id=chat_id)
 
@@ -204,14 +228,17 @@ def _call_user_generator(chat_id):
     return chat_id_rec, similarity, telegram_username, name, message_body
 
 
-def _send_meme(chat_id, meme_id, file_id, file_type, caption, bot):
+def _send_meme(chat_id, meme_id, file_id, file_type, caption, bot, uploading_content: bool = False):
+    reply_markup = None if uploading_content else get_meme_reply_inline()
     if file_type == 'photo':
-        message = bot.send_photo(chat_id, photo=file_id, caption=caption, reply_markup=get_meme_reply_inline())
+        message = bot.send_photo(chat_id, photo=file_id, caption=caption, reply_markup=reply_markup)
     elif file_type == 'video':
-        message = bot.send_video(chat_id, video=file_id, caption=caption, reply_markup=get_meme_reply_inline())
+        message = bot.send_video(chat_id, video=file_id, caption=caption, reply_markup=reply_markup)
     else:  # file_type == 'animation':
-        message = bot.send_animation(chat_id, animation=file_id, caption=caption, reply_markup=get_meme_reply_inline())
-    add_user_meme_init(chat_id=chat_id, meme_id=meme_id, message_id=message.message_id)
+        message = bot.send_animation(chat_id, animation=file_id, caption=caption, reply_markup=reply_markup)
+
+    if not uploading_content:
+        add_user_meme_init(chat_id=chat_id, meme_id=meme_id, message_id=message.message_id)
 
 
 def _send_user(chat_id, chat_id_rec, similarity, telegram_username, name, bot):
