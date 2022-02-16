@@ -169,12 +169,7 @@ def recommend_user(chat_id, cold_start_n_meme: int = COLD_START_N_MEME):
                 # actually the table is being updated now:)
                 pass
 
-    if chat_id_rec is None:
-        telegram_username, name = None, None
-    else:
-        telegram_username, name = chat_id2telegram_username_and_name(chat_id=chat_id_rec, cursor=cursor)
-
     connection.commit()
     connection.close()
 
-    return chat_id_rec, similarity, telegram_username, name, n_reactions_to_do
+    return chat_id_rec, similarity, n_reactions_to_do

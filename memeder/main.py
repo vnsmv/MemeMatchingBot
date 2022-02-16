@@ -50,7 +50,7 @@ def main():
     # ### Send top 10 memes: ###
     @bot.message_handler(commands=['top10memes'])
     def _top10memes(message):
-        top10memes(bot)
+        top10memes(message, bot)
 
     # ### Menu: ###
     @bot.message_handler(content_types=['text'], func=lambda msg: msg.text == MENU_BUTTONS['m0_memes'][0])
@@ -78,15 +78,15 @@ def main():
     # ### Receiving memes: ###
     @bot.message_handler(content_types=['photo'])
     def _handle_photo(message):
-        receive_content(message=message, file_type='photo')
+        receive_content(message=message, file_type='photo', bot=bot)
 
     @bot.message_handler(content_types=['video'])
     def _handle_video(message):
-        receive_content(message=message, file_type='video')
+        receive_content(message=message, file_type='video', bot=bot)
 
     @bot.message_handler(content_types=['animation'])
     def _handle_animation(message):
-        receive_content(message=message, file_type='animation')
+        receive_content(message=message, file_type='animation', bot=bot)
 
     bot.polling(none_stop=True, interval=0)
 
