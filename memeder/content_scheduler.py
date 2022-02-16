@@ -139,6 +139,13 @@ def menu_update(message, bot):
     _send_menu(chat_id=chat_id, bot=bot, button='m_main_menu')
 
 
+def menu_show_profile(message, bot):
+    chat_id = message.chat.id
+    photo_id, profile_description, _ = get_user_profile(chat_id=chat_id, similarity=100)
+    bot.send_photo(chat_id, photo=photo_id, caption=profile_description)
+    _send_menu(chat_id=chat_id, bot=bot, button='m_main_menu')
+
+
 def check_receive_bio(message, bot):
     chat_id = message.chat.id
     if get_profile_value(chat_id, column='bio_update_flag'):

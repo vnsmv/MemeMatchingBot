@@ -56,6 +56,7 @@ MENU_BUTTONS = {
     'm3_photo':         ('Фото \U0001F53C', 'Просто отправь мне свое фото :)', 'photo_update_flag', True),
     'm3_del_bio':       ('Удалить био \U0001F6AB', 'Удалили био!', 'use_bio', False),
     'm3_del_photo':     ('Удалить фото \U0001F6AB', 'Удалили фото!', 'use_photo', False),
+    'p3_profile':       ('Мой профиль \U0001F464', None, None, None),
 
     'm4_friends':       ('Друзья \U0001F92A', 'Хорошо!', 'goals', 4000),
     'm4_relationships': ('Отношения \U0001F498', 'Удачи при поиске \U0001F49E', 'goals', 4001),
@@ -63,11 +64,12 @@ MENU_BUTTONS = {
     'm4_memes':         ('Только мемы \U0001F63C', 'Только мемы, отлично!', 'goals', 4003),
 
     'r3_photo':         (None, 'Мы установили это фото для вашего профиля', None, None),
-    'r3_bio':         (None, 'Ваше био:\n\n', None, None),
+    'r3_bio':           (None, 'Ваше био:\n\n', None, None),
 }
 
 menu_routing_buttons = ['m0_gender', 'm0_preferences', 'm0_profile', 'm0_goals', 'm_main_menu']
 menu_update_buttons = [b for b in MENU_BUTTONS.keys() if b.startswith(('m1', 'm2', 'm3', 'm4'))]
+menu_show_profile_buttons = ['p3_profile', ]
 
 MATCHING_MESSAGES = {
     1: 'Чтобы получать рекомендации пользователей, нужно просмотреть хотя бы {} мемов. '

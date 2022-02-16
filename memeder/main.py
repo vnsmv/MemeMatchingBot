@@ -4,10 +4,11 @@ import os
 import telebot
 from dotenv import load_dotenv
 
-from memeder.interface_tg.config import MENU_BUTTONS, menu_routing_buttons, menu_update_buttons
+from memeder.interface_tg.config import MENU_BUTTONS, menu_routing_buttons, menu_update_buttons, \
+    menu_show_profile_buttons
 from memeder.paths import get_py_lib_path
 from memeder.content_scheduler import start, process, receive_content, start_meme, menu_routing, menu_update, \
-    check_receive_bio, message_all, meme_all, top10memes
+    check_receive_bio, message_all, meme_all, top10memes, menu_show_profile
 
 
 def main():
@@ -29,6 +30,7 @@ def main():
 
     _menu_routing_texts = [MENU_BUTTONS[b][0] for b in menu_routing_buttons]
     _menu_update_texts = [MENU_BUTTONS[b][0] for b in menu_update_buttons]
+    _menu_show_profile_texts = [MENU_BUTTONS[b][0] for b in menu_show_profile_buttons]
 
     bot = telebot.TeleBot(token)
 
@@ -64,6 +66,10 @@ def main():
     @bot.message_handler(content_types=['text'], func=lambda msg: msg.text in _menu_update_texts)
     def _menu_update(message):
         menu_update(message, bot)
+
+    @bot.message_handler(content_types=['text'], func=lambda msg: msg.text in _menu_show_profile_texts)
+    def _menu_show_profile(message):
+        menu_show_profile(message, bot)
 
     @bot.message_handler(content_types=['text'])
     def _check_receive_bio(message):
