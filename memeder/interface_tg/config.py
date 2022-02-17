@@ -2,11 +2,8 @@
 
 MEME_BUTTONS = {
     'b1_neutral':    ('\U0001F610	',                                                          '104'),
-    'b2_like':       ('\U0001F4A3' + '\U0001F4A5',                                              '1000'),
-    'b2_dislike':    ('\U0001F4A9',                                                             '1001'),
-
-    # 'b2_like':       ('\U0001F602',                                                             '1000'),
-    # 'b2_dislike':    ('\U0001F615',                                                         '1001'),
+    'b2_like':       ('\U0001F44D',                                                             '1000'),
+    'b2_dislike':    ('\U0001F44E',                                                             '1001'),
 
     'b1_rofl':       ('\U0001F923',                                                              '100'),
     'b1_smiling':    ('\U0001F600',                                                              '101'),
@@ -27,7 +24,7 @@ USER_BUTTONS = {
     'b1_chat':          ('Chat \U0001F4AC',                                                        None),
     'b1_next':          ('Next \U000023ED',                                                        '10001'),
 
-    'bm_memes':         ('Back to memes',                                                          'memes'),
+    'bm_memes':         ('\U0001F519 memes \U0001F519',                                            'memes'),
 
     'DB_PENDING':       (None,                                                                     '10003'),
 }
@@ -35,37 +32,64 @@ USER_BUTTONS = {
 
 MENU_BUTTONS = {
     # button_text, message, profile_column (if any), profile_value (if any)
-    'm_start':          (None, 'In main menu.\nHere, you can configure your profile to find your best match!', None,
-                         None),
+    'm_start':          (None, 'Вы в главном меню.\nЗдесь выможете настроить свой профиль и выбрать предпочтения!\n'
+                               'А также в любой момент вернуться к мемам:)', None, None),
 
-    'm0_gender':        ('Gender \U0001F466 \U0001F467', 'Choose your gender:', None, None),
-    'm0_preferences':   ('Preferences', 'Show me:', None, None),
-    'm0_profile':       ('Edit profile \U0001F58A \U0001F320', 'In profile settings:', None, None),
-    'm0_goals':         ('I am searching for \U0001F498 \U0001F923', 'I am here for:', None, None),
+    'm0_gender':        ('Выбрать пол \U0001F466 \U0001F467', 'Выбери пол из предложенных в меню:', None, None),
+    'm0_preferences':   ('Предпочтения', 'Показывай мне только:', None, None),
+    'm0_profile':       ('Профиль \U0001F58A \U0001F320', 'Настройки профиля:', None, None),
+    'm0_goals':         ('Цель знакомства \U0001F498 \U0001F923', 'Что вы хотите найти?', None, None),
     'm0_memes':         ('\U0001F519 MEMES \U0001F519', None, None, None),
 
-    'm_main_menu':      ('\U0001F519 Main menu \U0001F519', 'Main menu:', None, None),
+    'm_main_menu':      ('\U0001F519 Главное меню \U0001F519', 'Главное меню:', None, None),
 
-    'm1_boy':           ('Boy \U0001F468', 'Success!', 'sex', 5000),
-    'm1_girl':          ('Girl \U0001F469', 'Success!', 'sex', 5001),
+    'm1_boy':           ('Boy \U0001F468', 'Успешно обновили информацию!)', 'sex', 5000),
+    'm1_girl':          ('Girl \U0001F469', 'Успешно обновили информацию!)', 'sex', 5001),
 
-    'm2_boys':          ('Boys \U0001F466', "Got it! \nDon't hesitate to write first \U0001F609", 'preferences', 3000),
+    'm2_boys':          ('Boys \U0001F466', "Отлично!\nНе стесняемся писать первыми \U0001F609", 'preferences', 3000),
     'm2_girls':         ('Girls \U0001F469', 'Ok, fingers crossed! \U0001F91E', 'preferences', 3001),
-    'm2_all':           ('All \U0001F469 \U0001F9D1', 'Ok, we will show you all users', 'preferences', 3002),
-    'm2_memes':         ('Only memes \U0001F60E', 'Just memes, good choice \U0001F60F', 'preferences', 3003),
+    'm2_all':           ('Всех пользователей \U0001F469 \U0001F9D1',
+                         'Отлично, мы будем показывать пользователей вне зависимости от пола', 'preferences', 3002),
+    'm2_memes':         ('Только мемы \U0001F60E', 'Только мемы, отличный выбор \U0001F60F', 'preferences', 3003),
 
-    'm3_bio':           ('Bio \U0001F53C', 'Send me your bio with text message :)', 'bio_update_flag', True),
-    'm3_photo':         ('Photo \U0001F53C', 'Just send me your photo :)', 'photo_update_flag', True),
-    'm3_del_bio':       ('Clear bio \U0001F6AB', 'Successfully deleted bio', 'use_bio', False),
-    'm3_del_photo':     ('Clear photo \U0001F6AB', 'Successfully deleted photo', 'use_photo', False),
+    'm3_bio':           ('Био \U0001F53C', 'Введите био одним сообщением.', 'bio_update_flag', True),
+    'm3_photo':         ('Фото \U0001F53C', 'Просто отправь мне свое фото :)', 'photo_update_flag', True),
+    'm3_del_bio':       ('Удалить био \U0001F6AB', 'Удалили био!', 'use_bio', False),
+    'm3_del_photo':     ('Удалить фото \U0001F6AB', 'Удалили фото!', 'use_photo', False),
+    'p3_profile':       ('Мой профиль \U0001F464', None, None, None),
 
-    'm4_friends':       ('Friends \U0001F92A', 'Yeap!', 'goals', 4000),
-    'm4_relationships': ('Relationships \U0001F498', 'Good look to find you love \U0001F49E', 'goals', 4001),
-    'm4_idk':           ("I don't know \U0001F914", 'Same \U0001F600', 'goals', 4002),
-    'm4_memes':         ('Memes and only memes \U0001F63C', 'Just memes, got it!', 'goals', 4003),
+    'm4_friends':       ('Друзья \U0001F92A', 'Хорошо!', 'goals', 4000),
+    'm4_relationships': ('Отношения \U0001F498', 'Удачи при поиске \U0001F49E', 'goals', 4001),
+    'm4_idk':           ("Понятия не имею \U0001F914", 'хех, я тоже \U0001F600', 'goals', 4002),
+    'm4_memes':         ('Только мемы \U0001F63C', 'Только мемы, отлично!', 'goals', 4003),
 
-
+    'r3_photo':         (None, 'Мы установили это фото для вашего профиля', None, None),
+    'r3_bio':           (None, 'Ваше био:\n\n', None, None),
 }
 
 menu_routing_buttons = ['m0_gender', 'm0_preferences', 'm0_profile', 'm0_goals', 'm_main_menu']
 menu_update_buttons = [b for b in MENU_BUTTONS.keys() if b.startswith(('m1', 'm2', 'm3', 'm4'))]
+menu_show_profile_buttons = ['p3_profile', ]
+
+MATCHING_MESSAGES = {
+    1: 'Чтобы получать рекомендации пользователей, нужно просмотреть хотя бы {} мемов. '
+       'Вам осталось посмотреть еще {}.',
+
+    -1: 'Мы пока что не обновили рекомендации пользоваталей для вас. '
+        'Но за просмотром мемов время летит незаметно \U0001F60F',
+    -2: 'Чтобы получать рекомендации пользователей, нужно вначале указать свой пол.\n'
+        'Это можно сделать из главного меню (нажми /start).\n\n'
+        'P.S. После этого нам потребуется какое-то время, чтобы обновить \U0001F3B0 рекомендации.',
+    -3: 'Чтобы получать рекомендации пользователей, нужно вначале указать свои предпочтения. '
+        'Либо сейчас у вас выбран просмотр только мемов.\n'
+        'Установить или поменять предпочтения можно из главного меню (нажми /start).\n\n'
+        'P.S. После этого нам потребуется какое-то время, чтобы обновить \U0001F3B0 рекомендации.',
+    -4: 'Чтобы получать рекомендации пользователей, нужно вначале указать цель для знакомств. '
+        'Либо сейчас у вас выбран просмотр только мемов.\n'
+        'Установить или поменять цели можно из главного меню (нажми /start).\n\n'
+        'P.S. После этого нам потребуется какое-то время, чтобы обновить \U0001F3B0 рекомендации.',
+}
+
+
+BORIS_ID = 354637850
+IVAN_API_ID = 2106431824

@@ -4,6 +4,7 @@ from memeder.database.db_functions import get_seen_meme_ids, get_all_meme_ids, g
 from memeder.database.connect import connect_to_db
 from memeder.interface_tg.config import MEME_BUTTONS
 
+
 COLD_START_N_MEME = 30
 
 
@@ -168,12 +169,7 @@ def recommend_user(chat_id, cold_start_n_meme: int = COLD_START_N_MEME):
                 # actually the table is being updated now:)
                 pass
 
-    if chat_id_rec is None:
-        telegram_username, name = None, None
-    else:
-        telegram_username, name = chat_id2telegram_username_and_name(chat_id=chat_id_rec, cursor=cursor)
-
     connection.commit()
     connection.close()
 
-    return chat_id_rec, similarity, telegram_username, name, n_reactions_to_do
+    return chat_id_rec, similarity, n_reactions_to_do

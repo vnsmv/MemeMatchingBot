@@ -20,8 +20,8 @@ REACTION2VALUE = {'1001': -4, '107': -3, '106': -2, '105': -1, '104': 0,
 
 
 def run_recommendation_train(env_file: str = None,
-                             n_memes: int = 50, n_matches: int = 30,
-                             personal_exploration_ratio=0.1, annotation_ratio=0.1, top_ratio=0.4,
+                             n_memes_mf: int = 20, n_memes_personal_exploration: int = 5, n_memes_annotation: int = 5,
+                             n_memes_top: int = 20, n_matches: int = 30,
                              seed=42):
 
     # TODO: try-except the cursor executions...
@@ -85,17 +85,17 @@ def run_recommendation_train(env_file: str = None,
         unseen_iids = np.int64(list(set(iids.tolist()) - set(seen_iids)))
         unseen_top_iids = np.int64(list(set(top_iids) - set(seen_iids)))
 
-        recommended_iids = iids[unseen_iids][np.argsort(u_p.dot(Q.T)[unseen_iids])[:-n_memes - 1:-1]]
+        recommended_iids = iids[unseen_iids][np.argsort(u_p.dot(Q.T)[unseen_iids])[:-n_memes_mf - 1:-1]]
 
         if globally_unseen_iids:
-            annotate_iids = np.random.choice(globally_unseen_iids, size=int(annotation_ratio * n_memes))
+            annotate_iids = np.random.choice(globally_unseen_iids, size=n_memes_annotation)
         else:
             annotate_iids = np.int64([])
 
-        random_iids = np.random.choice(unseen_iids, size=int(personal_exploration_ratio * n_memes))
+        random_iids = np.random.choice(unseen_iids, size=n_memes_personal_exploration)
 
-        if len(unseen_top_iids) >= int(top_ratio * n_memes):
-            unseen_top_iids = np.random.choice(unseen_top_iids, size=int(top_ratio * n_memes))
+        if len(unseen_top_iids) >= n_memes_top:
+            unseen_top_iids = np.random.choice(unseen_top_iids, size=n_memes_top)
 
         recommended_meme_ids = list(map(lambda x: iid2meme_id[x], list(set(recommended_iids.tolist()
                                                                            + annotate_iids.tolist()
@@ -251,11 +251,17 @@ def main():
 
     if args.host == 'test':
         env_file = 'db_credentials_test.env'
-        n_memes = 10
+        n_memes_mf = 5
+        n_memes_personal_exploration = 1
+        n_memes_annotation = 1
+        n_memes_top = 5
         n_matches = 3
     else:  # args.host == 'deploy':
         env_file = 'db_credentials.env'
-        n_memes = 100
+        n_memes_mf = 20
+        n_memes_personal_exploration = 5
+        n_memes_annotation = 5
+        n_memes_top = 20
         n_matches = 30
 
     retrain_interval_min = 5
@@ -264,7 +270,9 @@ def main():
     while True:
         print('>>> Run recommendation training...', flush=True)
         t_start = time.perf_counter()
-        run_recommendation_train(env_file=env_file, n_memes=n_memes, n_matches=n_matches)
+        run_recommendation_train(env_file=env_file, n_memes_mf=n_memes_mf,
+                                 n_memes_personal_exploration=n_memes_personal_exploration,
+                                 n_memes_annotation=n_memes_annotation, n_memes_top=n_memes_top, n_matches=n_matches)
         t_finish = time.perf_counter()
         t_train = int(np.round(t_finish - t_start))
         print(f'>>> Finish recommendation training (in {t_train} s)...', flush=True)

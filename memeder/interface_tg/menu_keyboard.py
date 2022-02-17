@@ -43,11 +43,12 @@ def get_reply_markup(button: str = 'm_start') -> (str, types.ReplyKeyboardMarkup
         item_0_1 = types.KeyboardButton(MENU_BUTTONS['m3_photo'][0])
         item_1_0 = types.KeyboardButton(MENU_BUTTONS['m3_del_bio'][0])
         item_1_1 = types.KeyboardButton(MENU_BUTTONS['m3_del_photo'][0])
-        item_2 = types.KeyboardButton(MENU_BUTTONS['m_main_menu'][0])
+        item_2_0 = types.KeyboardButton(MENU_BUTTONS['p3_profile'][0])
+        item_2_1 = types.KeyboardButton(MENU_BUTTONS['m_main_menu'][0])
 
         reply_markup.row(item_0_0, item_0_1)
         reply_markup.row(item_1_0, item_1_1)
-        reply_markup.row(item_2)
+        reply_markup.row(item_2_0, item_2_1)
 
     elif button == 'm0_goals':
         item_0_0 = types.KeyboardButton(MENU_BUTTONS['m4_friends'][0])
