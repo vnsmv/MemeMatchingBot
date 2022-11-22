@@ -1,7 +1,7 @@
-host = 'ec2-3-89-214-80.compute-1.amazonaws.com'
-database = 'd988ab3t3bor26'
-user = 'vgxntsnysemgva'
-password = '94cee2e6d74132ab2eeafb4cf8af683ec9802cf47d935dae1eee421e17f8a356'
+host = 'ec2-3-217-251-77.compute-1.amazonaws.com'
+database = 'd1htorqm1j6lui'
+user = 'fbxnpgqlphzhwu'
+password = 'eae0e8bb3444c423bb944a5829fb3d8791a9ad77a71bf4c5c77556154a40549c'
 
 host_test = 'ec2-23-21-229-200.compute-1.amazonaws.com'
 database_test = 'd80m409qj3pu8s'
