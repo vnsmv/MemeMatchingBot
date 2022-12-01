@@ -250,6 +250,7 @@ def get_profile_value(chat_id, column):
     cursor, connection = connect_to_db()
 
     q = f'SELECT {column} FROM profiles WHERE chat_id = %s;'
+    print(chat_id)
     try:
         cursor.execute(q, (chat_id, ))
     except Exception as e:
