@@ -253,14 +253,15 @@ def get_profile_value(chat_id, column):
     print(chat_id)
     try:
         cursor.execute(q, (chat_id, ))
+        connection.commit()
+        value = cursor.fetchone()[0]
+        connection.close()
+        return value
     except Exception as e:
         logging.exception(e)
         cursor.execute("ROLLBACK")
+        return []
 
-    connection.commit()
-    value = cursor.fetchone()[0]
-    connection.close()
-    return value
 
 
 def get_all_user_ids():
