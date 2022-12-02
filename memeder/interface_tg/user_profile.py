@@ -23,8 +23,8 @@ def _get_goals(chat_id: int):
 
 
 def get_user_profile(chat_id, similarity):
-    boy_photo_id = os.environ.get('BOY_PHOTO_ID')
-    girl_photo_id = os.environ.get('GIRL_PHOTO_ID')
+    boy_photo_id = 'AgACAgIAAxkBAAEC0tljid2Kp7zLB0lBlfq8sXKU1TLvFQACCrkxG2vI6Uvs8mhQ97znsQEAAwIAA3MAAysE'
+    girl_photo_id = 'AgACAgIAAxkBAAEC0tpjid3AZo8YRfSJICc0AeqlTJRr2AACDbkxG2vI6UsN11Set9I2yAEAAwIAA3MAAysE'
 
     if get_profile_value(chat_id, column='use_photo'):
         photo_id = get_profile_value(chat_id, column='photo_id')
