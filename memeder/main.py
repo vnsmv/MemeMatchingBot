@@ -94,7 +94,8 @@ def main():
     def _handle_animation(message):
         receive_content(message=message, file_type='animation', bot=bot)
 
-    bot.polling(none_stop=True, interval=0)
+#     bot.polling(none_stop=True, interval=0)
+    bot.infinity_polling(timeout=10, long_polling_timeout = 5)
 
 
 if __name__ == '__main__':
